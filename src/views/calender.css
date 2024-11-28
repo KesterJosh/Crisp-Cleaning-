@@ -1,0 +1,127 @@
+.current-day {
+    flex: 0 0 auto;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    border-radius: var(--dl-radius-radius-round);
+    justify-content: center;
+    background-color: #FF914D;
+    color:white;
+}
+.line-through {
+    text-decoration: line-through;
+    color: gray; /* Optional: to visually distinguish past dates */
+  }
+.home-text055X {
+    color: var(--dl-color-gray-black);
+    font-size: 18px;
+    font-style: normal;
+    text-align: left;
+    font-weight: 500;
+}
+.time-slots-container{
+    width: 90%;
+    padding-top: 10px;
+    margin-bottom: 10px;
+    /* background-color: grey; */
+}
+.time-slot-button{
+    background-color: rgba(0, 0, 0,0);
+    border: 1px solid rgba(0, 0, 0,0);
+    color: grey;
+    width:32%;
+    padding: 7px 10px;
+    margin: 2px;
+    border-radius: 50px;
+    float: left;
+}
+.line-button {
+    text-decoration: line-through red 2px;
+}
+.time-slot-button.selected {
+    background-color: rgb(255, 145, 77);
+    color: white;
+    border: 1px solid rgb(255, 145, 77);
+    width:32%;
+    padding: 7px 10px;
+    margin: 2px;
+    border-radius: 50px;
+    float: left;
+  }
+  .home-container110XSelectx {
+    flex: 0 0 auto;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    border-radius: var(--dl-radius-radius-round);
+    justify-content: center;
+    background-color: black;
+  }
+.headSec{
+    width: 100%;
+    /* background-color: red; */
+    text-align: left;
+    font-weight: 600;
+}
+.home-container109X {
+    flex: 1;
+    width: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+.home-container110X {
+    flex: 0 0 auto;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    border-radius: var(--dl-radius-radius-round);
+    justify-content: center;
+    /* background-color: #DBDBDB; */
+}
+.home-container110XSelect {
+    flex: 0 0 auto;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    border-radius: var(--dl-radius-radius-round);
+    justify-content: center;
+    background-color: #FF914D;
+}
+.home-text067X {
+    color: rgb(174, 174, 174);
+    font-size: 14px;
+    font-style: normal;
+    text-align: center;
+    font-weight: 500;
+}
+.home-textSelect {
+    color: white;
+    font-size: 14px;
+    font-style: normal;
+    text-align: center;
+    font-weight: 500;
+}
+.calendar-table{
+    /* background-color: blue; */
+    width:100%;
+}
+.home-container091{
+    cursor: pointer;
+    user-select: none;
+}
+.home-container090{
+    user-select: none;
+    cursor: pointer;
+}
+.home-container088{
+    margin-bottom: 10px;
+}
+.home-text-faded {
+    color: rgba(0, 0, 0, 0.4);
+}
+  
