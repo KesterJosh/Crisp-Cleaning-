@@ -346,6 +346,172 @@ const Settings = (props) => {
     gsap.fromTo(".settings-container52", {x:-20, opacity:0},{x:0, opacity:1, delay:1.4,duration:0.5});
   },[]);
 
+  const SummaryRef = useRef(null);
+  const [Total, setTotal] = useState(172);
+  const [intervalValue, setIntervalValue] = useState(0);
+
+  const [MyDate, setMyDate] = useState('12/08/2023');
+
+  const setSelectedDate = (formattedDate) => {
+    setMyDate(formattedDate);
+  };
+
+  const [timeFrame, settimeFrame] = useState(8);
+
+  const handleSelectDate = (selectedValue) => {
+    // Map the selected value to a time frame
+    const timeFrameMap = {
+      '8to10': 8,
+      '10to12': 10,
+      '12to2': 12,
+      '2to4': 14,
+      '4to6': 16,
+      '6to8': 18,
+    };
+  
+    // Set the state based on the selected value
+    const newTimeFrame = timeFrameMap[selectedValue] || 8; // Default to 8 if not found
+    settimeFrame(newTimeFrame);
+  
+    // Optional: alert for debugging
+  };
+
+  const [CleanType, setCleanType] = useState(true);
+  const [windows, setWindows] = useState(0);
+  const [walls, setwalls] = useState(0);
+  const [Cabinets, setCabinets] = useState(0);
+  const [blind, setblind] = useState(0);
+  const [organization, setorganization] = useState(0);
+  const [stovetop, setstovetop] = useState(0);
+  const [fridge, setfridge] = useState(0);
+  const [Dishwasher, setDishwasher] = useState(0);
+  const [garage, setgarage] = useState(0);
+  const [microwave, setmicrowave] = useState(0);
+  const [Laundry, setLaundry] = useState(0);
+  const [tiles, settiles] = useState(0);
+  const [discount, setDiscount] = useState(Total);
+  const [CleanP, setCleanP] = useState(false);
+
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const inputTextRef = useRef(null);
+  const [discountNew, setDiscountNew] = useState(discount);
+
+  const handleApplyClick = () => {
+    // Get the value from the text input
+    const inputValue = inputTextRef.current.value.toUpperCase(); // Using ref to access the input value// Convert to uppercase for case-insensitivity
+
+    // Check if the input value is "PERCENT20"
+    if (inputValue === 'PERCENT20') {
+      // Divide the total by 20%
+      const result = ((100-20)/100)*discount; // 20% is equivalent to 0.2
+      setDiscountAmount(20);
+      setDiscountNew(result.toFixed(2));
+      console.log(`Result after dividing by 20%: ${result}`);
+    } else {
+      // Reset the state if the input value is not "PERCENT20"
+      setDiscountAmount(0);
+      setDiscount(0);
+      console.log('Input value is not "PERCENT20".');
+    }
+  };
+
+  let disPerAmount =((discountAmount/100)*discount);
+  disPerAmount = disPerAmount.toFixed(2);
+
+  let discountTotal = discount;
+  // discountTotal = discountTotal.toFixed(2);
+
+  const handleMouseEnterAX = (button) => {
+    gsap.to(button, {
+      scale: 1.05,
+      opacity: 0.9,
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+  };
+  
+  const handleMouseLeaveAX = (button) => {
+    gsap.to(button, {
+      scale: 1,
+      opacity: 1,
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+  };
+
+  const handleMouseEnterAXY = (button) => {
+    gsap.to(button, {
+      borderColor:'#BABABA',
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+  };
+  
+  const handleMouseLeaveAXY = (button) => {
+    gsap.to(button, {
+      borderColor:'#FF914D',
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+  };
+
+  const [sum, setSum] = useState(false);
+
+  useEffect(()=>{
+    if (sum==true){
+      // SummaryRef.current.style.display = "block";
+      // SummaryRef.current.style.bottom = "-0%";
+      gsap.to(".home-container209Set",{
+        display:'block',
+        bottom:"8%",
+        borderWidth:0,
+        ease:'power1',
+        duration:1
+      });
+      gsap.to(".home-container210x",{
+        opacity:0,
+        ease:'power1',
+        duration:1
+      });
+      
+    }else{
+      // SummaryRef.current.style.display = "block";
+      // SummaryRef.current.style.bottom = "-0%";
+      // gsap.to(".home-container209Set",{
+      //   display:'block',
+      //   bottom:"0%",
+      //   borderWidth:0
+      // });
+      // home-container210
+      gsap.to(".home-container209Set",{
+        display:'block',
+        bottom:'-81%',
+        ease:'power1',
+        duration:1
+      });
+      gsap.to(".home-container210x",{
+        opacity:1,
+        ease:'power1.out',
+        duration:1
+      });
+    }
+  },[[setSum, sum]]);
+
+  useEffect(()=>{
+    let bathrom = 30*sliderValue;
+    let kitch = 45*sliderValueK;
+    let oth = 20*sliderValueO;
+    let rooms = 20*sliderValueOX;
+    let total = bathrom+kitch+oth+rooms;
+    total = ((100-intervalValue)/100)*total;
+    setDiscount(total);
+    setDiscountNew(total);
+    total = total.toFixed(2);
+    setTotal(total);
+
+  },[setTotal,intervalValue, Total, sliderValue, sliderValueK, sliderValueO, sliderValueOX]);
+
+
   return (
     <div className="settings-container10">
       <Helmet>
@@ -659,7 +825,7 @@ const Settings = (props) => {
               </div>
             </div>
           </div>
-          <div className="settings-container51">
+          <div className="settings-container51Set">
             <span className="settings-text40">Membership Details</span>
             <div className="settings-container52">
               <div className="settings-container53">
@@ -727,7 +893,7 @@ const Settings = (props) => {
                   Cancel Membership
                 </button>
               </div>
-              <div className="settings-container59">
+              {/* <div className="settings-container59">
                 <div className="settings-container60">
                   <div className="settings-container61">
                     <span className="settings-text44">Cleaning Summary</span>
@@ -750,6 +916,121 @@ const Settings = (props) => {
                   </span>
                   <span className="settings-text48">$172.99</span>
                 </span>
+              </div> */}
+              <div className="home-container209Set" ref={SummaryRef}>
+                <div className="home-container210x">
+                  <div className="home-container211" onClick={()=>setSum(true)} style={{cursor:'pointer', userSelect:'none'}}>
+                    <span className="home-text132Set">Cleaning Summary <img src='/img/UPARROW.png' style={{width:'12px', height:'7px', marginLeft:'10px'}} /></span>
+                    <span className="home-text133Set">Have a Discount Code?</span>
+                  </div>
+                  <div className="home-text134Set">
+                    <span className="home-text135">Total </span>
+                    <span> ${Total}{(intervalValue>0)?
+                      <span>{"(-"}
+                        {intervalValue}%
+                        {")"}
+                      </span>
+                      :null}
+                    </span>
+                  </div>
+                </div>
+              
+                <div className="home-container212">
+                  <div className="home-container213" onClick={()=>setSum(false)} style={{cursor:'pointer', userSelect:'none'}}>
+                    <span className="home-text137Set">Booking Summary <img src='/img/downArrow.png' style={{width:'12px', height:'7px', marginLeft:'10px'}} /></span>
+                    <span className="home-text138">Have a Discount Code?</span>
+                  </div>
+                  <span className="home-text139">
+                    <span className="home-text140">Total </span>
+                    <span> $134.98</span>
+                  </span>
+                </div>
+                <div className="home-container214Set">
+                <img src='/img/home-icon.png' style={{width:'35px', height:'25px', marginRight:'4px'}}/>
+                  <div className="home-container215">
+                    <li className="home-liSet list-item">
+                      <span className="home-text142">{sliderValueO} Bedroom</span>
+                      <span className="home-text143">${(sliderValue*20).toFixed(2)}</span>
+                    </li>
+                    <li className="home-liSet list-item">
+                      <span>{sliderValue} Bathroom</span>
+                      <span className="home-text145">${(sliderValue*30).toFixed(2)}</span>
+                    </li>
+                    <li className="home-liSet list-item">
+                      <span>{sliderValueK} Kitchen</span>
+                      <span className="home-text147">${(sliderValueK*45).toFixed(2)}</span>
+                    </li>
+                  </div>
+                </div>
+                <div className="home-container216">
+                  <img src='/img/calendar.png'style={{width:'25px', marginRight:'8px'}}/>
+                  <div className="home-container217">
+                    <span className="home-text148Set">{MyDate}</span>
+                    <span className="home-text149Set">
+                      {(timeFrame==8)?"8:00 AM - 10:00 AM" : null}
+                      {(timeFrame==10)?"10:00 AM - 12:00 PM" : null}
+                      {(timeFrame==12)?"12:00 PM - 2:00 PM" : null}
+                      {(timeFrame==14)?"2:00 PM - 4:00 PM" : null}
+                      {(timeFrame==16)?"4:00 PM - 6:00 PM" : null}
+                      {(timeFrame==18)?"6:00 PM - 8:00 PM" : null}
+                      </span>
+                  </div>
+                </div>
+                <div className="home-container218">
+                <img src='/img/refresh.png' style={{width:'25px', marginRight:'8px'}}/>
+                  <div className="home-container219">
+                    <span className="home-text150Set">{(CleanType)?"Repeated":"One Time"}</span>
+                  </div>
+                </div>
+                {/* <div className="home-container218">
+                <img src='/img/extra.png' style={{width:'25px', marginRight:'8px'}}/>
+                  <div className="home-container219">
+                    <div className="home-text150Set">{(windows)?"Windows":null}</div>
+                    <div className="home-text150Set">{(walls)?"Walls":null}</div>
+                    <div className="home-text150Set">{(Cabinets)?"Cabinets":null}</div>
+                    <div className="home-text150Set">{(organization)?"Organization":null}</div>
+                    <div className="home-text150Set">{(blind)?"Blinds":null}</div>
+                    <div className="home-text150Set">{(stovetop)?"Stovetop/oven":null}</div>
+                    <div className="home-text150Set">{(fridge)?"Fridge":null}</div>
+                    <div className="home-text150Set">{(Dishwasher)?"Dishwasher":null}</div>
+                    <div className="home-text150Set">{(garage)?"Garage":null}</div>
+                    <div className="home-text150Set">{(microwave)?"Microwave":null}</div>
+                    <div className="home-text150Set">{(Laundry)?"Laundry":null}</div>
+                    <div className="home-text150Set">{(tiles)?"Tiles/Flooring":null}</div>
+                  </div>
+                </div> */}
+                <div className="home-container220Set">
+                  <div className="home-container221">
+                    <span className="home-text151Set">Discount Code</span>
+                    <span className="home-text152Set">(optional)</span>
+                  </div>
+                  <div className='buttonHost'>
+                    <input type="text" className="home-textinput06Set input" ref={inputTextRef}  onMouseEnter={(e) => handleMouseEnterAXY(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAXY(e.currentTarget)}/>
+                    <input type="button" className="home-textinput06xSet input" value="Apply" onClick={handleApplyClick}  onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)}/>
+                  </div>
+                  
+                </div>
+                <div className="home-container222">
+                  <div className="home-container223">
+                    <span className="home-text153Set">Sub-Total</span>
+                    <span className="home-text154Set">${Total}</span>
+                  </div>
+                  {/* <div className="home-container224">
+                    <span className="home-text155">Sales - Tax(5%)</span>
+                    <span className="home-text156">${(5/100)*Total}</span>
+                  </div> */}
+                  <div className="home-container225">
+                    <span className="home-text157Set">Discount Code</span>
+                    <span className="home-text158Set">-${disPerAmount}</span>
+                  </div>
+                  <div className="home-container226">
+                    <span className="home-text159Set">Total</span>
+                    <span className="home-text160Set">${discountNew}</span>
+                  </div>
+                </div>
+                <button onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)} type="button" className="home-button13Set button">
+                  Book Now
+                </button>
               </div>
             </div>
           </div>
