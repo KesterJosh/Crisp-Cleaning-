@@ -765,19 +765,19 @@
   font-weight: 700;
 }
 .cleanerspass2-container51 {
-  flex: 0 0 auto;
-  width: 34%;
-  height: auto;
-  display: flex;
-  margin-top: var(--dl-space-space-oneandhalfunits);
-  align-items: flex-start;
-  padding-top: 0px;
-  border-radius: 10px;
-  flex-direction: column;
-  padding-bottom: var(--dl-space-space-unit);
-  justify-content: flex-start;
-  background-color: var(--dl-color-gray-white);
-}
+    flex: 0 0 auto;
+    width: 34%;
+    height: 430px;
+    overflow: hidden;
+    display: flex;
+    margin-top: var(--dl-space-space-twounits);
+    align-items: flex-start;
+    border-radius: 10px;
+    flex-direction: column;
+    padding-bottom: var(--dl-space-space-unit);
+    justify-content: flex-start;
+    background-color: var(--dl-color-gray-white);
+  }
 .cleanerspass2-container52 {
   flex: 0 0 auto;
   width: 100%;

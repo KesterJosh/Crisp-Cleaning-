@@ -13,6 +13,30 @@ import gsap from 'gsap';
 import Dropdownx from './dropdown';
 import './SpriteAnimation.css'; 
 import LottieAnimation from './sliderAnimation';
+import windowOn from "./Extras/window_on.png";
+import windowOff from "./Extras/window_off.png";
+import brickOn from "./Extras/brick_on.png";
+import brickOff from "./Extras/brick_off.png";
+import cabinetsOn from "./Extras/cabinets_on.png";
+import cabinetsOff from "./Extras/cabinets_off.png";
+import organisationOn from "./Extras/organisation_on.png";
+import organisationOff from "./Extras/organisation_off.png";
+import blindOn from "./Extras/blind_on.png";
+import blindOff from "./Extras/blind_off.png";
+import stovetopOn from "./Extras/stovetop_on.png";
+import stovetopOff from "./Extras/stovetop_off.png";
+import fridgeOn from "./Extras/fridge_on.png";
+import fridgeOff from "./Extras/fridge_off.png";
+import dishwasherOn from "./Extras/dishwasher_on.png";
+import dishwasherOff from "./Extras/dishwasher_off.png";
+import garageOn from "./Extras/garage_on.png";
+import garageOff from "./Extras/garage_off.png";
+import microwaveOn from "./Extras/microwave_on.png";
+import microwaveOff from "./Extras/microwave_off.png";
+import laundryOn from "./Extras/laundry_on.png";
+import laundryOff from "./Extras/laundry_off.png";
+import tilesOn from "./Extras/Tiles_on.png";
+import tilesOff from "./Extras/Tiles_off.png";
 
 import './home.css'
 import VideoBackground from './videos'
@@ -721,49 +745,49 @@ const handleSelectChange = (selectedValue) => {
   const [daySelect7, setdaySelect7] = useState(0);
 
   const daySelecter1 = (e) =>{
-    if(daySelect1==e){
+    if(daySelect1==1){
       setdaySelect1(0);
     }else{
-      setdaySelect1(e);
+      setdaySelect1(1);
     }
   }
   const daySelecter2 = (e) =>{
-    if(daySelect2==e){
+    if(daySelect2==1){
       setdaySelect2(0);
     }else{
       setdaySelect2(e);
     }
   }
   const daySelecter3 = (e) =>{
-    if(daySelect3==e){
+    if(daySelect3==1){
       setdaySelect3(0);
     }else{
       setdaySelect3(e);
     }
   }
   const daySelecter4 = (e) =>{
-    if(daySelect4==e){
+    if(daySelect4==1){
       setdaySelect4(0);
     }else{
       setdaySelect4(e);
     }
   }
   const daySelecter5 = (e) =>{
-    if(daySelect5==e){
+    if(daySelect5==1){
       setdaySelect5(0);
     }else{
       setdaySelect5(e);
     }
   }
   const daySelecter6 = (e) =>{
-    if(daySelect6==e){
+    if(daySelect6==1){
       setdaySelect6(0);
     }else{
       setdaySelect6(e);
     }
   }
   const daySelecter7 = (e) =>{
-    if(daySelect7==e){
+    if(daySelect7==1){
       setdaySelect7(0);
     }else{
       setdaySelect7(e);
@@ -1025,7 +1049,107 @@ const handleSelectChange = (selectedValue) => {
     setMyDate(formattedDate);
   };
   
+  
+  const [hoverImageWindow, setHoverImageWindow] = useState(windowOff);
+  const [hoverImageBrick, setHoverImageBrick] = useState(brickOff);
+  const [hoverImageCabinets, setHoverImageCabinets] = useState(cabinetsOff);
+  const [hoverImageOrganisation, setHoverImageOrganisation] = useState(organisationOff);
+  const [hoverImageBlind, setHoverImageBlind] = useState(blindOff);
+  const [hoverImageStovetop, setHoverImageStovetop] = useState(stovetopOff);
+  const [hoverImageFridge, setHoverImageFridge] = useState(fridgeOff);
+  const [hoverImageDishwasher, setHoverImageDishwasher] = useState(dishwasherOff);
+  const [hoverImageGarage, setHoverImageGarage] = useState(garageOff);
+  const [hoverImageMicrowave, setHoverImageMicrowave] = useState(microwaveOff);
+  const [hoverImageLaundry, setHoverImageLaundry] = useState(laundryOff);
+  const [hoverImageTiles, setHoverImageTiles] = useState(tilesOff);
 
+  const handleMouseEnterAX = (button) => {
+    gsap.to(button, {
+      scale: 1.05,
+      opacity: 0.9,
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+  };
+  
+  const handleMouseLeaveAX = (button) => {
+    gsap.to(button, {
+      scale: 1,
+      opacity: 1,
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+  };
+
+  const handleMouseEnterAXY = (button) => {
+    gsap.to(button, {
+      borderColor:'#BABABA',
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+  };
+  
+  const handleMouseLeaveAXY = (button) => {
+    gsap.to(button, {
+      borderColor:'#FF914D',
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+  };
+
+  const handleMouseEnterClean = (button) => {
+    gsap.to(button, {
+      scale: 1.05,
+      opacity: 0.9,
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+  };
+  
+  const handleMouseLeaveClean = (button) => {
+    gsap.to(button, {
+      scale: 1,
+      opacity: 1,
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+  };
+
+  const handleMouseEnterPaint = (button) => {
+    gsap.to(button, {
+      color:'#FF914D',
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+  };
+  
+  const handleMouseLeavePaint = (button) => {
+    gsap.to(button, {
+      color:'rgb(157, 157, 157)',
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+  };
+
+  const [supports, setSupports]  = useState(false);
+
+  const handleMouseEnterSupport= (button) => {
+    gsap.to(button, {
+      color:'#FF914D',
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+    setSupports(true);
+  };
+  
+  const handleMouseLeaveSupport= (button) => {
+    gsap.to(button, {
+      color:'rgb(157, 157, 157)',
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+    setSupports(false);
+  };
 return (
     <div className="home-container">
       <Helmet>
@@ -1204,11 +1328,10 @@ offices, restaurants, schools, gyms.. you name it!
             </div>
             <div className="home-container030">
               <div className="home-container031">
-                <div className="home-container032">
-                  <p className="home-text022">?</p>
-                </div>
-                <p className="home-text023">Support</p>
-                <button type="button" className="home-button02 button" onClick={nextScreen}>
+                {supports?<img  className="home-container191" src={require("./img/supportOn.png")} />:
+              <img  className="home-container191" src={require("./img/support.png")} />}
+              <p className="home-text108"  onMouseEnter={(e) => handleMouseEnterSupport(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveSupport(e.currentTarget)} >Support</p>
+                <button type="button" onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)} className="home-button02 button" onClick={nextScreen}>
                   Proceed
                 </button>
               </div>
@@ -1298,73 +1421,7 @@ offices, restaurants, schools, gyms.. you name it!
         </div>
         <h2 className='belowTxt'>{sliderValueOX} Rooms</h2> */}
     </div>
-      {/* <div className='box1'>
-        <Player
-          src="https://storage.googleapis.com/playground-bucket-v2.teleporthq.io/cad0702d-5435-40c7-a994-fccf199a4d48/b5a431d9-ac14-462f-88d5-ac01b7653339"
-          loop
-          speed="0.5"
-          autoplay
-          background="transparent"
-          className="imageReview"
-        ></Player>
-        <h2 className='belowTxt'>Bathrooms </h2>
-
-        <div style={{ display:'flex', flexDirection:'row', justifyContent:'space-between', alignItems:'center', width:'90%'}}>
-          <Slider
-            min={0}
-            max={8}
-            step={1}
-            className='slider'
-            value={sliderValue}
-            // onChange={handleSliderChangeLatest}
-          />
-          <p>{sliderValue}</p>
-        </div>
-      </div>
-      <div className='box1'>
-        <Player
-          src="https://storage.googleapis.com/playground-bucket-v2.teleporthq.io/cad0702d-5435-40c7-a994-fccf199a4d48/4b1e9a36-0217-44e4-adb3-f813aaffdc1f"
-          loop
-          speed="0.5"
-          autoplay
-          background="transparent"
-          className="imageReview"
-        ></Player>
-        <h2 className='belowTxt'>Kitchen</h2>
-        <div style={{ display:'flex', flexDirection:'row', justifyContent:'space-between', alignItems:'center', width:'90%'}}>
-          <Slider
-            min={0}
-            max={8}
-            step={1}
-            className='slider'
-            value={sliderValueK}
-            onChange={handleSliderChangeK}
-          />
-          <p>{sliderValueK}</p>
-        </div>
-      </div>
-      <div className='box1'>
-        <Player
-          src="https://storage.googleapis.com/playground-bucket-v2.teleporthq.io/cad0702d-5435-40c7-a994-fccf199a4d48/6e19e95d-b40a-4b7b-a81c-0e42c7cdd9fd"
-          loop
-          speed="0.5"
-          autoplay
-          background="transparent"
-          className="imageReview"
-        ></Player>
-        <h2 className='belowTxt'>Others</h2>
-        <div style={{ display:'flex', flexDirection:'row', justifyContent:'space-between', alignItems:'center', width:'90%'}}>
-          <Slider
-            min={0}
-            max={8}
-            step={1}
-            className='slider'
-            value={sliderValueO}
-            onChange={handleSliderChangeO}
-          />
-          <p>{sliderValueO}</p>
-        </div>
-      </div> */}
+      
       <div className='rightAssets'>
         <div className='holdX'>
           <div style={{ display:'flex', flexDirection:'row', justifyContent:'center', alignItems:'center', width:'90%'}}>
@@ -1431,192 +1488,216 @@ offices, restaurants, schools, gyms.. you name it!
             <p className="home-text035">Add Extra 
               {/* (Total <b>{totalSliders} / AB = {AB}</b> */}
               </p>
-            <div className="home-container059">
-              <div className="home-container060" onClick={()=>{(windows==0)?setWindows(30):setWindows(0)}}>
-                <div className='home-container061'>
-                {(windows==30) ? <img
-                    alt="image"
-                    
-                     src={require("./Extras/window_on.png")}
-                    className="home-image04"
-                  />:<img
-                  alt="image"
-                  
-                   src={require("./Extras/window_off.png")}
-                  className="home-image04"
-                />}
-                </div>
-                <p className={(windows==30) ? "home-text036 orange":"home-text036"}>Windows</p>
-              </div>
-              <div className="home-container062" onClick={()=>{(walls==0)?setwalls(40):setwalls(0)}}>
-                <div className='home-container061'>
-                {(walls==40) ? <img
-                    alt="image"
-                     src={require("./Extras/brick_on.png")}
-                    className="home-image05"
-                  />:<img
-                  alt="image"
-                   src={require("./Extras/brick_off.png")}
-                  className="home-image05"
-                />}
-                </div>
-                <p className={(walls==40) ? "home-text037 orange":"home-text037"}>Walls</p>
-              </div>
-              <div className="home-container064" onClick={()=>{(Cabinets==0)?setCabinets(30):setCabinets(0)}}>
-                <div className='home-container061'>
-                {(Cabinets==30) ? <img
-                    alt="image"
-                     src={require("./Extras/cabinets_on.png")}
-                    className="home-image06"
-                  />:<img
-                  alt="image"
-                   src={require("./Extras/cabinets_off.png")}
-                  className="home-image06"
-                />}
-                </div>
-                <p className={(Cabinets==30) ?"home-text038 orange":"home-text038"}>Cabinets</p>
-              </div>
-              <div className="home-container066" onClick={()=>{(organization==0)?setorganization(50):setorganization(0)}}>
-                <div className='home-container061'>
-                {(organization==50) ?<img
-                    alt="image"
-                     src={require("./Extras/organisation_on.png")}
-                    className="home-image07"
-                  />:<img
-                  alt="image"
-                   src={require("./Extras/organisation_off.png")}
-                  className="home-image07"
-                />}
-                </div>
-                <p className={(organization==50) ?"home-text039 orange":"home-text039"}>Organisation</p>
-              </div>
-              <div className="home-container068" onClick={()=>{(blind==0)?setblind(35):setblind(0)}}>
-                <div className='home-container061'>
-                {(blind==35) ?<img
-                    alt="image"
-                     src={require("./Extras/blind_on.png")}
-                    className="home-image08"
-                  />:<img
-                  alt="image"
-                   src={require("./Extras/blind_off.png")}
-                  className="home-image08"
-                />}
-                </div>
-                <p className={(blind==35) ?"home-text040 orange":"home-text040"}>Blinds</p>
-              </div>
-              <div className="home-container070" onClick={()=>{(stovetop==0)?setstovetop(35):setstovetop(0)}}>
-                <div className='home-container061'>
-                {(stovetop==35) ?<img
-                    alt="image"
-                     src={require("./Extras/stovetop_on.png")}
-                    className="home-image09"
-                  />:<img
-                  alt="image"
-                   src={require("./Extras/stovetop_off.png")}
-                  className="home-image09"
-                />}
-                </div>
-                <p className={(stovetop==35) ?"home-text041 orange":"home-text041"}>Stovetop/oven</p>
-              </div>
-            </div>
-            <div className="home-container059">
-              <div className="home-container072" onClick={()=>{(fridge==0)?setfridge(35):setfridge(0)}}>
-                <div className='home-container061'>
-                {(fridge==35) ?<img
-                    alt="image"
-                     src={require("./Extras/fridge_on.png")}
-                    className="home-image10"
-                  />:<img
-                  alt="image"
-                   src={require("./Extras/fridge_off.png")}
-                  className="home-image10"
-                />}
-                </div>
-                <p className={(fridge==35) ?"home-text042 orange":"home-text042"}>Fridge</p>
-              </div>
-              <div className="home-container074" onClick={()=>{(Dishwasher==0)?setDishwasher(25):setDishwasher(0)}}>
-                <div className='home-container061'>
-                {(Dishwasher==25) ? <img
-                    alt="image"
-                     src={require("./Extras/dishwasher_on.png")}
-                    className="home-image11"
-                  />:<img
-                  alt="image"
-                   src={require("./Extras/dishwasher_off.png")}
-                  className="home-image11"
-                />}
-                </div>
-                <p className={(Dishwasher==25) ?"home-text043 orange":"home-text043"}>Dishwasher</p>
-              </div>
-              <div className="home-container076" onClick={()=>{(garage==0)?setgarage(40):setgarage(0)}}>
-                <div className='home-container061'>
-                {(garage==40) ?<img
-                    alt="image"
-                     src={require("./Extras/garage_on.png")}
-                    className="home-image12"
-                  />:<img
-                  alt="image"
-                   src={require("./Extras/garage_off.png")}
-                  className="home-image12"
-                />}
-                </div>
-                <p className={(garage==40) ?"home-text044 orange":"home-text044"}>Garage</p>
-              </div>
-              <div className="home-container078" onClick={()=>{(microwave==0)?setmicrowave(5):setmicrowave(0)}}>
-                <div className='home-container061'>
-                {(microwave==5) ? <img
-                    alt="image"
-                     src={require("./Extras/microwave_on.png")}
-                    className="home-image13"
-                  />:<img
-                  alt="image"
-                   src={require("./Extras/microwave_off.png")}
-                  className="home-image13"
-                />}
-                </div>
-                <p className={(microwave==5)?"home-text045 orange":"home-text045"}>Microwave</p>
-              </div>
-              <div className="home-container080" onClick={()=>{(Laundry==0)?setLaundry(35):setLaundry(0)}}>
-                <div className='home-container061'>
-                {(Laundry==35) ?<img
-                    alt="image"
-                     src={require("./Extras/laundry_on.png")}
-                    className="home-image14"
-                  />:<img
-                  alt="image"
-                   src={require("./Extras/laundry_off.png")}
-                  className="home-image14"
-                />}
-                </div>
-                <p className={(Laundry==35) ?"home-text046 orange":"home-text046"}>Laundry</p>
-              </div>
-              <div className="home-container082" onClick={()=>{(tiles==0)?settiles(30):settiles(0)}}>
-                <div className='home-container061'>
-                {(tiles==30) ?<img
-                    alt="image"
-                     src={require("./Extras/Tiles_on.png")}
-                    className="home-image15"
-                  />:<img
-                  alt="image"
-                   src={require("./Extras/Tiles_off.png")}
-                  className="home-image15"
-                />}
-                </div>
-                <p className={(tiles==30)?"home-text047 orange":"home-text047"}>Tiles/Flooring</p>
-              </div>
-            </div>
+              <div className="home-container059">
+  <div className="home-container060" onClick={() => { (windows == 0) ? setWindows(30) : setWindows(0) }}>
+    <div className='home-container061'>
+      {(windows == 30) ? <img
+        alt="image"
+        src={require("./Extras/window_on.png")}
+        className="home-image04"
+      /> : <img
+        alt="image"
+        src={(hoverImageWindow == windowOff) ? windowOff : windowOn}
+        onMouseEnter={() => setHoverImageWindow(windowOn)}
+        onMouseLeave={() => setHoverImageWindow(windowOff)}
+        className="home-image04"
+      />}
+    </div>
+    <p className={(windows == 30) ? "home-text036 orange" : "home-text036"}>Windows</p>
+  </div>
+  <div className="home-container062" onClick={() => { (walls == 0) ? setwalls(40) : setwalls(0) }}>
+    <div className='home-container061'>
+      {(walls == 40) ? <img
+        alt="image"
+        src={require("./Extras/brick_on.png")}
+        className="home-image05"
+      /> : <img
+        alt="image"
+        src={(hoverImageBrick == brickOff) ? brickOff : brickOn}
+        onMouseEnter={() => setHoverImageBrick(brickOn)}
+        onMouseLeave={() => setHoverImageBrick(brickOff)}
+        className="home-image05"
+      />}
+    </div>
+    <p className={(walls == 40) ? "home-text037 orange" : "home-text037"}>Walls</p>
+  </div>
+  <div className="home-container064" onClick={() => { (Cabinets == 0) ? setCabinets(30) : setCabinets(0) }}>
+    <div className='home-container061'>
+      {(Cabinets == 30) ? <img
+        alt="image"
+        src={require("./Extras/cabinets_on.png")}
+        className="home-image06"
+      /> : <img
+        alt="image"
+        src={(hoverImageCabinets == cabinetsOff) ? cabinetsOff : cabinetsOn}
+        onMouseEnter={() => setHoverImageCabinets(cabinetsOn)}
+        onMouseLeave={() => setHoverImageCabinets(cabinetsOff)}
+        className="home-image06"
+      />}
+    </div>
+    <p className={(Cabinets == 30) ? "home-text038 orange" : "home-text038"}>Cabinets</p>
+  </div>
+  <div className="home-container066" onClick={() => { (organization == 0) ? setorganization(50) : setorganization(0) }}>
+    <div className='home-container061'>
+      {(organization == 50) ? <img
+        alt="image"
+        src={require("./Extras/organisation_on.png")}
+        className="home-image07"
+      /> : <img
+        alt="image"
+        src={(hoverImageOrganisation == organisationOff) ? organisationOff : organisationOn}
+        onMouseEnter={() => setHoverImageOrganisation(organisationOn)}
+        onMouseLeave={() => setHoverImageOrganisation(organisationOff)}
+        className="home-image07"
+      />}
+    </div>
+    <p className={(organization == 50) ? "home-text039 orange" : "home-text039"}>Organisation</p>
+  </div>
+  <div className="home-container068" onClick={() => { (blind == 0) ? setblind(35) : setblind(0) }}>
+    <div className='home-container061'>
+      {(blind == 35) ? <img
+        alt="image"
+        src={require("./Extras/blind_on.png")}
+        className="home-image08"
+      /> : <img
+        alt="image"
+        src={(hoverImageBlind == blindOff) ? blindOff : blindOn}
+        onMouseEnter={() => setHoverImageBlind(blindOn)}
+        onMouseLeave={() => setHoverImageBlind(blindOff)}
+        className="home-image08"
+      />}
+    </div>
+    <p className={(blind == 35) ? "home-text040 orange" : "home-text040"}>Blinds</p>
+  </div>
+  <div className="home-container070" onClick={() => { (stovetop == 0) ? setstovetop(35) : setstovetop(0) }}>
+    <div className='home-container061'>
+      {(stovetop == 35) ? <img
+        alt="image"
+        src={require("./Extras/stovetop_on.png")}
+        className="home-image09"
+      /> : <img
+        alt="image"
+        src={(hoverImageStovetop == stovetopOff) ? stovetopOff : stovetopOn}
+        onMouseEnter={() => setHoverImageStovetop(stovetopOn)}
+        onMouseLeave={() => setHoverImageStovetop(stovetopOff)}
+        className="home-image09"
+      />}
+    </div>
+    <p className={(stovetop == 35) ? "home-text041 orange" : "home-text041"}>Stovetop/oven</p>
+  </div>
+</div>
+<div className="home-container059">
+  <div className="home-container072" onClick={() => { (fridge == 0) ? setfridge(35) : setfridge(0) }}>
+    <div className='home-container061'>
+      {(fridge == 35) ? <img
+        alt="image"
+        src={require("./Extras/fridge_on.png")}
+        className="home-image10"
+      /> : <img
+        alt="image"
+        src={(hoverImageFridge == fridgeOff) ? fridgeOff : fridgeOn}
+        onMouseEnter={() => setHoverImageFridge(fridgeOn)}
+        onMouseLeave={() => setHoverImageFridge(fridgeOff)}
+        className="home-image10"
+      />}
+    </div>
+    <p className={(fridge == 35) ? "home-text042 orange" : "home-text042"}>Fridge</p>
+  </div>
+  <div className="home-container074" onClick={() => { (Dishwasher == 0) ? setDishwasher(25) : setDishwasher(0) }}>
+    <div className='home-container061'>
+      {(Dishwasher == 25) ? <img
+        alt="image"
+        src={require("./Extras/dishwasher_on.png")}
+        className="home-image11"
+      /> : <img
+        alt="image"
+        src={(hoverImageDishwasher == dishwasherOff) ? dishwasherOff : dishwasherOn}
+        onMouseEnter={() => setHoverImageDishwasher(dishwasherOn)}
+        onMouseLeave={() => setHoverImageDishwasher(dishwasherOff)}
+        className="home-image11"
+      />}
+    </div>
+    <p className={(Dishwasher == 25) ? "home-text043 orange" : "home-text043"}>Dishwasher</p>
+  </div>
+  <div className="home-container076" onClick={() => { (garage == 0) ? setgarage(40) : setgarage(0) }}>
+    <div className='home-container061'>
+      {(garage == 40) ? <img
+        alt="image"
+        src={require("./Extras/garage_on.png")}
+        className="home-image12"
+      /> : <img
+        alt="image"
+        src={(hoverImageGarage == garageOff) ? garageOff : garageOn}
+        onMouseEnter={() => setHoverImageGarage(garageOn)}
+        onMouseLeave={() => setHoverImageGarage(garageOff)}
+        className="home-image12"
+      />}
+    </div>
+    <p className={(garage == 40) ? "home-text044 orange" : "home-text044"}>Garage</p>
+  </div>
+  <div className="home-container078" onClick={() => { (microwave == 0) ? setmicrowave(5) : setmicrowave(0) }}>
+    <div className='home-container061'>
+      {(microwave == 5) ? <img
+        alt="image"
+        src={require("./Extras/microwave_on.png")}
+        className="home-image13"
+      /> : <img
+        alt="image"
+        src={(hoverImageMicrowave == microwaveOff) ? microwaveOff : microwaveOn}
+        onMouseEnter={() => setHoverImageMicrowave(microwaveOn)}
+        onMouseLeave={() => setHoverImageMicrowave(microwaveOff)}
+        className="home-image13"
+      />}
+    </div>
+    <p className={(microwave == 5) ? "home-text045 orange" : "home-text045"}>Microwave</p>
+  </div>
+  <div className="home-container080" onClick={() => { (Laundry == 0) ? setLaundry(35) : setLaundry(0) }}>
+    <div className='home-container061'>
+      {(Laundry == 35) ? <img
+        alt="image"
+        src={require("./Extras/laundry_on.png")}
+        className="home-image14"
+      /> : <img
+        alt="image"
+        src={(hoverImageLaundry == laundryOff) ? laundryOff : laundryOn}
+        onMouseEnter={() => setHoverImageLaundry(laundryOn)}
+        onMouseLeave={() => setHoverImageLaundry(laundryOff)}
+        className="home-image14"
+      />}
+    </div>
+    <p className={(Laundry == 35) ? "home-text046 orange" : "home-text046"}>Laundry</p>
+  </div>
+  <div className="home-container082" onClick={() => { (tiles == 0) ? settiles(20) : settiles(0) }}>
+    <div className='home-container061'>
+      {(tiles == 20) ? <img
+        alt="image"
+        src={require("./Extras/Tiles_on.png")}
+        className="home-image15"
+      /> : <img
+        alt="image"
+        src={(hoverImageTiles == tilesOff) ? tilesOff : tilesOn}
+        onMouseEnter={() => setHoverImageTiles(tilesOn)}
+        onMouseLeave={() => setHoverImageTiles(tilesOff)}
+        className="home-image15"
+      />}
+    </div>
+    <p className={(tiles == 20) ? "home-text047 orange" : "home-text047"}>Tiles</p>
+  </div>
+</div>
+
             <div className="home-container084">
-              <div className="home-container085">
-                <p className="home-text048">?</p>
-              </div>
-              <p className="home-text049">Support</p>
-              <button type="button" className="home-button03 button" onClick={()=>setTabs(1)}>
+            {supports?<img  className="home-container191" src={require("./img/supportOn.png")} />:
+              <img  className="home-container191" src={require("./img/support.png")} />}
+              <p className="home-text108"  onMouseEnter={(e) => handleMouseEnterSupport(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveSupport(e.currentTarget)} >Support</p>
+              <button type="button"   onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}
+                  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)} className="home-button03 button" onClick={()=>setTabs(1)}>
                 <span>
                   <span>Go </span>
                   <span>back</span>
                 </span>
               </button>
-              <button type="button" className="home-button04 button" onClick={()=>setTabs(3)}>
+              <button  onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}
+                  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)} type="button" className="home-button04 button" onClick={()=>setTabs(3)}>
                 Proceed
               </button>
             </div>
@@ -1641,10 +1722,10 @@ offices, restaurants, schools, gyms.. you name it!
                 <option value="6to8">6:00 PM - 8:00 PM</option>
               </select> */}
               <div className="home-container169">
-                <button type="button" className={(CleanType)?"home-button05 button":"home-button05 button invisible"} onClick={()=>{setCleanType(true); setIntervalValue(15)}}>
+                <button type="button" className={(CleanType)?"home-button05 button":"home-button05 button invisible"} onClick={()=>{setCleanType(true); setIntervalValue(15)}} onMouseEnter={(e) => handleMouseEnterClean(e.currentTarget)} onMouseLeave={(e) => handleMouseLeaveClean(e.currentTarget)}>
                   <img src={require((CleanType)?"./img/regularOn.png":"./img/regularOff.png")} className='imgshower'/>
                 </button>
-                <button type="button" className={(CleanType)?"home-button06 button":"home-button06 button black"} onClick={()=>{setCleanType(false); setIntervalValue(0)}}>
+                <button type="button" className={(CleanType)?"home-button06 button":"home-button06 button black"} onClick={()=>{setCleanType(false); setIntervalValue(0)}} onMouseEnter={(e) => handleMouseEnterClean(e.currentTarget)} onMouseLeave={(e) => handleMouseLeaveClean(e.currentTarget)}>
                   <img src={require((CleanType)?"./img/OneTimeClean_off.png":"./img/OneTimeClean_on.png")} className='imgshowerx'/>
                 </button>
                 <div style={{height:"40px"}}>
@@ -1661,17 +1742,6 @@ offices, restaurants, schools, gyms.. you name it!
                 </div>
                 
               </div>
-              {/* <div className="home-container170"> */}
-                {/* <Player
-                  src="https://storage.googleapis.com/playground-bucket-v2.teleporthq.io/cad0702d-5435-40c7-a994-fccf199a4d48/62e7e09f-99f8-4c26-a090-6057fb7c4fee"
-                  loop
-                  speed="1"
-                  autoplay
-                  background="transparent"
-                  className="home-lottie-node11"
-                ></Player> home-container170,home-container171, home-container172,  */}
-                {/* <span className="home-text095">Repeat</span>
-              </div> */}
               
 
               <div className='VisibxA' style={{width:'100%'}}>
@@ -1687,24 +1757,42 @@ offices, restaurants, schools, gyms.. you name it!
               {/* handleSelectChange */}
 
                 <div className='typeXc'>
-                  <h4 
-                    className={intervalValue === 15 ? 'TypeH' : 'TypeHx'}
+                {intervalValue === 15 ?<h4 
+                    className='TypeH'
                     onClick={() => handleSelectChange('weekly')}
+                    
                   >
                     Week
-                  </h4>
-                  <h4 
+                  </h4>:<h4 
+                    className='TypeHx'
+                    onClick={() => handleSelectChange('weekly')}
+                    onMouseEnter={(e) => handleMouseEnterPaint(e.currentTarget)} onMouseLeave={(e) => handleMouseLeavePaint(e.currentTarget)} onBlur={(e) => handleMouseLeavePaint(e.currentTarget)}>
+                    Week
+                  </h4>}
+                  {intervalValue === 10 ?<h4 
                     className={intervalValue === 10 ? 'TypeH' : 'TypeHx'}
                     onClick={() => handleSelectChange('fortnightly')}
                   >
                     Fortnight
-                  </h4>
-                  <h4 
+                  </h4>:<h4 
+                    className={intervalValue === 10 ? 'TypeH' : 'TypeHx'}
+                    onClick={() => handleSelectChange('fortnightly')}
+                    onMouseEnter={(e) => handleMouseEnterPaint(e.currentTarget)} onMouseLeave={(e) => handleMouseLeavePaint(e.currentTarget)} onBlur={(e) => handleMouseLeavePaint(e.currentTarget)}
+                  >
+                    Fortnight
+                  </h4>}
+                  {intervalValue === 5 ?<h4 
                     className={intervalValue === 5 ? 'TypeH' : 'TypeHx'}
                     onClick={() => handleSelectChange('monthly')}
                   >
                     Month
-                  </h4>
+                  </h4>:<h4 
+                    className={intervalValue === 5 ? 'TypeH' : 'TypeHx'}
+                    onClick={() => handleSelectChange('monthly')}
+                    onMouseEnter={(e) => handleMouseEnterPaint(e.currentTarget)} onMouseLeave={(e) => handleMouseLeavePaint(e.currentTarget)} onBlur={(e) => handleMouseLeavePaint(e.currentTarget)}
+                  >
+                    Month
+                  </h4>}
                 </div>
                 <div className="home-container171">
                   <div className='sideSelect'>
@@ -1716,41 +1804,49 @@ offices, restaurants, schools, gyms.. you name it!
                 </div>
                 <div className="home-container172">
                   <div className="home-container173">
-                    <div className="home-container174" onClick={()=>{daySelecter1(1)}}>
-                      <div className={(daySelect1==1)?"home-container175 selectedDay":"home-container175"}>
-                        <span className={(daySelect1==1)?"whited":"home-text099"}>Mon</span>
-                      </div>
+                  <div className="home-container174" onClick={() => { daySelecter1(1) }}>
+  <div className={(daySelect1 == 1) ? "home-container175 selectedDay" : "home-container175"}>
+    {(daySelect1 == 1) ? <span style={{ color: 'white',fontSize: '14px',fontStyle: 'normal',textAlign: 'center',fontWeight: '500' }}>Mon</span> : 
+      <span className="home-text099" onMouseEnter={(e) => handleMouseEnterPaint(e.currentTarget)} onMouseLeave={(e) => handleMouseLeavePaint(e.currentTarget)}>Mon</span>}
+  </div>
+                  </div>
+                  <div className="home-container176" onClick={() => { daySelecter2(1) }}>
+                    <div className={(daySelect2 == 1) ? "home-container175 selectedDay" : "home-container175"}>
+                      {(daySelect2 == 1) ? <span style={{ color: 'white',fontSize: '14px',fontStyle: 'normal',textAlign: 'center',fontWeight: '500' }}>Tue</span> : 
+                        <span className="home-text099" onMouseEnter={(e) => handleMouseEnterPaint(e.currentTarget)} onMouseLeave={(e) => handleMouseLeavePaint(e.currentTarget)}>Tue</span>}
                     </div>
-                    <div className="home-container176" onClick={()=>{daySelecter2(2)}}>
-                      <div className={(daySelect2==2)?"home-container175 selectedDay":"home-container175"}>
-                        <span className={(daySelect2==2)?"whited":"home-text099"}>Tue</span>
-                      </div>
+                  </div>
+                  <div className="home-container178" onClick={() => { daySelecter3(1) }}>
+                    <div className={(daySelect3 == 1) ? "home-container175 selectedDay" : "home-container175"}>
+                      {(daySelect3 == 1) ? <span style={{ color: 'white',fontSize: '14px',fontStyle: 'normal',textAlign: 'center',fontWeight: '500' }}>Wed</span> : 
+                        <span className="home-text099" onMouseEnter={(e) => handleMouseEnterPaint(e.currentTarget)} onMouseLeave={(e) => handleMouseLeavePaint(e.currentTarget)}>Wed</span>}
                     </div>
-                    <div className="home-container178" onClick={()=>{daySelecter3(3)}}>
-                      <div className={(daySelect3==3)?"home-container175 selectedDay":"home-container175"}>
-                        <span className={(daySelect3==3)?"whited":"home-text099"}>Wed</span>
-                      </div>
+                  </div>
+                  <div className="home-container180" onClick={() => { daySelecter4(1) }}>
+                    <div className={(daySelect4 == 1) ? "home-container175 selectedDay" : "home-container175"}>
+                      {(daySelect4 == 1) ? <span style={{ color: 'white',fontSize: '14px',fontStyle: 'normal',textAlign: 'center',fontWeight: '500' }}>Thur</span> : 
+                        <span className="home-text099" onMouseEnter={(e) => handleMouseEnterPaint(e.currentTarget)} onMouseLeave={(e) => handleMouseLeavePaint(e.currentTarget)}>Thur</span>}
                     </div>
-                    <div className="home-container180" onClick={()=>{daySelecter4(4)}}>
-                      <div className={(daySelect4==4)?"home-container175 selectedDay":"home-container175"}>
-                        <span className={(daySelect4==4)?"whited":"home-text099"}>Thur</span>
-                      </div>
+                  </div>
+                  <div className="home-container182" onClick={() => { daySelecter5(1) }}>
+                    <div className={(daySelect5 == 1) ? "home-container175 selectedDay" : "home-container175"}>
+                      {(daySelect5 == 1) ? <span style={{ color: 'white',fontSize: '14px',fontStyle: 'normal',textAlign: 'center',fontWeight: '500' }}>Fri</span> : 
+                        <span className="home-text099" onMouseEnter={(e) => handleMouseEnterPaint(e.currentTarget)} onMouseLeave={(e) => handleMouseLeavePaint(e.currentTarget)}>Fri</span>}
                     </div>
-                    <div className="home-container182" onClick={()=>{daySelecter5(5)}}>
-                      <div className={(daySelect5==5)?"home-container175 selectedDay":"home-container175"}>
-                        <span className={(daySelect5==5)?"whited":"home-text099"}>Fri</span>
-                      </div>
+                  </div>
+                  <div className="home-container184" onClick={() => { daySelecter6(1) }}>
+                    <div className={(daySelect6 == 1) ? "home-container175 selectedDay" : "home-container175"}>
+                      {(daySelect6 == 1) ? <span style={{ color: 'white',fontSize: '14px',fontStyle: 'normal',textAlign: 'center',fontWeight: '500' }}>Sat</span> : 
+                        <span className="home-text099" onMouseEnter={(e) => handleMouseEnterPaint(e.currentTarget)} onMouseLeave={(e) => handleMouseLeavePaint(e.currentTarget)}>Sat</span>}
                     </div>
-                    <div className="home-container184" onClick={()=>{daySelecter6(6)}}>
-                      <div className={(daySelect6==6)?"home-container175 selectedDay":"home-container175"}>
-                        <span className={(daySelect6==6)?"whited":"home-text099"}>Sat</span>
-                      </div>
+                  </div>
+                  <div className="home-container186" onClick={() => { daySelecter7(1) }}>
+                    <div className={(daySelect7 == 1) ? "home-container175 selectedDay" : "home-container175"}>
+                      {(daySelect7 == 1) ? <span  style={{ color: 'white',fontSize: '14px',fontStyle: 'normal',textAlign: 'center',fontWeight: '500' }}>Sun</span> : 
+                        <span className="home-text099" onMouseEnter={(e) => handleMouseEnterPaint(e.currentTarget)} onMouseLeave={(e) => handleMouseLeavePaint(e.currentTarget)}>Sun</span>}
                     </div>
-                    <div className="home-container186" onClick={()=>{daySelecter7(7)}}>
-                      <div className={(daySelect7==7)?"home-container175 selectedDay":"home-container175"}>
-                        <span className={(daySelect7==7)?"whited":"home-text099"}>Sun</span>
-                      </div>
-                    </div>
+                  </div>
+
                     <div className="home-container188">
                       <div className="home-container189">
                         <span className="home-text106">(optional)</span>
@@ -1761,17 +1857,16 @@ offices, restaurants, schools, gyms.. you name it!
               </div>
             </div>
             <div className="home-container190">
-              <div className="home-container191">
-                <p className="home-text107">?</p>
-              </div>
-              <p className="home-text108">Support</p>
-              <button type="button" className="home-button03 button" onClick={()=>setTabs(2)}>
+              {supports?<img  className="home-container191" src={require("./img/supportOn.png")} />:
+              <img  className="home-container191" src={require("./img/support.png")} />}
+              <p className="home-text108"  onMouseEnter={(e) => handleMouseEnterSupport(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveSupport(e.currentTarget)} >Support</p>
+              <button type="button"  onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)} className="home-button03 button" onClick={()=>setTabs(2)}>
                 <span>
                   <span>Go </span>
                   <span>back</span>
                 </span>
               </button>
-              <button type="button" className="home-button04 button" onClick={()=>setTabs(4)}>
+              <button type="button"  onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)}  className="home-button04 button" onClick={()=>setTabs(4)}>
                 Proceed
               </button>
             </div>
@@ -1784,50 +1879,7 @@ offices, restaurants, schools, gyms.. you name it!
               </span>
               
             </p>
-            {/* <div className="home-container193">
-              <div className="home-container194">
-                <button type="button" className="home-button09 button">
-                  <img
-                    alt="image"
-                     src={require("./img/google-200h.png")}
-                    className="home-image18"
-                  />
-                  <span className="home-text116">Continue With Google</span>
-                </button>
-              </div>
-            </div>
-            <div className="home-container195">
-              <div className="home-container196">
-                <button type="button" className="home-button10 button">
-                  <img
-                    alt="image"
-                     src={require("./img/fb-200h.png")}
-                    className="home-image19"
-                  />
-                  <span className="home-text117">Continue With Facebook</span>
-                </button>
-              </div>
-            </div> */}
-            {/* <div className="home-container197">
-              <div className="home-container198">
-                <p className="home-text118">First Name</p>
-                <input type="text" className="home-textinput input" />
-              </div>
-              <div className="home-container199">
-                <p className="home-text119">Last Name</p>
-                <input type="text" className="home-textinput01 input" />
-              </div>
-            </div>
-            <div className="home-container200">
-              <div className="home-container201">
-                <p className="home-text120">Email</p>
-                <input type="email" className="home-textinput02 input" />
-              </div>
-              <div className="home-container202">
-                <p className="home-text121">Phone Number</p>
-                <input type="tel" className="home-textinput03 input" />
-              </div>
-            </div> */}
+            
             <div className="home-container203">
               <div className="home-container204">
                 <p className="home-text122">How will we get inside your home?</p>
@@ -1835,7 +1887,7 @@ offices, restaurants, schools, gyms.. you name it!
                   <option>I will be home</option>
                   <option>I will leave a key</option>
                   <option>I will provide a lockbox/access code</option>
-                  <option>Other (please specify)</option>
+                  <option style={{color:'#B3B3B3'}}>Other (please specify)</option>
                 </select>
               </div>
             </div>
@@ -1853,7 +1905,7 @@ offices, restaurants, schools, gyms.. you name it!
                   <option>I will provide parking on site</option>
                   <option>There is free parking nearby/on the street</option>
                   <option>I will provide a lockbox/access code</option>
-                  <option>Other (please specify)</option>
+                  <option style={{color:'#B3B3B3'}}>Other (please specify)</option>
                 </select>
               </div>
             </div>
@@ -1869,7 +1921,7 @@ offices, restaurants, schools, gyms.. you name it!
                 </p>
                 <select type="text" className="home-textinput05 input" >
                   <option>Dog/Cat</option>
-                  <option>Other </option>
+                  <option style={{color:'#B3B3B3'}}>Other </option>
                 </select>
               </div>
             </div>
@@ -1889,17 +1941,16 @@ offices, restaurants, schools, gyms.. you name it!
             </div>
             
             <div className="home-container207">
-              <div className="home-container208">
-                <p className="home-text127">?</p>
-              </div>
-              <p className="home-text128">Support</p>
-              <button type="button" className="home-button03 button" onClick={()=>setTabs(3)}>
+            {supports?<img  className="home-container191" src={require("./img/supportOn.png")} />:
+              <img  className="home-container191" src={require("./img/support.png")} />}
+              <p className="home-text108"  onMouseEnter={(e) => handleMouseEnterSupport(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveSupport(e.currentTarget)} >Support</p>
+              <button type="button"  onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)} className="home-button03 button" onClick={()=>setTabs(3)}>
                 <span>
                   <span>Go </span>
                   <span>back</span>
                 </span>
               </button>
-              <button type="button" className="home-button04 button" onClick={()=>setTabs(5)}>
+              <button type="button"  onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)}className="home-button04 button" onClick={()=>setTabs(5)}>
                 Proceed
               </button>
             </div>
@@ -1925,18 +1976,6 @@ offices, restaurants, schools, gyms.. you name it!
                 </button>
               </div>
             </div>
-            {/* <div className="home-container195">
-              <div className="home-container196">
-                <button type="button" className="home-button10 button">
-                  <img
-                    alt="image"
-                     src={require("./img/fb-200h.png")}
-                    className="home-image19"
-                  />
-                  <span className="home-text117">Continue With Facebook</span>
-                </button>
-              </div>
-            </div> */}
             <div className="home-container197">
               <div className="home-container198">
                 <p className="home-text118">First Name</p>
@@ -2001,17 +2040,16 @@ offices, restaurants, schools, gyms.. you name it!
               </p>
             </div>
             <div className="home-container207">
-              <div className="home-container208">
-                <p className="home-text127">?</p>
-              </div>
-              <p className="home-text128">Support</p>
-              <button type="button" className="home-button03 button" onClick={()=>setTabs(4)}>
+            {supports?<img  className="home-container191" src={require("./img/supportOn.png")} />:
+              <img  className="home-container191" src={require("./img/support.png")} />}
+              <p className="home-text108"  onMouseEnter={(e) => handleMouseEnterSupport(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveSupport(e.currentTarget)} >Support</p>
+              <button  onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)} type="button" className="home-button03 button" onClick={()=>setTabs(4)}>
                 <span>
                   <span>Go </span>
                   <span>back</span>
                 </span>
               </button>
-              <button type="button" className="home-button04 button" onClick={()=>setSum(true)}>
+              <button  onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)} type="button" className="home-button04 button" onClick={()=>setSum(true)}>
                 Proceed
               </button>
             </div>
@@ -2076,12 +2114,6 @@ offices, restaurants, schools, gyms.. you name it!
                     <option value="9-12">9-12</option>
                     <option value="12+">12+</option>
 
-                    {/* <option value="" disabled selected>Select Environment</option>
-                    <option value="Office">Office</option>
-                    <option value="Gym">Gym</option>
-                    <option value="Restaurant">Restaurant</option>
-                    <option value="School">School</option>
-                    <option value="Home">Home</option> */}
                   </select>
                   </div>
                   <div className='s2x'>
@@ -2143,13 +2175,13 @@ offices, restaurants, schools, gyms.. you name it!
                 <p className="home-text127">?</p>
               </div>
               <p className="home-text128">Support</p>
-              <button type="button" className="home-button03 button" onClick={()=>setTabx(1)}>
+              <button  onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)} type="button" className="home-button03 button" onClick={()=>setTabx(1)}>
                 <span>
                   <span>Go </span>
                   <span>back</span>
                 </span>
               </button>
-              <button type="button" className="home-button04 button" onClick={()=>setSum(true)}>
+              <button onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)}  type="button" className="home-button04 button" onClick={()=>setSum(true)}>
                 Proceed
               </button>
             </div>
@@ -2242,8 +2274,8 @@ offices, restaurants, schools, gyms.. you name it!
                 <span className="home-text152">(optional)</span>
               </div>
               <div className='buttonHost'>
-                <input type="text" className="home-textinput06 input" ref={inputTextRef}/>
-                <input type="button" className="home-textinput06x input" value="Apply" onClick={handleApplyClick} />
+                <input type="text" className="home-textinput06 input" ref={inputTextRef}  onMouseEnter={(e) => handleMouseEnterAXY(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAXY(e.currentTarget)}/>
+                <input type="button" className="home-textinput06x input" value="Apply" onClick={handleApplyClick}  onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)}/>
               </div>
               
             </div>
@@ -2265,7 +2297,7 @@ offices, restaurants, schools, gyms.. you name it!
                 <span className="home-text160">${discountNew}</span>
               </div>
             </div>
-            <button type="button" className="home-button13 button">
+            <button onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)} type="button" className="home-button13 button">
               Book Now
             </button>
           </div>

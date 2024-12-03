@@ -768,7 +768,8 @@
 .cleanerspass-container51 {
   flex: 0 0 auto;
   width: 34%;
-  height: auto;
+  height: 430px;
+  overflow: hidden;
   display: flex;
   margin-top: var(--dl-space-space-twounits);
   align-items: flex-start;
@@ -1070,6 +1071,7 @@
   height: 44.23px;
   margin-top: var(--dl-space-space-halfunit);
   border-color: #515151;
+  z-index: 20;
   border-width: 1px;
   padding-left: var(--dl-space-space-unit);
   border-radius: 5px;

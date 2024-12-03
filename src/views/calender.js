@@ -128,14 +128,31 @@ const Calendar = ({ onTimeSlotSelected, setSelectedDatex }) => {
   const renderDay = (day) => {
     const isCurrentDay = highlightCurrentDay(day);
     const isPast = isPastDay(day);
-    const isSelected = selectedDate && selectedDate.getDate() === day && 
-                        selectedDate.getMonth() === currentMonth.getMonth() && 
-                        selectedDate.getFullYear() === currentMonth.getFullYear();
+    const isSelected = selectedDate && 
+                       selectedDate.getDate() === day && 
+                       selectedDate.getMonth() === currentMonth.getMonth() && 
+                       selectedDate.getFullYear() === currentMonth.getFullYear();
   
     const dayClass = isCurrentDay ? 'home-container110XSelect' : 
                     isSelected ? 'home-container110XSelectx' : 
                     'home-container110X';
     const textClass = isCurrentDay || isSelected ? 'home-textSelect' : 'home-text067X';
+  
+    const handleMouseEnter = (button) => {
+      gsap.to(button, {
+        background: '#000000',
+        duration: 0.3,
+        ease: 'power2.out',
+      });
+    };
+  
+    const handleMouseLeave = (button) => {
+      gsap.to(button, {
+        background: 'none',
+        duration: 0.3,
+        ease: 'power2.out',
+      });
+    };
   
     return (
       <div
@@ -143,21 +160,28 @@ const Calendar = ({ onTimeSlotSelected, setSelectedDatex }) => {
         onClick={() => handleDateClick(day)}
         style={{ cursor: isPast ? 'not-allowed' : 'pointer' }}
       >
-        <div className={dayClass}>
+        <div
+          className={dayClass}
+          {...(!isPast && !isCurrentDay && {
+            onMouseEnter: (e) => handleMouseEnter(e.currentTarget),
+            onMouseLeave: (e) => handleMouseLeave(e.currentTarget),
+          })}
+        >
           <span className={textClass}>{day}</span>
         </div>
       </div>
     );
   };
   
+  
 
   const timeSlots = [
-    { id: '8to10', period: '8:00am - 10:00am' },
-    { id: '10to12', period: '10:00am - 12:00pm' },
-    { id: '12to2', period: '12:00pm - 2:00pm' },
-    { id: '2to4', period: '2:00pm - 4:00pm' },
-    { id: '4to6', period: '4:00pm - 6:00pm' },
-    { id: '6to8', period: '6:00pm - 8:00pm' },
+    { id: '8to10', period: '8:00am - 10:00am', active:true },
+    { id: '10to12', period: '10:00am - 12:00pm', active:true  },
+    { id: '12to2', period: '12:00pm - 2:00pm', active:false  },
+    { id: '2to4', period: '2:00pm - 4:00pm', active:false },
+    { id: '4to6', period: '4:00pm - 6:00pm', active:false },
+    { id: '6to8', period: '6:00pm - 8:00pm', active:false },
   ];
   
   const handleTimeSlotClick = (slotId) => {
@@ -178,18 +202,42 @@ const Calendar = ({ onTimeSlotSelected, setSelectedDatex }) => {
   
   const renderTimeSlots = () => {
     if (!selectedDate) return null;
-  
+    
+    const handleMouseEnterPaint = (button) => {
+      gsap.to(button, {
+        color:'#FF914D',
+        duration: 0.3,
+        ease: 'power2.out',
+      });
+    };
+    
+    const handleMouseLeavePaint = (button) => {
+      gsap.to(button, {
+        color:'rgb(157, 157, 157)',
+        duration: 0.3,
+        ease: 'power2.out',
+      });
+    };
     return (
       <div className="time-slots-container">
         {/* <h4 className='headSec'>Available Time Slots for {selectedDate.toDateString()}</h4> */}
-        {timeSlots.map(({ id, period }, index) => (
-          <button
+        {timeSlots.map(({ id, period, active }, index) => (
+          <>{active?<button
             key={id}
             className={`time-slot-button ${index === 1 ? 'line-button' : ''} ${selectedTimeSlot === id ? 'selected' : ''}`}
             onClick={index === 1 ? null : () => handleTimeSlotClick(id)}
           >
             {period}
-          </button>
+          </button>:<button
+            key={id}
+            onMouseEnter={(e) => handleMouseEnterPaint(e.currentTarget)} onMouseLeave={(e) => handleMouseLeavePaint(e.currentTarget)}
+            className={`time-slot-button ${index === 1 ? 'line-button' : ''} ${selectedTimeSlot === id ? 'selected' : ''}`}
+            onClick={index === 1 ? null : () => handleTimeSlotClick(id)}
+
+          >
+            {period}
+          </button>}
+          </>
         ))}
       </div>
     );
