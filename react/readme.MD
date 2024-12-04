@@ -1,3 +1,7 @@
 First thing is navigate to this directory and 
 
-run npm install
+>>> cd react 
+
+>>> run npm install
+
+>>>> npm start
