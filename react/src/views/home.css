@@ -3486,6 +3486,13 @@
   border-width: 2px;
   align-self: flex-start;
 }
+.home-textinput02Login {
+  width: 100%;
+  height: 40px;
+  border-color: #A8A8A8;
+  border-width: 2px;
+  align-self: flex-start;
+}
 .home-container202 {
   flex: 0 0 auto;
   width: 50%;
@@ -3536,6 +3543,15 @@
   text-align: left;
   line-height: 1.7;
 }
+.home-text122x {
+  color: #1F3042;
+  font-weight: 500;
+  width: 100%;
+  font-size: 14px;
+  margin-top: 3px;
+  text-align: left;
+  line-height: 1.7;
+}
 .home-textinput04 {
   width: 100%;
   height: 40px;
@@ -3543,6 +3559,15 @@
   border-width: 2px;
   color:black;
   margin-bottom: 25px;
+  align-self: flex-start;
+}
+.home-textinput04x {
+  width: 100%;
+  height: 40px;
+  border-color: #A8A8A8;
+  border-width: 2px;
+  color:black;
+  margin-bottom: 10px;
   align-self: flex-start;
 }
 .home-container205 {

@@ -6,7 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './FullScreenVideo.css'; 
 import { useHistory } from 'react-router-dom';
 import Slider from 'rc-slider';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import customCursorImage from './fb-200h.png'; // Replace with the path to your custom cursor image
 import 'rc-slider/assets/index.css';
 import gsap from 'gsap';
@@ -48,6 +48,7 @@ import Select from 'react-select';
 import { SpriteAnimator } from 'react-sprite-animator'
 import Mobilex from './mobile';
 import CalenSchedule from './calendSchedule';
+import Login from './login';
 
 
 let defValue = 1;
@@ -1153,6 +1154,7 @@ const handleSelectChange = (selectedValue) => {
     setSupports(false);
   };
 
+  const [isLogin, setisLogin] = useState(false);
   const [fName, setFName] = useState('');
   const [lName, setLName] = useState('');
   const [email, setEmail] = useState('');
@@ -1163,8 +1165,11 @@ const handleSelectChange = (selectedValue) => {
 
   const handleSubmit =(e)=>{
     e.preventDefault();
-    axios.post('',{fName, lName, email, phone, password, address, referral})
-    .then(result=>console.log(result))
+    axios.post('http://localhost:4000/register',{fName, lName, email, phone, password, address, referral})
+    .then(result=>{
+      console.log(result);
+      OpenLogin();
+    })
     .catch(error=>console.log(error));
     setSum(true);
   }
@@ -1177,6 +1182,18 @@ const handleSelectChange = (selectedValue) => {
     }
     fetchData()
   },[]);
+
+  const CloseLogin = ()=>{
+    setisLogin(false);
+  }
+
+  const OpenLogin = () =>{
+    setisLogin(true);
+  }
+
+  const navigateS = () =>{
+    navigate('/dashboard')
+  }
 return (
     <div className="home-container">
       <Helmet>
@@ -1207,6 +1224,12 @@ return (
       </div>
     
       {/* End Video Section  */}
+
+      {/* Login Start  */}
+
+      {(isLogin==true)?<Login CloseLogin={CloseLogin} navigateS={navigateS} />:null}
+
+      {/* End Login  */}
       <div className="home-container001" ref={MobileMenu} style={{}}>
         <div className="home-container002">
           <img alt="image" src={require("./img/logowhite-200h.png")} className="home-image" />
@@ -1271,9 +1294,9 @@ return (
         </div>
 
           <div className="home-container017">
-            <Link to="Dashboard" className="home-container013"  onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+            <span to="Dashboard" className="home-container013" onClick={OpenLogin} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
               <span className="home-text010">Login</span>
-            </Link>
+            </span>
             <span className="home-text011" onMouseEnter={handleMouseEnterX} onMouseLeave={handleMouseLeaveX}>Get Started Now</span>
           </div>
 
@@ -2001,7 +2024,7 @@ offices, restaurants, schools, gyms.. you name it!
                   />
                   <span className="home-text116">Continue With Google</span>
                 </button>
-                <p>{fName} / {lName} / {email} / {phone} / {address} /{referral}</p>
+                {/* <p>{fName} / {lName} / {email} / {phone} / {address} /{referral}</p> */}
               </div>
             </div>
             
@@ -2028,14 +2051,14 @@ offices, restaurants, schools, gyms.. you name it!
               </div>
               <div className="home-container203">
                 <div className="home-container204">
-                  <p className="home-text122">Password</p>
-                  <input type="text" className="home-textinput04 input"  onChange={(e)=>setPassword(e.target.value)}/>
+                  <p className="home-text122x">Password</p>
+                  <input type="password" className="home-textinput04x input"  onChange={(e)=>setPassword(e.target.value)}/>
                 </div>
               </div>
               <div className="home-container203">
                 <div className="home-container204">
                   <p className="home-text122">Address</p>
-                  <input type="text" className="home-textinput04 input"  onChange={(e)=>setAddress(e.target.value)}/>
+                  <input type="text" className="home-textinput04x input"  onChange={(e)=>setAddress(e.target.value)}/>
                 </div>
               </div>
               <div className="home-container205">
