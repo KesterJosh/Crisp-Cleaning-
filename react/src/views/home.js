@@ -1191,9 +1191,9 @@ const handleSelectChange = (selectedValue) => {
     setisLogin(true);
   }
 
-  const navigateS = () =>{
-    navigate('/dashboard')
-  }
+  const navigateS = () => {
+    window.location.href = '/#/dashboard'; // Full page reload
+  };
 return (
     <div className="home-container">
       <Helmet>

@@ -42,7 +42,7 @@ const Login = ({CloseLogin, navigateS}) => {
     .then(result=>{
         console.log(result)
         if(result.data==="Success"){
-            navigateS
+            navigateS()
         }else{
             alert(result.data)
         }
