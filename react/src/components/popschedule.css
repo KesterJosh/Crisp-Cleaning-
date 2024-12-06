@@ -102,6 +102,25 @@
   padding-bottom: 0px;
   background-color: #FF0000;
 }
+.popschedule-button2X {
+  fill: var(--dl-color-gray-white);
+  color: var(--dl-color-gray-white);
+  height: 44px;
+  width: 100%;
+  /* margin-left: var(--dl-space-space-oneandhalfunits); */
+  padding-top: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-width: 0px;
+  padding-left: var(--dl-space-space-twounits);
+  border-radius: 5px;
+  padding-right: var(--dl-space-space-twounits);
+  padding-bottom: 0px;
+  background-color: #FF914D;
+}
 .popschedule-text5 {
   font-size: 12px;
 }

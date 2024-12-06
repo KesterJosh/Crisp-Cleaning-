@@ -68,7 +68,7 @@ const Login = ({CloseLogin, navigateS}) => {
                 <input type="email" className="home-textinput02Login input"  onChange={(e)=>setEmail(e.target.value)}/>
                 <p className="home-text122x">Password</p>
                 <input type="password" className="home-textinput04x input"  onChange={(e)=>setPassword(e.target.value)}/>
-                <button type="submit" className="popschedule-button2 button"  onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
+                <button type="submit" className="popschedule-button2X button"  onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
                     onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}>
                     <span className="popschedule-text5">Login</span>
                 </button>

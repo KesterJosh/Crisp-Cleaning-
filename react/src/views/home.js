@@ -1155,8 +1155,8 @@ const handleSelectChange = (selectedValue) => {
   };
 
   const [isLogin, setisLogin] = useState(false);
-  const [fName, setFName] = useState('');
-  const [lName, setLName] = useState('');
+  const [first_name, setFName] = useState('');
+  const [last_name, setLName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -1165,12 +1165,24 @@ const handleSelectChange = (selectedValue) => {
 
   const handleSubmit =(e)=>{
     e.preventDefault();
-    axios.post('http://localhost:4000/register',{fName, lName, email, phone, password, address, referral})
+    axios.post('http://localhost:4000/register',{first_name, last_name, email, phone, password, address, referral})
     .then(result=>{
       console.log(result);
-      OpenLogin();
+      if(result.data="Successful"){
+        OpenLogin();
+      }else{
+        alert(result.data);
+      }
     })
-    .catch(error=>console.log(error));
+    .catch(error=>{
+      console.log(error)
+      // alert(error.message);
+      if(error.message==="Request failed with status code 400"){
+        alert("This email has been registered before. Kindly Login")
+      }else{
+        alert("Something went wrong! Check your internet connection")
+      }
+    });
     setSum(true);
   }
 
@@ -2049,7 +2061,7 @@ offices, restaurants, schools, gyms.. you name it!
                   <input type="tel" className="home-textinput03 input"  onChange={(e)=>setPhone(e.target.value)}/>
                 </div>
               </div>
-              <div className="home-container203">
+              <div className="home-container203X">
                 <div className="home-container204">
                   <p className="home-text122x">Password</p>
                   <input type="password" className="home-textinput04x input"  onChange={(e)=>setPassword(e.target.value)}/>
@@ -2057,7 +2069,7 @@ offices, restaurants, schools, gyms.. you name it!
               </div>
               <div className="home-container203">
                 <div className="home-container204">
-                  <p className="home-text122">Address</p>
+                  <p className="home-text122X">Address</p>
                   <input type="text" className="home-textinput04x input"  onChange={(e)=>setAddress(e.target.value)}/>
                 </div>
               </div>
@@ -2071,7 +2083,7 @@ offices, restaurants, schools, gyms.. you name it!
                       }}
                     />
                   </p>
-                  <input type="text" className="home-textinput05 input"  onChange={(e)=>setReferral(e.target.value)}/>
+                  <input type="text" className="home-textinput05X input"  onChange={(e)=>setReferral(e.target.value)}/>
                 </div>
               </div>
               <div className='extraConfirm'>
