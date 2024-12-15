@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
     first_name: { type: String, required: true },
@@ -7,10 +7,10 @@ const userSchema = new mongoose.Schema({
     phone: { type: String, required: true },
     password: { type: String, required: true },
     address: { type: String, required: true },
-    referral: { type: String }
-})
-// fName, lName, email, phone, password, address, referral
+    referral: { type: String },
+    date_joined: { type: String, required: true } // Add this field
+});
 
-const userModel = mongoose.model("users", userSchema)
+const userModel = mongoose.model("users", userSchema);
 
-module.exports = userModel
+module.exports = userModel;

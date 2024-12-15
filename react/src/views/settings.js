@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 
 import gsap from 'gsap';
+import axios from 'axios';
 
 import { Helmet } from 'react-helmet'
 
@@ -321,7 +322,7 @@ const Settings = (props) => {
   };
   
   const Save = () => {
-    setSaveScreen(false);
+    Update()
   };
 
   const handleBlur = () =>{
@@ -336,6 +337,8 @@ const Settings = (props) => {
     setCancelScreen(false);
   }
 
+  var userId
+
   useEffect(()=>{
     gsap.fromTo(".settings-container30", {opacity:0},{ opacity:1, duration:0.7, });
     gsap.fromTo(".settings-text28", {opacity:0},{ opacity:1, delay:0.7,duration:0.5});
@@ -344,7 +347,11 @@ const Settings = (props) => {
 
     gsap.fromTo(".settings-container40", {y:20, opacity:0},{y:0, opacity:1, delay:1.3,duration:0.5});
     gsap.fromTo(".settings-container52", {x:-20, opacity:0},{x:0, opacity:1, delay:1.4,duration:0.5});
-  },[]);
+
+    userId = sessionStorage.getItem("userId");
+
+    console.log(userId)
+  },[userId]);
 
   const SummaryRef = useRef(null);
   const [Total, setTotal] = useState(172);
@@ -511,6 +518,80 @@ const Settings = (props) => {
 
   },[setTotal,intervalValue, Total, sliderValue, sliderValueK, sliderValueO, sliderValueOX]);
 
+  const [data, setData] = useState([]);
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [password, setPassword] = useState('');
+  const [id, setId] = useState();
+
+
+  const fetchUserData = () => {
+    const userId = sessionStorage.getItem("userId");
+    
+    if (!userId) {
+        window.location.href = '/#/'; // Full page redirect
+        return;
+    }
+    setId(userId);
+
+    axios.post('http://localhost:4000/data', { userId })
+        .then(result => {
+            console.log("User Data:", result.data);
+            setData(result.data)
+            setEmail(result.data.email)
+            setPhone(result.data.phone)
+            setAddress(result.data.address)
+            setName(result.data.first_name+" "+result.data.last_name)
+            // You can now use result.data to display or process the user data
+        })
+        .catch(error => {
+            console.error("Error fetching user data:", error);
+        });
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const Update = () =>{
+    let firstName;
+    let lastName;
+    const fullName = name; // Example input value
+    const firstSpaceIndex = fullName.indexOf(" "); // Find the index of the first space
+
+    if (firstSpaceIndex !== -1) {
+        firstName = fullName.slice(0, firstSpaceIndex); // Extract the first name
+        lastName = fullName.slice(firstSpaceIndex + 1); // Extract the remaining part as last name
+
+        // console.log("First Name:", firstName); // Output: "Alexander"
+        // console.log("Last Name:", lastName);   // Output: "Gabriel John"
+    } else {
+        // console.log("First Name:", fullName);  // If no spaces, entire name is the first name
+        // console.log("Last Name:", "");         // No last name
+    }
+
+    axios.put('http://localhost:4000/update', {
+      id: id,
+      first_name: firstName,
+      last_name: lastName,
+      email: email, // New email
+      phone: phone,
+      password: password,    // Optional new password
+      address: address
+  })
+      .then(response => {
+          console.log("User updated:", response.data);
+      })
+      .catch(error => {
+          console.error("Error updating user:", error.response.data);
+      });
+      
+    setSaveScreen(false);
+  
+  }
+
 
   return (
     <div className="settings-container10">
@@ -662,7 +743,7 @@ const Settings = (props) => {
           </Link>
         </div>
         <div className="settings-container30">
-          <span className="settings-text26">John Doe</span>
+          <span className="settings-text26">{data ? `${data.first_name} ${data.last_name}` : "John Doe"}</span>
           <span className="settings-text27">
             Individual Account / Premium Account
           </span>
@@ -677,6 +758,8 @@ const Settings = (props) => {
                   <input
                     type="text"
                     onBlur={handleBlur} 
+                    onChange={(e)=>setName(e.target.value)}
+                    value={name}
                     placeholder="John Doe"
                     className="settings-textinput3 input"  onMouseEnter={(e) => handleMouseEnterZ(e.currentTarget)}
                     onMouseLeave={(e) => handleMouseLeaveZ(e.currentTarget)}
@@ -688,6 +771,8 @@ const Settings = (props) => {
                     type="text"
                     onBlur={handleBlur} 
                     placeholder="yourmail@mail.com"
+                    onChange={(e)=>setEmail(e.target.value)}
+                    value={email}
                     className="settings-textinput4 input"  onMouseEnter={(e) => handleMouseEnterZ(e.currentTarget)}
                     onMouseLeave={(e) => handleMouseLeaveZ(e.currentTarget)}
                   />
@@ -700,6 +785,8 @@ const Settings = (props) => {
                     type="text"
                     placeholder="0423 18..."
                     onBlur={handleBlur} 
+                    onChange={(e)=>setPhone(e.target.value)}
+                    value={phone}
                     className="settings-textinput5 input"  onMouseEnter={(e) => handleMouseEnterZ(e.currentTarget)}
                     onMouseLeave={(e) => handleMouseLeaveZ(e.currentTarget)}
                   />
@@ -709,6 +796,8 @@ const Settings = (props) => {
                   <input
                     type="password"
                     placeholder="****"
+                    onChange={(e)=>setPassword(e.target.value)}
+                    value={password}
                     onBlur={handleBlur} 
                     className="settings-textinput6 input"  onMouseEnter={(e) => handleMouseEnterZ(e.currentTarget)}
                     onMouseLeave={(e) => handleMouseLeaveZ(e.currentTarget)}
@@ -722,6 +811,8 @@ const Settings = (props) => {
                 <input
                   type="text"
                   onBlur={handleBlur} 
+                  onChange={(e)=>setAddress(e.target.value)}
+                  value={address}
                   placeholder="126 Church Hill Road, Melbourne, Victoria, 2816"
                   className="settings-textinput7 input"  onMouseEnter={(e) => handleMouseEnterZ(e.currentTarget)}
                   onMouseLeave={(e) => handleMouseLeaveZ(e.currentTarget)}

@@ -26,6 +26,7 @@ import Schedule from './views/schedule'
 import Schedule1 from './views/schedule1'
 import Transaction from './views/transaction'
 import Settingsroom from './views/settingsroom'
+import Ref from './views/ref'
 
 const App = () => {
   return (
@@ -36,6 +37,7 @@ const App = () => {
         <Route component={About} path="/about" />
         <Route component={Review} path="/review" />
         <Route component={FAQs} path="/faqs" />
+        <Route component={Ref} path="/ref" />
         <Route component={Settings} exact path="/settings" />
         <Route component={Cleanerspass2} exact path="/cleanerspass2" />
         <Route component={Dashboard} exact path="/dashboard" />

@@ -1,6 +1,7 @@
-import React,{useEffect} from 'react'
+import React,{useEffect, useState} from 'react'
 import { Link } from 'react-router-dom'
 import gsap from 'gsap'
+import axios from 'axios'
 
 import { Helmet } from 'react-helmet'
 
@@ -111,6 +112,70 @@ const Referral = (props) => {
     //    
     
   },[]);
+
+  const [referralCode, setRef] = useState('');
+  const [referrals, setReferrals] = useState([]);
+  const [referralLink, setRefLink] = useState([]);
+
+  const fetchUserData = () => {
+    const userId = sessionStorage.getItem("userId");
+    
+    if (!userId) {
+        window.location.href = '/#/'; // Full page redirect
+        return;
+    }
+    setRef(userId);
+    setRefLink('http://localhost:3000/#/ref?ref='+userId)
+  };
+
+  const fetchUserReferrals = () => {
+    const userId = sessionStorage.getItem("userId");
+    
+    if (!userId) {
+        window.location.href = '/#/'; // Full page redirect
+        return;
+    }
+
+    axios.post('http://localhost:4000/referrals', { userId })
+        .then(result => {
+            console.log("User Data:", result.data.referrals);
+            setReferrals(result.data.referrals)
+            // setEmail(result.data.email)
+            // setPhone(result.data.phone)
+            // setAddress(result.data.address)
+            // setName(result.data.first_name+" "+result.data.last_name)
+            // You can now use result.data to display or process the user data
+        })
+        .catch(error => {
+            console.error("Error fetching user data:", error);
+        });
+  };
+
+
+  useEffect(() => {
+    fetchUserData();
+    fetchUserReferrals();
+  }, []);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(referralCode)
+        .then(() => {
+            alert("Referral code copied to clipboard!");
+        })
+        .catch(err => {
+            console.error("Failed to copy text: ", err);
+        });
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(referralLink)
+        .then(() => {
+            alert("Referral Link copied to clipboard!");
+        })
+        .catch(err => {
+            console.error("Failed to copy text: ", err);
+        });
+  };
 
   return (
     <div className="referral-container10">
@@ -377,20 +442,39 @@ const Referral = (props) => {
                 You can also share your referral link by copying it and sending
                 it to your friends.
               </span>
-              <div className="referral-container39">
-                <input
-                  type="text"
-                  value="HS7WN29AJ29MQ9s9uU28N"
-                  placeholder="Email addresses..."
-                  className="referral-textinput4 input"
-                />
-                <img
-                  alt="image"
-                  src={require("./img/copy-1500w.png")}
-                  className="referral-image30"
-                  onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)}
-                onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}
-                />
+              <div className='sideBarz'>
+                <div className="referral-container39">
+                  <input
+                    type="text"
+                    value={referralCode}
+                    placeholder="ReferralLink..."
+                    className="referral-textinput4 input"
+                  />
+                  <img
+                    alt="image"
+                    src={require("./img/copy-1500w.png")}
+                    className="referral-image30"
+                    onClick={handleCopy}
+                    onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)}
+                  onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}
+                  />
+                </div>
+                <div className="referral-container39">
+                  <input
+                    type="text"
+                    value={referralLink}
+                    placeholder="ReferralLink..."
+                    className="referral-textinput4 input"
+                  />
+                  <img
+                    alt="image"
+                    src={require("./img/copy-1500w.png")}
+                    className="referral-image30"
+                    onClick={handleCopyLink}
+                    onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)}
+                  onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -412,23 +496,29 @@ const Referral = (props) => {
                       <span className="referral-text50">Membership</span>
                     </div>
                   </div>
-                  <div className="referral-container48" onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
-                onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}>
+                  {referrals.map((referral, index) => (
+                  <div
+                    key={referral._id} // Use referral._id or another unique value
+                    className="referral-container48"
+                    onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
+                    onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}
+                  >
                     <div className="referral-container49">
                       <img
                         alt="image"
-                        src={require("./img/fullperson-200w.png")}
+                        src="https://raw.githubusercontent.com/KesterJosh/Website-SampleX/main/unknown.jpg"
                         className="referral-image31"
                       />
-                      <span className="referral-text51">Alex Johnson</span>
+                      <span className="referral-text51">{referral.first_name} {referral.last_name}</span>
                     </div>
                     <div className="referral-container50">
-                      <span className="referral-text52">121/01/2024</span>
+                      <span className="referral-text52">{referral.date_joined}</span>
                     </div>
                     <div className="referral-container51">
-                      <span className="referral-text53">Cleaners Pass</span>
+                      <span className="referral-text53">Cleaners Pass</span> {/* Adjust this text as needed */}
                     </div>
                   </div>
+                ))}
                   <div className="referral-container52" onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
                 onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}>
                     <div className="referral-container53">
@@ -531,6 +621,7 @@ const Referral = (props) => {
                       <span className="referral-text71">Cleaners Pass</span>
                     </div>
                   </div>
+                  
                 </div>
               </div>
               <div className="referral-container76">

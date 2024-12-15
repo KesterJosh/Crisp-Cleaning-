@@ -1163,6 +1163,8 @@ const handleSelectChange = (selectedValue) => {
   const [address, setAddress] = useState('');
   const [referral, setReferral] = useState('');
 
+  
+
   const handleSubmit =(e)=>{
     e.preventDefault();
     axios.post('http://localhost:4000/register',{first_name, last_name, email, phone, password, address, referral})
@@ -1187,13 +1189,9 @@ const handleSelectChange = (selectedValue) => {
   }
 
   useEffect(async ()=>{
-    const fetchData = async () =>{
-      const res = await fetch('http://localhost:4000')
-      const data = res.json()
-      console.log(data)
-    }
-    fetchData()
-  },[]);
+    const ref= sessionStorage.getItem('referral');
+    setReferral(ref);
+  },[setReferral, referral]);
 
   const CloseLogin = ()=>{
     setisLogin(false);
@@ -2083,7 +2081,7 @@ offices, restaurants, schools, gyms.. you name it!
                       }}
                     />
                   </p>
-                  <input type="text" className="home-textinput05X input"  onChange={(e)=>setReferral(e.target.value)}/>
+                  <input type="text" className="home-textinput05X input"  onChange={(e)=>setReferral(e.target.value)} value={referral}/>
                 </div>
               </div>
               <div className='extraConfirm'>

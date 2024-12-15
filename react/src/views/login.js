@@ -36,20 +36,25 @@ const Login = ({CloseLogin, navigateS}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit =(e)=>{
+  const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:4000/login',{email,password})
-    .then(result=>{
-        console.log(result)
-        if(result.data==="Success"){
-            navigateS()
-        }else{
-            alert(result.data)
-        }
-    })
-    .catch(error=>console.log(error));
-    
-  }
+    axios.post('http://localhost:4000/login', { email, password })
+        .then(result => {
+            console.log(result.data);
+            if (result.data.status === "Success") {
+                // Store the user ID in session storage
+                sessionStorage.setItem("userId", result.data.userId);
+                console.log(result.data._id)
+                console.log(result.data);
+                // Navigate to the desired page after successful login
+                navigateS();
+            } else {
+                alert(result.data);
+            }
+        })
+        .catch(error => console.log(error));
+};
+
   return (
     <div className="popschedule-container1">
       <div className="popschedule-container2Login" ><img
