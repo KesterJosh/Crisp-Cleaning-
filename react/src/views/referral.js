@@ -519,7 +519,7 @@ const Referral = (props) => {
                     </div>
                   </div>
                 ))}
-                  <div className="referral-container52" onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
+                  {/* <div className="referral-container52" onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
                 onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}>
                     <div className="referral-container53">
                       <img
@@ -535,8 +535,8 @@ const Referral = (props) => {
                     <div className="referral-container55">
                       <span className="referral-text56">Cleaners Pass</span>
                     </div>
-                  </div>
-                  <div className="referral-container56" onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
+                  </div> */}
+                  {/* <div className="referral-container56" onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
                 onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}>
                     <div className="referral-container57">
                       <img
@@ -620,7 +620,7 @@ const Referral = (props) => {
                     <div className="referral-container75">
                       <span className="referral-text71">Cleaners Pass</span>
                     </div>
-                  </div>
+                  </div> */}
                   
                 </div>
               </div>
