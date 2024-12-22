@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     address: { type: String, required: true },
     referral: { type: String },
+    verified: {type: Boolean, require:true},
     date_joined: { type: String, required: true } // Add this field
 });
 

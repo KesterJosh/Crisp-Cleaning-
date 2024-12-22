@@ -1188,6 +1188,8 @@ const handleSelectChange = (selectedValue) => {
     setSum(true);
   }
 
+  
+
   useEffect(async ()=>{
     const ref= sessionStorage.getItem('referral');
     setReferral(ref);
@@ -1204,6 +1206,51 @@ const handleSelectChange = (selectedValue) => {
   const navigateS = () => {
     window.location.href = '/#/dashboard'; // Full page reload
   };
+
+  const [BusinessName, setBusinessName] = useState();
+  const [BusinessSize, setBusinessSize] = useState();
+  const [BusinessEnvironment, setBusinessEnvironment] = useState();
+  const [BusinessTypeOfClean, setBusinessTypeOfClean] = useState();
+  const [BusinessRoomAmount, setBusinessRoomAmount] = useState();
+  const [BusinessDetail, setBusinessDetail] = useState();
+  const [BusinessTimeFrame, setBusinessTimeFrame] = useState();
+  const [BusinessHours, setBusinessHours] = useState();
+  const [BusinessComments, setBusinessComments] = useState();
+
+  const handleSubmitCommercial = (e) => {
+    e.preventDefault();
+
+    axios
+      .post('http://localhost:4000/commercial', {
+        BusinessName,
+        BusinessSize,
+        BusinessEnvironment,
+        BusinessTypeOfClean,
+        BusinessRoomAmount,
+        BusinessDetail,
+        BusinessTimeFrame,
+        BusinessHours,
+        BusinessComments,
+      })
+      .then((result) => {
+        console.log(result);
+        if (result.data.status === "Pending") {
+          alert("Business information submitted successfully.");
+        } else {
+          alert(result.data.message);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        if (error.response?.status === 400) {
+          alert("A similar request already exists.");
+        } else {
+          alert("Something went wrong! Please check your internet connection.");
+        }
+      });
+
+  };
+
 return (
     <div className="home-container">
       <Helmet>
@@ -2125,6 +2172,7 @@ offices, restaurants, schools, gyms.. you name it!
             </form>
           </div>
           <div className="home-container192y" style={{right:-100+"%"}}>
+            <form onSubmit={handleSubmitCommercial}>
             <span className="home-text112">Cleaning Information</span>
             <p className="home-text113">
               <span>
@@ -2145,9 +2193,12 @@ offices, restaurants, schools, gyms.. you name it!
                   />
                 </p>
                 <div className='sideQ'>
-                  <input type="text" className="home-textinput05xy input" placeholder='Business Name'/>
-                  <input type="text" className="home-textinput05xy input" placeholder='Business Size'/>
-                  <select type="text" className="home-textinput05xyx input" placeholder='Business Type'>
+                  {/* {BusinessName} / {BusinessDetail} /{BusinessComments} 
+                  /{BusinessEnvironment} / {BusinessHours} / {BusinessRoomAmount}
+                  / {BusinessSize} / {BusinessTypeOfClean} / {BusinessTimeFrame} ...<br/> */}
+                  <input type="text" className="home-textinput05xy input" placeholder='Business Name'  onChange={(e)=>setBusinessName(e.target.value)} value={BusinessName} />
+                  <input type="text" className="home-textinput05xy input" placeholder='Business Size'  onChange={(e)=>setBusinessSize(e.target.value)} value={BusinessSize}/>
+                  <select type="text" className="home-textinput05xyx input" placeholder='Business Type'  onChange={(e)=>setBusinessEnvironment(e.target.value)} >
                     <option value="" disabled selected>Select Environment</option>
                     <option value="Office">Office</option>
                     <option value="Gym">Gym</option>
@@ -2171,13 +2222,13 @@ offices, restaurants, schools, gyms.. you name it!
                 </p>
                 <div className='sideQx'>
                   <div className='s1x'>
-                  <select type="text" className="home-textinput05xyZ input">
+                  <select type="text" className="home-textinput05xyZ input"  onChange={(e)=>setBusinessTypeOfClean(e.target.value)} >
                     <option value="" disabled selected>Type of Clean</option>
                     <option value="Deep Clean">Deep Clean</option>
                     <option value="Regular Clean">Regular Clean</option>
                     <option value="Other">Other</option>
                   </select>
-                  <select type="text" className="home-textinput05xyZ input" placeholder='Type of Clean'>
+                  <select type="text" className="home-textinput05xyZ input" placeholder='Type of Clean' onChange={(e)=>setBusinessRoomAmount(e.target.value)} >
                     <option value="" disabled selected>Room Amounts</option>
                     <option value="1-3">1-3</option>
                     <option value="3-6">3-6</option>
@@ -2187,7 +2238,7 @@ offices, restaurants, schools, gyms.. you name it!
                   </select>
                   </div>
                   <div className='s2x'>
-                    <textarea type="text" className="home-textinput05xyxZ input" placeholder='Room Amounts'></textarea>
+                    <textarea type="text" className="home-textinput05xyxZ input" placeholder='Specifications (Size Per Room, Total Size, Clean details)' onChange={(e)=>setBusinessDetail(e.target.value)} value={BusinessDetail}></textarea>
                   </div>
                   
                   
@@ -2207,7 +2258,7 @@ offices, restaurants, schools, gyms.. you name it!
                   />
                 </p>
                 <div className='sideQ'>
-                  <select type="text" className="home-textinput05xy input" placeholder='Ideal Time Per Clean'>
+                  <select type="text" className="home-textinput05xy input" placeholder='Ideal Time Per Clean' onChange={(e)=>setBusinessTimeFrame(e.target.value)} >
                     <option value="" disabled selected>Ideal Time Per Clean</option>
                     <option value="Daily">Daily</option>
                     <option value="Weekly">Weekly</option>
@@ -2215,7 +2266,7 @@ offices, restaurants, schools, gyms.. you name it!
                     <option value="Bi-Monthly">Bi-Monthly</option>
                     <option value="Other (Please Specify)">Other (Please Specify)</option>
                   </select>
-                  <select type="text" className="home-textinput05xyx input" placeholder=''>
+                  <select type="text" className="home-textinput05xyx input" placeholder='' onChange={(e)=>setBusinessHours(e.target.value)} >
                     <option value="" disabled selected>Frequency of Cleans</option>
                     <option value="0-1 Hour">0-1 Hour</option>
                     <option value="1-3 Hour">1-3 Hour</option>
@@ -2236,7 +2287,7 @@ offices, restaurants, schools, gyms.. you name it!
                     }}
                   />
                 </p>
-                <textarea type="text" className="home-textinput05x input" placeholder="If you have any information you would like to share, please write here..."></textarea>
+                <textarea type="text" className="home-textinput05x input" placeholder="If you have any information you would like to share, please write here..." onChange={(e)=>setBusinessComments(e.target.value)} ></textarea>
               </div>
             </div>
             
@@ -2251,11 +2302,11 @@ offices, restaurants, schools, gyms.. you name it!
                   <span>back</span>
                 </span>
               </button>
-              <button onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)}  type="button" className="home-button04 button" onClick={()=>setSum(true)}>
+              <button  type="submit" onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)} className="home-button04 button" >
                 Proceed
               </button>
             </div>
-          </div>
+            </form></div>
           <div className="home-container209" ref={SummaryRef}>
             <div className="home-container210x">
               <div className="home-container211" onClick={()=>setSum(true)} style={{cursor:'pointer', userSelect:'none'}}>

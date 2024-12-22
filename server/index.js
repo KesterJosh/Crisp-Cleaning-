@@ -4,8 +4,15 @@ const express = require('express')
 const connectDB = require('./db.js')
 const itemModel = require('./models/item.js')
 const userModel = require('./models/users.js')
+const commercialModel = require('./models/commercial.js')
 const cors = require('cors')
+
+require('dotenv').config
 const bcrypt = require('bcrypt')
+const nodemailer = require('nodemailer')
+const {v4: uuidv4} = require('uuid')
+
+
 
 const app = express()
 app.use(express.json())
@@ -62,6 +69,59 @@ app.post('/login', (req, res) => {
             });
     });
 
+// nodemailer stuff
+// console.log('Email:', process.env.AUTH_EMAIL);
+// console.log('Password:', process.env.AUTH_PASSWORD ? 'Password is set' : 'Password is missing');
+let transporter = nodemailer.createTransport({
+    host: "smtp.mailersend.net", // SMTP server
+    port: 587, // Port for STARTTLS
+    secure: false, // Use STARTTLS (false for port 587)
+    auth: {
+        user: "MS_acmUf3@trial-7dnvo4dxzd9g5r86.mlsender.net", // Your username
+        pass: "zYyeUUqykO3MTgxt" // Your password
+    }
+});
+
+// Test transporter
+transporter.verify((error, success) => {
+    if (error) {
+        console.log("Error:", error);
+    } else {
+        console.log("SMTP Server is ready to take messages:", success);
+    }
+});
+
+// Send email
+
+const SendMail = ({ BusinessName, BusinessSize, BusinessEnvironment, BusinessTypeOfClean, BusinessRoomAmount, BusinessDetail, BusinessTimeFrame, BusinessHours, BusinessComments }, res) =>{
+    // url of the email 
+    const currentUrl = "http://localhost:4000"
+
+    const mailOption = {
+        from:"MS_acmUf3@trial-7dnvo4dxzd9g5r86.mlsender.net",
+        to:"adeyelukester2@gmail.com",
+        subject:"Commercial Cleaning Initiated",
+        html:`<p>Here is a sent email of the commercial clean sent from ${BusinessName}</p><p>Business Name: ${BusinessName}</p><p>Business Size: ${BusinessSize}</p><p>Business Environment: ${BusinessEnvironment}</p><p>Type of cleaning: ${BusinessTypeOfClean}</p><p>Amount of Rooms: ${BusinessRoomAmount}</p><p>Specified Info: ${BusinessDetail}</p><p>Frequency: ${BusinessTimeFrame}</p><p>Business Name: ${BusinessHours}</p><p>Extra Comments: ${BusinessComments}</p>`
+    }
+
+    transporter.sendMail(mailOption)
+    .then(()=>{
+        console.log("Email sent successfully")
+        // res.json({
+        //     status:"Pending",
+        //     message:"Email sent successfully"
+        // })
+    })
+    .catch((error)=>{
+        console.log(error)
+        // res.json({
+        //     status:"Failed",
+        //     message:"Email sending failed"
+        // })
+    })
+}
+const response=[];
+
 
 app.post('/register', (req, res) => {
     const { first_name, last_name, email, phone, password, address, referral } = req.body;
@@ -94,6 +154,44 @@ app.post('/register', (req, res) => {
         })
         .catch(error => res.status(500).json({ error: "Error encrypting password" }));
 });
+
+app.post('/commercial', (req, res) => {
+    const { BusinessName, BusinessSize, BusinessEnvironment, BusinessTypeOfClean, BusinessRoomAmount, BusinessDetail, BusinessTimeFrame, BusinessHours, BusinessComments } = req.body;
+    
+    commercialModel.create({
+        BusinessName,
+        BusinessSize,
+        BusinessEnvironment,
+        BusinessTypeOfClean,
+        BusinessRoomAmount,
+        BusinessDetail,
+        BusinessTimeFrame,
+        BusinessHours,
+        BusinessComments
+    })
+    .then(commercials => {
+        res.json(commercials)
+        SendMail({
+            BusinessName,
+            BusinessSize,
+            BusinessEnvironment,
+            BusinessTypeOfClean,
+            BusinessRoomAmount,
+            BusinessDetail,
+            BusinessTimeFrame,
+            BusinessHours,
+            BusinessComments
+        }, res);
+    })
+    .catch(err => {
+        if (err.code === 11000 && err.keyPattern.email) {
+            res.status(400).json({ error: "Email is already registered" });
+        } else {
+            res.status(500).json({ error: "Internal Server Error" });
+        }
+    });
+});
+
 
 app.put('/update', (req, res) => {
     const { id, first_name, last_name, email, phone, password, address } = req.body;
