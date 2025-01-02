@@ -11,6 +11,7 @@ require('dotenv').config
 const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer')
 const {v4: uuidv4} = require('uuid')
+const cleanModel = require('./models/cleans.js')
 
 
 
@@ -93,15 +94,15 @@ transporter.verify((error, success) => {
 
 // Send email
 
-const SendMail = ({ BusinessName, BusinessSize, BusinessEnvironment, BusinessTypeOfClean, BusinessRoomAmount, BusinessDetail, BusinessTimeFrame, BusinessHours, BusinessComments }, res) =>{
+const SendMail = ({ BusinessName, BusinessSize, BusinessEnvironment, BusinessTypeOfClean, BusinessRoomAmount, BusinessDetail, BusinessTimeFrame, BusinessHours, BusinessComments, email }, res) =>{
     // url of the email 
     const currentUrl = "http://localhost:4000"
 
     const mailOption = {
         from:"MS_acmUf3@trial-7dnvo4dxzd9g5r86.mlsender.net",
-        to:"adeyelukester2@gmail.com",
+        to:"adeemole@gmail.com",
         subject:"Commercial Cleaning Initiated",
-        html:`<p>Here is a sent email of the commercial clean sent from ${BusinessName}</p><p>Business Name: ${BusinessName}</p><p>Business Size: ${BusinessSize}</p><p>Business Environment: ${BusinessEnvironment}</p><p>Type of cleaning: ${BusinessTypeOfClean}</p><p>Amount of Rooms: ${BusinessRoomAmount}</p><p>Specified Info: ${BusinessDetail}</p><p>Frequency: ${BusinessTimeFrame}</p><p>Business Name: ${BusinessHours}</p><p>Extra Comments: ${BusinessComments}</p>`
+        html:`<p>Here is a sent email of the commercial clean sent from ${BusinessName}</p><p>Business Name: ${BusinessName}</p><p>Business Size: ${BusinessSize}</p><p>Business Environment: ${BusinessEnvironment}</p><p>Type of cleaning: ${BusinessTypeOfClean}</p><p>Amount of Rooms: ${BusinessRoomAmount}</p><p>Specified Info: ${BusinessDetail}</p><p>Frequency: ${BusinessTimeFrame}</p><p>Business Name: ${BusinessHours}</p><p>Extra Comments: ${BusinessComments}</p><p>Email of sender: ${email}</p>`
     }
 
     transporter.sendMail(mailOption)
@@ -156,8 +157,8 @@ app.post('/register', (req, res) => {
 });
 
 app.post('/commercial', (req, res) => {
-    const { BusinessName, BusinessSize, BusinessEnvironment, BusinessTypeOfClean, BusinessRoomAmount, BusinessDetail, BusinessTimeFrame, BusinessHours, BusinessComments } = req.body;
-    
+    const { BusinessName, BusinessSize, BusinessEnvironment, BusinessTypeOfClean, BusinessRoomAmount, BusinessDetail, BusinessTimeFrame, BusinessHours, BusinessComments, email } = req.body;
+      
     commercialModel.create({
         BusinessName,
         BusinessSize,
@@ -167,10 +168,15 @@ app.post('/commercial', (req, res) => {
         BusinessDetail,
         BusinessTimeFrame,
         BusinessHours,
-        BusinessComments
+        BusinessComments,
+        email
     })
     .then(commercials => {
-        res.json(commercials)
+        res.json({
+            status: "Pending",
+            message: "Business information submitted successfully.",
+        });
+        
         SendMail({
             BusinessName,
             BusinessSize,
@@ -180,15 +186,12 @@ app.post('/commercial', (req, res) => {
             BusinessDetail,
             BusinessTimeFrame,
             BusinessHours,
-            BusinessComments
+            BusinessComments,
+            email
         }, res);
     })
     .catch(err => {
-        if (err.code === 11000 && err.keyPattern.email) {
-            res.status(400).json({ error: "Email is already registered" });
-        } else {
-            res.status(500).json({ error: "Internal Server Error" });
-        }
+        console.log(err)
     });
 });
 
@@ -239,6 +242,64 @@ app.put('/update', (req, res) => {
     };
 
     updateUser();
+});
+
+// Set Cleans 
+app.post('/clean', (req, res) => {
+    const { 
+        type, sliderValueO, sliderValueK, sliderValue, sliderValueOX,
+        windows, walls, Cabinets, organization, blind,
+        stovetop, fridge, Dishwasher, garage, microwave,
+        Laundry, tiles, MyDate, timeFrame, email, 
+        CleanType, intervalValue, daySelect1, daySelect2, daySelect3, 
+        daySelect4, daySelect5, daySelect6, daySelect7,
+        GetInside, Park, Animal, spComments, discountNew 
+    } = req.body;
+      
+    // time in miliseconds 
+    const currentTimeInMilliseconds = Date.now();
+
+    cleanModel.create({
+        typeOfClean:type,
+        rooms:sliderValueO,
+        kitchen:sliderValueK,
+        bathroom:sliderValue,
+        others:sliderValueOX,
+        windows:windows,
+        walls:walls,
+        cabinets:Cabinets,
+        orginization:organization,
+        blinds:blind,
+        stove:stovetop,
+        fridge:fridge,
+        dishwasher:Dishwasher,
+        garage:garage,
+        microwave:microwave,
+        laundry:Laundry,
+        tiles:tiles,
+        date:MyDate,
+        time:timeFrame,
+        deltatime:currentTimeInMilliseconds,
+        regularOronetime:CleanType,
+        frequency:intervalValue,
+        mon:daySelect1,
+        tue:daySelect2,
+        wed:daySelect3,
+        thu:daySelect4,
+        fri:daySelect5,
+        sat:daySelect6,
+        sun:daySelect7,
+        getinside: GetInside,
+        parkspot: Park,
+        pet: Animal,
+        spComments: spComments,
+        discount: discountNew,
+        email
+    }).then(() => {
+        res.status(201).send("Clean record created successfully");
+    }).catch((error) => {
+        res.status(500).send("Error creating clean record: " + error.message);
+    });
 });
 
 app.post('/referrals', (req, res) => {

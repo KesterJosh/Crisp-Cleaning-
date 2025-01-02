@@ -110,6 +110,11 @@ const Home = (props) => {
     }
   };
 
+  
+  const [GetInside, setGetInside] = useState('I will be home');
+  const [Park, setPark] = useState('I will provide parking on site');
+  const [Animal, setAnimal] = useState('Dog/Cat');
+  const [spComments, setspComments] = useState('')
 
   const handleMouseEnter = (event) => {
     const container = event.currentTarget;
@@ -613,8 +618,10 @@ const Home = (props) => {
   const nextScreen = () =>{
     if(Quote==1){
       setTabs(2)
+      setLayer(1)
     }else if(Quote==2){
       setTabx(2)
+      setLayer(2)
     }
   }
 
@@ -639,7 +646,7 @@ const Home = (props) => {
     sumUp(value+sliderValueO+sliderValueOX+sliderValue);
   };
 
-  const [sliderValueO, setSliderValueO] = useState(0);
+  const [sliderValueO, setSliderValueO] = useState(1);
 
   const handleSliderChangeO = (value) => {
     setSliderValueO(value);
@@ -647,7 +654,7 @@ const Home = (props) => {
     sumUp(value+sliderValueK+sliderValueOX+sliderValue);
   };
 
-  const [sliderValueOX, setSliderValueOX] = useState(1);
+  const [sliderValueOX, setSliderValueOX] = useState(0);
   const [totalSliders, setTotalSliders] = useState(0);
 
 
@@ -724,12 +731,13 @@ const handleSelectChange = (selectedValue) => {
 
   const [discount, setDiscount] = useState(Total);
   const [CleanP, setCleanP] = useState(false);
+  
 
   useEffect(()=>{
     let bathrom = 30*sliderValue;
     let kitch = 45*sliderValueK;
-    let oth = 20*sliderValueO;
-    let rooms = 20*sliderValueOX;
+    let oth = 20*sliderValueOX;
+    let rooms = 20*sliderValueO;
     let total = type+windows+walls+Cabinets+organization+blind+stovetop+fridge+Dishwasher+garage+microwave+Laundry+tiles+bathrom+kitch+oth+rooms;
     total = ((100-intervalValue)/100)*total;
     setDiscount(total);
@@ -882,17 +890,6 @@ const handleSelectChange = (selectedValue) => {
 
   const playerRef = useRef(null);
   
-
-  // useEffect(() => {
-  //   // Example of playing the animation after a delay
-  //   const delay = setTimeout(() => {
-  //     playerRef.current.play();
-  //   }, 1000);
-
-  //   // Clean up the timeout on component unmount
-  //   return () => clearTimeout(delay);
-  // }, []); // Empty dependency array to run the effect only once on mount
-
   const playLottie = () => {
     playerRef.current.play();
   };
@@ -1163,6 +1160,7 @@ const handleSelectChange = (selectedValue) => {
   const [address, setAddress] = useState('');
   const [referral, setReferral] = useState('');
 
+  const [layer, setLayer] = useState(1)
   
 
   const handleSubmit =(e)=>{
@@ -1172,6 +1170,9 @@ const handleSelectChange = (selectedValue) => {
       console.log(result);
       if(result.data="Successful"){
         OpenLogin();
+        if(layer==2){
+          handleSubmitCommercial()
+        }
       }else{
         alert(result.data);
       }
@@ -1185,7 +1186,9 @@ const handleSelectChange = (selectedValue) => {
         alert("Something went wrong! Check your internet connection")
       }
     });
-    setSum(true);
+    if(layer==1){
+      setSum(true);
+    }
   }
 
   
@@ -1218,7 +1221,7 @@ const handleSelectChange = (selectedValue) => {
   const [BusinessComments, setBusinessComments] = useState();
 
   const handleSubmitCommercial = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
 
     axios
       .post('http://localhost:4000/commercial', {
@@ -1231,11 +1234,13 @@ const handleSelectChange = (selectedValue) => {
         BusinessTimeFrame,
         BusinessHours,
         BusinessComments,
+        email
       })
       .then((result) => {
         console.log(result);
         if (result.data.status === "Pending") {
           alert("Business information submitted successfully.");
+          OpenLogin();
         } else {
           alert(result.data.message);
         }
@@ -1250,6 +1255,57 @@ const handleSelectChange = (selectedValue) => {
       });
 
   };
+
+  const handleSubmitClean = () => {
+    const requestData = {
+        type,
+        sliderValueO,
+        sliderValueK,
+        sliderValue,
+        sliderValueOX,
+        windows,
+        walls,
+        Cabinets,
+        organization,
+        blind,
+        stovetop,
+        fridge,
+        Dishwasher,
+        garage,
+        microwave,
+        Laundry,
+        tiles,
+        MyDate,
+        timeFrame,
+        email,
+        CleanType,
+        intervalValue,
+        daySelect1,
+        daySelect2,
+        daySelect3,
+        daySelect4,
+        daySelect5,
+        daySelect6,
+        daySelect7,
+        GetInside,
+        Park,
+        Animal,
+        spComments,
+        discountNew
+    };
+
+    axios
+        .post("http://localhost:4000/clean", requestData) // Replace with your server endpoint
+        .then((response) => {
+            alert("Clean record created successfully!");
+            OpenLogin()
+            console.log(response.data);
+        })
+        .catch((error) => {
+            alert("Error creating clean record.");
+            console.error(error);
+        });
+};
 
 return (
     <div className="home-container">
@@ -1537,11 +1593,11 @@ offices, restaurants, schools, gyms.. you name it!
               max={8}
               step={1}
               className='slider'
-              value={sliderValueOX}
-              onChange={handleSliderChangeOX}
+              value={sliderValueO}
+              onChange={handleSliderChangeO}
             />
           </div>
-          <h2 className='belowTxt' style={{marginTop:'10px', marginBottom:'20px'}}>{sliderValueOX} Room{(sliderValueOX>1)?'s':null}</h2>
+          <h2 className='belowTxt' style={{marginTop:'10px', marginBottom:'20px'}}>{sliderValueO} Room{(sliderValueO>1)?'s':null}</h2>
         </div>
         <div className='holdX'>
           <div style={{ display:'flex', flexDirection:'row', justifyContent:'center', alignItems:'center', width:'90%'}}>
@@ -1576,11 +1632,11 @@ offices, restaurants, schools, gyms.. you name it!
                 max={8}
                 step={1}
                 className='slider'
-                value={sliderValueO}
-                onChange={handleSliderChangeO}
+                value={sliderValueOX}
+                onChange={handleSliderChangeOX}
               />
           </div>
-          <h2 className='belowTxt' style={{marginTop:'10px', marginBottom:'20px'}}>{sliderValueO} Other{(sliderValueO>1)?'s':null}</h2>
+          <h2 className='belowTxt' style={{marginTop:'10px', marginBottom:'20px'}}>{sliderValueOX} Other{(sliderValueOX>1)?'s':null}</h2>
         </div>
       </div>
     </div>
@@ -1990,7 +2046,7 @@ offices, restaurants, schools, gyms.. you name it!
             <div className="home-container203">
               <div className="home-container204">
                 <p className="home-text122">How will we get inside your home?</p>
-                <select className="home-textinput04 input" >
+                <select className="home-textinput04 input" onChange={(e)=>setGetInside(e.target.value)} value={GetInside}>
                   <option>I will be home</option>
                   <option>I will leave a key</option>
                   <option>I will provide a lockbox/access code</option>
@@ -2008,7 +2064,7 @@ offices, restaurants, schools, gyms.. you name it!
                     }}
                   />
                 </p>
-                <select type="text" className="home-textinput05 input" >
+                <select type="text" className="home-textinput05 input"  onChange={(e)=>setPark(e.target.value)} value={Park}>
                   <option>I will provide parking on site</option>
                   <option>There is free parking nearby/on the street</option>
                   <option>I will provide a lockbox/access code</option>
@@ -2026,7 +2082,7 @@ offices, restaurants, schools, gyms.. you name it!
                     }}
                   />
                 </p>
-                <select type="text" className="home-textinput05 input" >
+                <select type="text" className="home-textinput05 input" onChange={(e)=>setAnimal(e.target.value)} value={Animal}>
                   <option>Dog/Cat</option>
                   <option style={{color:'#B3B3B3'}}>Other </option>
                 </select>
@@ -2043,7 +2099,7 @@ offices, restaurants, schools, gyms.. you name it!
                     }}
                   />
                 </p>
-                <textarea type="text" className="home-textinput05x input" placeholder="If you have any information you would like to share, please write here..."></textarea>
+                <textarea type="text"  onChange={(e)=>setspComments(e.target.value)} value={spComments} className="home-textinput05x input" placeholder="If you have any information you would like to share, please write here..."></textarea>
               </div>
             </div>
             
@@ -2172,7 +2228,7 @@ offices, restaurants, schools, gyms.. you name it!
             </form>
           </div>
           <div className="home-container192y" style={{right:-100+"%"}}>
-            <form onSubmit={handleSubmitCommercial}>
+            {/* <form> */}
             <span className="home-text112">Cleaning Information</span>
             <p className="home-text113">
               <span>
@@ -2302,11 +2358,12 @@ offices, restaurants, schools, gyms.. you name it!
                   <span>back</span>
                 </span>
               </button>
-              <button  type="submit" onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)} className="home-button04 button" >
+              <button onClick={()=>{setTabx(0); setTabs(5)}} onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)} className="home-button04 button" >
                 Proceed
               </button>
             </div>
-            </form></div>
+            {/* </form> */}
+            </div>
           <div className="home-container209" ref={SummaryRef}>
             <div className="home-container210x">
               <div className="home-container211" onClick={()=>setSum(true)} style={{cursor:'pointer', userSelect:'none'}}>
@@ -2418,7 +2475,8 @@ offices, restaurants, schools, gyms.. you name it!
                 <span className="home-text160">${discountNew}</span>
               </div>
             </div>
-            <button onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)} type="button" className="home-button13 button">
+            <button onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)} onClick 
+          ={handleSubmitClean} type="button" className="home-button13 button">
               Book Now
             </button>
           </div>
@@ -2429,6 +2487,8 @@ offices, restaurants, schools, gyms.. you name it!
       </div>
       <div className="home-container228">
         <div className="home-container229">
+          {/* //Infos */}
+          Extra's {`=> `}{windows}/ {walls}/ {Cabinets}/ {organization}/ {blind}/ {stovetop}/ {fridge}/ {Dishwasher}/ {garage}/ {microwave}/ {Laundry}/ {tiles}/ Rooms:{sliderValueO}/ Others:{sliderValueOX}/ Bathrooms:{sliderValue}/ Kitchen:{sliderValueK}/ Type of clean(45 regular, 135 deep, 280 vacant ):{type}/ Not OneTime:{(CleanType)?"yes":"No"}/ Interval Value(15weekly, 10forthnightly, 5monthly):{intervalValue}/ SetDays: Mon{daySelect1}, Tue{daySelect2}, Wed{daySelect3}, Thur{daySelect4}, Fri{daySelect5}, Sat{daySelect6}, Sun{daySelect7} {`>>>`} GetInside(opt):{GetInside}/ Park(opt):{Park}/ Animal(opt):{Animal}/ Comments:{spComments}/ Discount:{discountNew}/ Date:{MyDate}/ time:{timeFrame}
           <span className="home-text161">
             <span>
               Get To

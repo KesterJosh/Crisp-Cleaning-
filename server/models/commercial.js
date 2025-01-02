@@ -8,8 +8,9 @@ const commercialSchema = new mongoose.Schema({
     BusinessRoomAmount: { type: String, required: true },
     BusinessDetail: { type: String, required: true },
     BusinessTimeFrame: { type: String },
-    BusinessHours: {type: Boolean, require:true},
-    BusinessComments: { type: String, required: true } 
+    BusinessHours: {type: String, require:true},
+    BusinessComments: { type: String, required: true }, 
+    email: { type: String, required: true } 
 });
 
 const commercialModel = mongoose.model("commercial", commercialSchema);
