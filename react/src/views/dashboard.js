@@ -1,13 +1,96 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { Link } from 'react-router-dom'
+import axios from 'axios';
 
-import { Helmet } from 'react-helmet'
-
-import './dashboard.css'
+import { Helmet } from 'react-helmet';
+import './dashboard.css';
 import Menu from './menu';
 
 const Dashboard = (props) => {
+  const [cleans, setCleans] = useState([]);
+  const [error, setError] = useState(null);
+  const [userId, setUserId] = useState(null);
+
+  // Fetch userId from sessionStorage
+  const fetchUserData = useCallback(() => {
+    const storedUserId = sessionStorage.getItem("userId");
+    if (!storedUserId) {
+      // Redirect to home page if no userId is found
+      window.location.href = "/#/";
+      return;
+    }
+    setUserId(storedUserId);
+  }, []);
+
+  // Fetch cleans based on userId
+  const fetchCleans = useCallback(async () => {
+    if (!userId) return; // Skip if userId is not available
+    try {
+      const response = await axios({
+        method: 'get',
+        url: `http://localhost:4000/user-clean/${userId}`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    
+      // Check if the response data exists
+      if (response.data) {
+        console.log(response.data)
+        setCleans(response.data.cleanRecords);
+        setError(null);
+        console.log("Cleans fetched successfully:", response.data); // Optional: Debug log
+      } else {
+        throw new Error("No data found in the response.");
+      }
+    } catch (error) {
+      // Extract error details
+      let errorMessage = "An unexpected error occurred.";
+    
+      if (error.response) {
+        // The server responded with a status code outside the 2xx range
+        console.error("Server responded with an error:", error.response.status, error.response.data);
+        errorMessage = error.response.data?.message || `Server error: ${error.response.status}`;
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("No response received from the server:", error.request);
+        errorMessage = "No response received from the server. Please check your network.";
+      } else {
+        // An error occurred during the setup of the request
+        console.error("Error setting up the request:", error.message);
+        errorMessage = error.message;
+      }
+    
+      // Update state
+      setCleans([]);
+      setError(errorMessage);
+    }
+    
+  }, [userId]);
+
+  // Effect to fetch userId on mount
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
+
+  // Effect to fetch cleans when userId changes
+  useEffect(() => {
+    if (userId) {
+      fetchCleans();
+    }
+  }, [userId, fetchCleans]);
+
+  // GSAP animations
+  useEffect(() => {
+    gsap.timeline()
+      .fromTo(".dashboard-container118", { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7 })
+      .fromTo(".dashboard-container121", { y: -20, opacity: 0 }, { y: 0, opacity: 1, delay: 0.2, duration: 0.5 })
+      .fromTo(".dashboard-container160", { y: -20, opacity: 0 }, { y: 0, opacity: 1, delay: 0.4, duration: 0.5 })
+      .fromTo(".dashboard-container164", { x: -20, opacity: 0 }, { x: 0, opacity: 1, delay: 0.5, duration: 0.5 })
+      .fromTo(".dashboard-text207", { x: -20, opacity: 0 }, { x: 0, opacity: 1, delay: 0.6, duration: 0.5 })
+      .fromTo(".dashboard-container193", { x: -20, opacity: 0 }, { x: 0, opacity: 1, delay: 0.7, duration: 0.5 });
+  }, []);
 
   const handleMouseEnter = (button) => {
     gsap.to(button, {
@@ -120,20 +203,7 @@ const Dashboard = (props) => {
       ease: 'power2.out',
     });
   };
-
-  useEffect(()=>{
-    gsap.fromTo(".dashboard-container118", {y:-20, opacity:0},{y:0, opacity:1, duration:0.7, });
-    gsap.fromTo(".dashboard-container121", {y:-20, opacity:0},{y:0, opacity:1, delay:0.2,duration:0.5});
-    gsap.fromTo(".dashboard-container160", {y:-20, opacity:0},{y:0, opacity:1, delay:0.4,duration:0.5});
-    gsap.fromTo(".dashboard-container164", {x:-20, opacity:0},{x:0, opacity:1, delay:0.5,duration:0.5});
-    gsap.fromTo(".dashboard-text207", {x:-20, opacity:0},{x:0, opacity:1, delay:0.6,duration:0.5});
-    gsap.fromTo(".dashboard-container193", {x:-20, opacity:0},{x:0, opacity:1, delay:0.7,duration:0.5});
-
-    //    
-    
-  },[]);
-
-
+  
   return (
     <div className="dashboard-container100">
       <Helmet>
@@ -294,8 +364,58 @@ const Dashboard = (props) => {
                 id="custom-scroll"
                 className="custom-scroll dashboard-container122"
               >
-                <div className="dashboard-container123" onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)}
-        onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}>
+                {error ? (
+        <p style={{ color: 'red' }}>{error}</p>
+      ) : cleans.length > 0 ? (
+        <>
+          {cleans.map((clean) => (
+            // <div>
+            //   Clean ID: {clean.typeOfClean}, Bathroom: {clean.bathroom}, Kitchen: {clean.kitchen}, Bedroom: {clean.rooms},
+            // </div>
+            <div key={clean.id} className="dashboard-container123" onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)} onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}>
+            <div className="dashboard-container124">
+              <div className="dashboard-container125">
+                <div className="dashboard-container126">
+                  <img
+                    alt="image"
+                    src={require("./img/medal_x-200h.png")}
+                    className="dashboard-image21"
+                  />
+                  <div className="dashboard-container127">
+                    <div className="dashboard-container128"></div>
+                  </div>
+                </div>
+                <span className="dashboard-text119">{(clean.typeOfClean==280)?"Vacant":null}{(clean.typeOfClean==135)?"Deep":null}{(clean.typeOfClean==45)?"Regular":null} clean</span>
+              </div>
+              <div className="dashboard-container129">
+                <span className="dashboard-text120">{(clean.completed)?"Completed":"In Progress..."}</span>
+                <span className="dashboard-text121">
+                  <span>{(clean.typeOfClean==280)?"Vacant":null}{(clean.typeOfClean==135)?"Deep":null}{(clean.typeOfClean==45)?"Regular":null} clean</span>
+                  <br></br>
+                  <span>
+                  {clean.bathroom}X Bathroom, {clean.kitchen}X Kitchen, {clean.rooms}X Bedroom,...
+                  </span>
+                </span>
+              </div>
+            </div>
+            {(clean.completed)?<img
+              alt="image"
+              src={require("./img/click-400h.png")}
+              className="dashboard-image24"
+            />:<img
+              alt="image"
+              src={require("./img/progressbadge-400h.png")}
+              className="dashboard-image22"
+            />}
+            
+            </div>
+            
+          ))}
+        </>
+      ) : (
+        <p>No cleans found.</p>
+      )}
+                {/* <div className="dashboard-container123" onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)} onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}>
                   <div className="dashboard-container124">
                     <div className="dashboard-container125">
                       <div className="dashboard-container126">
@@ -327,8 +447,7 @@ const Dashboard = (props) => {
                     className="dashboard-image22"
                   />
                 </div>
-                <div className="dashboard-container130"  onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)}
-        onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}>
+                <div className="dashboard-container130"  onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)} onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}>
                   <div className="dashboard-container131">
                     <div className="dashboard-container132">
                       <div className="dashboard-container133">
@@ -358,8 +477,7 @@ const Dashboard = (props) => {
                     className="dashboard-image24"
                   />
                 </div>
-                <div className="dashboard-container137"  onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)}
-        onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}>
+                <div className="dashboard-container137"  onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)} onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}>
                   <div className="dashboard-container138">
                     <div className="dashboard-container139">
                       <div className="dashboard-container140">
@@ -389,8 +507,7 @@ const Dashboard = (props) => {
                     className="dashboard-image26"
                   />
                 </div>
-                <div className="dashboard-container144"  onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)}
-        onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}>
+                <div className="dashboard-container144"  onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)} onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}>
                   <div className="dashboard-container145">
                     <div className="dashboard-container146">
                       <div className="dashboard-container147">
@@ -420,8 +537,7 @@ const Dashboard = (props) => {
                     className="dashboard-image28"
                   />
                 </div>
-                <div className="dashboard-container151"  onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)}
-        onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}>
+                <div className="dashboard-container151"  onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)} onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}>
                   <div className="dashboard-container152">
                     <div className="dashboard-container153">
                       <div className="dashboard-container154">
@@ -450,7 +566,7 @@ const Dashboard = (props) => {
                     src={require("./img/click-400h.png")}
                     className="dashboard-image30"
                   />
-                </div>
+                </div> */}
               </div>
               <div className="dashboard-container158">
                 <span className="dashboard-text149">View all</span>

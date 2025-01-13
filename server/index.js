@@ -5,6 +5,7 @@ const connectDB = require('./db.js')
 const itemModel = require('./models/item.js')
 const userModel = require('./models/users.js')
 const commercialModel = require('./models/commercial.js')
+const contactModel = require('./models/contactmode.js')
 const cors = require('cors')
 
 require('dotenv').config
@@ -123,6 +124,40 @@ const SendMail = ({ BusinessName, BusinessSize, BusinessEnvironment, BusinessTyp
 }
 const response=[];
 
+// Send email
+
+const SendContactMail = ({ first_name,
+    last_name,
+    email,
+    phone,
+    message }, res) =>{
+    // url of the email 
+    const currentUrl = "http://localhost:4000"
+
+    const mailOption = {
+        from:"MS_acmUf3@trial-7dnvo4dxzd9g5r86.mlsender.net",
+        to:"adeemole@gmail.com",
+        subject:"Contact From Customer",
+        html:`<p>This message came from ${first_name} ${last_name}</p><p>With Email: ${email}</p><p>Phone Number: ${phone}</p><p>Here is the message:<br/> <b>${message}</b></p>`
+    }
+
+    transporter.sendMail(mailOption)
+    .then(()=>{
+        console.log("Email sent successfully")
+        // res.json({
+        //     status:"Pending",
+        //     message:"Email sent successfully"
+        // })
+    })
+    .catch((error)=>{
+        console.log(error)
+        // res.json({
+        //     status:"Failed",
+        //     message:"Email sending failed"
+        // })
+    })
+}
+
 
 app.post('/register', (req, res) => {
     const { first_name, last_name, email, phone, password, address, referral } = req.body;
@@ -188,6 +223,37 @@ app.post('/commercial', (req, res) => {
             BusinessHours,
             BusinessComments,
             email
+        }, res);
+    })
+    .catch(err => {
+        console.log(err)
+    });
+});
+
+// contactus
+
+app.post('/contactus', (req, res) => {
+    const { first_name, last_name, email, phone, message} = req.body;
+      
+    contactModel.create({
+        first_name,
+        last_name,
+        email,
+        phone,
+        message
+    })
+    .then(contacts => {
+        res.json({
+            status: "Pending",
+            message: "Message submitted successfully",
+        });
+        
+        SendContactMail({
+            first_name,
+            last_name,
+            email,
+            phone,
+            message
         }, res);
     })
     .catch(err => {
@@ -294,12 +360,46 @@ app.post('/clean', (req, res) => {
         pet: Animal,
         spComments: spComments,
         discount: discountNew,
-        email
+        email,
+        completed:false
     }).then(() => {
         res.status(201).send("Clean record created successfully");
     }).catch((error) => {
         res.status(500).send("Error creating clean record: " + error.message);
     });
+});
+
+// Get Cleans by User ID
+app.get('/user-clean/:id', async (req, res) => {
+    try {
+        const userId = req.params.id;
+
+        // Find the user by ID
+        const user = await userModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        // console.log(user)
+
+        // Find cleaning records with the user's email
+        const cleanRecords = await cleanModel.
+        find({ email: user.email })
+        .sort({ date: -1 }); // Sort by date in descending order;
+
+        // Respond with user info and cleaning records
+        res.status(200).json({
+            user: {
+                first_name: user.first_name,
+                last_name: user.last_name,
+                email: user.email,
+            },
+            cleanRecords: cleanRecords
+        });
+        console.log(cleanRecords)
+    } catch (error) {
+        console.error('Error fetching user or cleaning records:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
 });
 
 app.post('/referrals', (req, res) => {

@@ -35,7 +35,8 @@ const cleanSchema = new mongoose.Schema({
     pet: String,
     spComments: String,
     discount: String,
-    email:String
+    email:String,
+    completed:Boolean
 
 })
 

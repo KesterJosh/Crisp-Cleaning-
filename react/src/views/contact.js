@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 
 import { Helmet } from 'react-helmet'
+import axios from 'axios';
 import gsap from 'gsap';
 import { Player, Controls } from '@lottiefiles/react-lottie-player'
 import { Link } from 'react-router-dom'
@@ -148,6 +149,34 @@ const Contact = (props) => {
     });
     
   };
+
+  const [first_name, setFName] = useState('');
+  const [last_name, setLName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleSubmit =(e)=>{
+      e.preventDefault();
+      axios.post('http://localhost:4000/contactus',{first_name, last_name, email, phone, message})
+      .then(result=>{
+        console.log(result);
+        if(result.data="Successful"){
+          alert("Your informations has been submitted successfully. We will contact you after going through the info")
+        }else{
+          alert(result.data);
+        }
+      })
+      .catch(error=>{
+        console.log(error)
+        // alert(error.message);
+        if(error.message==="Request failed with status code 400"){
+          alert("This email has been registered before. Kindly Login")
+        }else{
+          alert("Something went wrong! Check your internet connection")
+        }
+      });
+    }
 
   return (
     <div className="contact-container">
@@ -356,74 +385,87 @@ const Contact = (props) => {
               </div>
             </div>
           </div>
-          <div className="contact-container30">
-            <div className="contact-container31">
-              <div className="contact-container32">
-                <h1 className="contact-text33">Send us a message</h1>
-                <span className="contact-text34">
-                  <span>You can reach out to us anytime at </span>
-                  <a href='mailto:support@crispcleaningcorp.com.au' className="contact-text36" onMouseOver={clickEmail} onMouseLeave={unclickEmail}>
-                    support@crispcleaningcorp.com.au
-                  </a>
-                </span>
+          <form onSubmit={handleSubmit} style={{width:'100%'}}> 
+            <div className="contact-container30">
+              <div className="contact-container31">
+                <div className="contact-container32">
+                  <h1 className="contact-text33">Send us a message</h1>
+                  <span className="contact-text34">
+                    <span>You can reach out to us anytime at </span>
+                    <a href='mailto:support@crispcleaningcorp.com.au' className="contact-text36" onMouseOver={clickEmail} onMouseLeave={unclickEmail}>
+                      support@crispcleaningcorp.com.au
+                    </a>
+                  </span>
+                </div>
+                <div className="contact-container33">
+                  <div className="contact-container34">
+                    <div className="contact-container35">
+                      <span className="contact-text37">First Name</span>
+                      <input
+                        type="text"
+                        name="f_name"
+                        onChange={(e)=>setFName(e.target.value)}
+                        value={first_name}
+                        placeholder="John"
+                        className="contact-textinput input"
+                      />
+                    </div>
+                    <div className="contact-container36">
+                      <span className="contact-text38">Last Name</span>
+                      <input
+                        type="text"
+                        onChange={(e)=>setLName(e.target.value)}
+                        value={last_name}
+                        name="s_name"
+                        placeholder="Doe"
+                        className="contact-textinput1 input"
+                      />
+                    </div>
+                  </div>
+                  <div className="contact-container37">
+                    <div className="contact-container38">
+                      <span className="contact-text39">Email Address</span>
+                      <input
+                        type="email"
+                        onChange={(e)=>setEmail(e.target.value)}
+                        value={email}
+                        name="email"
+                        placeholder="jhonsmith@gmail.com"
+                        className="contact-textinput2 input"
+                      />
+                    </div>
+                    <div className="contact-container39">
+                      <span className="contact-text40">Phone Number</span>
+                      <input
+                        type="text"
+                        name="phone"
+                        onChange={(e)=>setPhone(e.target.value)}
+                        value={phone}
+                        placeholder="0421 172 719"
+                        className="contact-textinput3 input"
+                      />
+                    </div>
+                  </div>
+                  <div className="contact-container40">
+                    <div className="contact-container41">
+                      <span className="contact-text41">Message</span>
+                      <textarea 
+                      onChange={(e)=>setMessage(e.target.value)}
+                      value={message}
+                      className="contact-container42" placeholder="Please write your message to us here...">
+                        {/* <span className="contact-text42">
+                          Please write your message to us here...
+                        </span> */}
+                      </textarea>
+                    </div>
+                  </div>
+                </div>
+                <button type="submit"  onMouseEnter={activateX} onMouseLeave={offX} style={{cursor:'pointer'}} className="contact-button1 button">
+                  Submit
+                </button>
               </div>
-              <div className="contact-container33">
-                <div className="contact-container34">
-                  <div className="contact-container35">
-                    <span className="contact-text37">First Name</span>
-                    <input
-                      type="text"
-                      name="f_name"
-                      placeholder="John"
-                      className="contact-textinput input"
-                    />
-                  </div>
-                  <div className="contact-container36">
-                    <span className="contact-text38">Last Name</span>
-                    <input
-                      type="text"
-                      name="s_name"
-                      placeholder="Doe"
-                      className="contact-textinput1 input"
-                    />
-                  </div>
-                </div>
-                <div className="contact-container37">
-                  <div className="contact-container38">
-                    <span className="contact-text39">Email Address</span>
-                    <input
-                      type="text"
-                      name="email"
-                      placeholder="jhonsmith@gmail.com"
-                      className="contact-textinput2 input"
-                    />
-                  </div>
-                  <div className="contact-container39">
-                    <span className="contact-text40">Phone Number</span>
-                    <input
-                      type="text"
-                      name="password"
-                      placeholder="0421 172 719"
-                      className="contact-textinput3 input"
-                    />
-                  </div>
-                </div>
-                <div className="contact-container40">
-                  <div className="contact-container41">
-                    <span className="contact-text41">Message</span>
-                    <textarea className="contact-container42" placeholder="Please write your message to us here...">
-                      {/* <span className="contact-text42">
-                        Please write your message to us here...
-                      </span> */}
-                    </textarea>
-                  </div>
-                </div>
-              </div>
-              <button type="button"  onMouseEnter={activateX} onMouseLeave={offX} style={{cursor:'pointer'}} className="contact-button1 button">
-                Submit
-              </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
 
