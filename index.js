@@ -23,7 +23,7 @@ const cleanModel = require("./models/cleans.js");
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use(express.static(publicPath));
+// app.use(express.static(publicPath));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
