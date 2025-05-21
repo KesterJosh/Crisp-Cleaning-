@@ -1,5 +1,4 @@
 // mongodb+srv://adeyelukester2:7EoKqh6yYM3uEd2f@crispsite.iuhh1.mongodb.net/?retryWrites=true&w=majority&appName=CrispSite
-const publicPath = path.join(__dirname, "Views");
 const express = require("express");
 const connectDB = require("./db.js");
 const itemModel = require("./models/item.js");
@@ -9,6 +8,11 @@ const contactModel = require("./models/contactmode.js");
 const cors = require("cors");
 const rewardRoutes = require("./routes/rewardRoutes.js");
 const seedRewards = require("./utils/seedRewards.js");
+const bodyParser = require("body-parser");
+const path = require("path");
+const publicPath = path.join(__dirname, "Views");
+require("dotenv").config();
+
 
 require("dotenv").config;
 const bcrypt = require("bcrypt");
@@ -19,6 +23,9 @@ const cleanModel = require("./models/cleans.js");
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(express.static(publicPath));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", async (req, res) => {
   const items = await itemModel.find();
