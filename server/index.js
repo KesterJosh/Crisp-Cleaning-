@@ -10,7 +10,7 @@ const rewardRoutes = require("./routes/rewardRoutes.js");
 const seedRewards = require("./utils/seedRewards.js");
 const bodyParser = require("body-parser");
 const path = require("path");
-const publicPath = path.join(__dirname, "Views");
+// const publicPath = path.join(__dirname, "Views");
 require("dotenv").config();
 
 
@@ -559,6 +559,6 @@ app.listen(4000, () => {
   console.log("App is running");
 });
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(publicPath, "index.html"));
-});
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(publicPath, "index.html"));
+// });
