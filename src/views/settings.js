@@ -536,7 +536,7 @@ const Settings = (props) => {
     }
     setId(userId);
 
-    axios.post('https://api-crisp-cleaning.onrender.com:4000/data', { userId })
+    axios.post('https://api-crisp-cleaning.onrender.com/data', { userId })
         .then(result => {
             console.log("User Data:", result.data);
             setData(result.data)

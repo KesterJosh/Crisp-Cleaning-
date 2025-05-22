@@ -29,7 +29,7 @@ const Dashboard = (props) => {
     try {
       const response = await axios({
         method: 'get',
-        url: `http://localhost:4000/user-clean/${userId}`,
+        url: `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`,
         headers: {
           'Content-Type': 'application/json',
         },

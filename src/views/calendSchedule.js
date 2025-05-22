@@ -22,7 +22,7 @@ const CalenSchedule = ({
     if (!userId) return;
     try {
       const response = await axios.get(
-        `http://localhost:4000/user-clean/${userId}`
+        `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`
       );
       if (response.data && response.data.cleanRecords) {
         setCleans(response.data.cleanRecords); // Save cleans to state
