@@ -178,7 +178,7 @@ const Reward = (props) => {
     if (!userId) return;
     try {
       const response = await axios.get(
-        `http://localhost:4000/user-clean/${userId}`
+        `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`
       );
       if (response.data && response.data.cleanRecords) {
         setCleans(response.data.cleanRecords); // Save cleans to state
@@ -201,7 +201,7 @@ const Reward = (props) => {
   useEffect(() => {
     if (!userId) return;
 
-    fetch(`http://localhost:4000/api/rewards/${userId}`)
+    fetch(`https://api-crisp-cleaning.onrender.com/api/rewards/${userId}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error(`API error: ${res.status}`);

@@ -536,7 +536,7 @@ const Settings = (props) => {
     }
     setId(userId);
 
-    axios.post('http://localhost:4000/data', { userId })
+    axios.post('https://api-crisp-cleaning.onrender.com:4000/data', { userId })
         .then(result => {
             console.log("User Data:", result.data);
             setData(result.data)
@@ -572,7 +572,7 @@ const Settings = (props) => {
         // console.log("Last Name:", "");         // No last name
     }
 
-    axios.put('http://localhost:4000/update', {
+    axios.put('https://api-crisp-cleaning.onrender.com/update', {
       id: id,
       first_name: firstName,
       last_name: lastName,

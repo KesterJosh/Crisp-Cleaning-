@@ -1228,7 +1228,7 @@ const [MyDate, setMyDate] = useState(null);
     e.preventDefault();
 
     axios
-      .post("http://localhost:4000/register", {
+      .post("https://api-crisp-cleaning.onrender.com/register", {
         first_name,
         last_name,
         email,
@@ -1291,7 +1291,7 @@ const [MyDate, setMyDate] = useState(null);
     // e.preventDefault();
 
     axios
-      .post("http://localhost:4000/commercial", {
+      .post("https://api-crisp-cleaning.onrender.com/commercial", {
         BusinessName,
         BusinessSize,
         BusinessEnvironment,
@@ -1361,7 +1361,7 @@ const [MyDate, setMyDate] = useState(null);
     };
 
     axios
-      .post("http://localhost:4000/clean", requestData) // Replace with your server endpoint
+      .post("https://api-crisp-cleaning.onrender.com/clean", requestData) // Replace with your server endpoint
       .then((response) => {
         alert("Clean record created successfully!");
         OpenLogin();
