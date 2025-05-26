@@ -3597,19 +3597,6 @@ const Home = (props) => {
       </div>
       <div className="home-container228">
         <div className="home-container229">
-          {/* //Infos */}
-          Extra's {`=> `}
-          {windows}/ {walls}/ {Cabinets}/ {organization}/ {blind}/ {stovetop}/{" "}
-          {fridge}/ {Dishwasher}/ {garage}/ {microwave}/ {Laundry}/ {tiles}/
-          Rooms:{sliderValueO}/ Others:{sliderValueOX}/ Bathrooms:{sliderValue}/
-          Kitchen:{sliderValueK}/ Type of clean(45 regular, 135 deep, 280 vacant
-          ):{type}/ Not OneTime:{CleanType ? "yes" : "No"}/ Interval
-          Value(15weekly, 10forthnightly, 5monthly):{intervalValue}/ SetDays:
-          Mon{daySelect1}, Tue{daySelect2}, Wed{daySelect3}, Thur{daySelect4},
-          Fri{daySelect5}, Sat{daySelect6}, Sun{daySelect7} {`>>>`}{" "}
-          GetInside(opt):{GetInside}/ Park(opt):{Park}/ Animal(opt):{Animal}/
-          Comments:{spComments}/ Discount:{discountNew}/ Date:{MyDate}/ time:
-          {timeFrame}
           <span className="home-text161">
             <span>
               Get To
