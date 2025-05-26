@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
+import "./popupReview.css";
 
 import { Helmet } from "react-helmet";
 
@@ -9,8 +10,91 @@ import Menu from "./menu";
 import Popreward from "../components/popreward";
 import { useCallback } from "react";
 import axios from "axios";
+import { useRef } from "react";
 
 const Reward = (props) => {
+  const [showPopup, setShowPopup] = useState(false);
+  const [mode, setMode] = useState("text");
+  const popupRef = useRef();
+  const [reviewText, setReviewText] = useState("");
+  const [videoFile, setVideoFile] = useState(null);
+  const [videoURL, setVideoURL] = useState(null);
+
+  useEffect(() => {
+    if (showPopup) {
+      gsap.from(popupRef.current, {
+        duration: 0.4,
+        scale: 0.8,
+        opacity: 0,
+        ease: "power2.out",
+      });
+    }
+  }, [showPopup]);
+
+  const handleVideoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const maxSizeInBytes = 10 * 1024 * 1024;
+      if (file.size > maxSizeInBytes) {
+        alert("Video size exceeds 10MB limit. Please choose a smaller file.");
+        e.target.value = null;
+        setVideoFile(null);
+        setVideoURL(null);
+        return;
+      }
+
+      setVideoFile(file);
+      const url = URL.createObjectURL(file);
+      setVideoURL(url);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user) {
+      alert("User information is missing. Please log in again.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("reviewType", mode);
+    formData.append("userId", user.userId);
+    formData.append("userName", `${user.first_name} ${user.last_name}`);
+
+    if (mode === "text") {
+      formData.append("text", reviewText);
+    } else {
+      formData.append("video", videoFile);
+    }
+
+    try {
+      const res = await fetch("http://localhost:4000/api/reviews", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Review submitted!");
+      } else {
+        alert(data.message || "Submission failed.");
+      }
+
+      setShowPopup(false);
+      setReviewText("");
+      setVideoFile(null);
+      setVideoURL(null);
+      setMode("text");
+    } catch (err) {
+      console.error(err);
+      alert("An error occurred while submitting the review.");
+    }
+  };
+
   const handleMouseEnterFade = (button) => {
     gsap.to(button, {
       scale: 1.1,
@@ -418,16 +502,81 @@ const Reward = (props) => {
             <span className="reward-text24">Book Now</span>
           </div>
         </div>
+
+        {showPopup && (
+          <div className="popup-overlay">
+            <div className="popup-content" ref={popupRef}>
+              <button className="close-btn" onClick={() => setShowPopup(false)}>
+                ×
+              </button>
+              <h2>Add Your Review</h2>
+
+              <div className="mode-switch">
+                <button
+                  className={mode === "text" ? "active" : ""}
+                  onClick={() => setMode("text")}
+                >
+                  Text Review
+                </button>
+                <button
+                  className={mode === "video" ? "active" : ""}
+                  onClick={() => setMode("video")}
+                >
+                  Video Review
+                </button>
+              </div>
+
+              <form onSubmit={handleSubmit}>
+                {mode === "text" ? (
+                  <textarea
+                    className="text-input"
+                    placeholder="Write your review..."
+                    value={reviewText}
+                    onChange={(e) => setReviewText(e.target.value)}
+                    required
+                  />
+                ) : (
+                  <>
+                    <input
+                      type="file"
+                      accept="video/*"
+                      onChange={handleVideoChange}
+                      required
+                    />
+                    {videoURL && (
+                      <video
+                        controls
+                        className="video-preview"
+                        src={videoURL}
+                      />
+                    )}
+                  </>
+                )}
+
+                <button type="submit" className="submit-btn">
+                  Submit Review
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
         <div className="reward-container29">
           <div className="reward-container30">
             <div className="reward-container31">
-              <span
-                className="reward-text25"
-                onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
-                onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
-              >
-                Challenges
-              </span>
+              <div className="review-cover">
+                <span
+                  className="reward-text25"
+                  onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
+                  onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
+                >
+                  Challenges
+                </span>
+                <span className="review" onClick={() => setShowPopup(true)}>
+                  Add review
+                </span>
+              </div>
+
               <span className="reward-text26">
                 Complete challenges for lifetime rewards
               </span>

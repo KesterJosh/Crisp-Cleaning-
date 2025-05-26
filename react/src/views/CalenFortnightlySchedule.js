@@ -215,7 +215,9 @@ const CalenFortnightlySchedule = ({
 
         {matchingCleans.map((clean, i) => (
           <div key={i} className="scheduled-clean">
-            Booked for {clean.typeOfClean}
+            {clean.typeOfClean == 280 ? "Vacant" : null}
+            {clean.typeOfClean == 135 ? "Deep" : null}
+            {clean.typeOfClean == 45 ? "Regular" : null} Clean
           </div>
         ))}
       </div>

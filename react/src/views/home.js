@@ -697,7 +697,7 @@ const Home = (props) => {
   };
 
   // const Total = 0;
-  const [Total, setTotal] = useState();
+  const [Total, setTotal] = useState(0);
   const [type, setType] = useState(45);
   // Extra's
   const [windows, setWindows] = useState(0);
@@ -1104,7 +1104,7 @@ const Home = (props) => {
     );
   };
 
-const [MyDate, setMyDate] = useState(null);
+  const [MyDate, setMyDate] = useState(null);
 
   const setSelectedDate = (formattedDate) => {
     setMyDate(formattedDate);
@@ -1324,6 +1324,7 @@ const [MyDate, setMyDate] = useState(null);
 
   const handleSubmitClean = () => {
     const requestData = {
+      Total,
       type,
       sliderValueO,
       sliderValueK,
@@ -1359,7 +1360,7 @@ const [MyDate, setMyDate] = useState(null);
       spComments,
       discountNew,
     };
-
+    console.log(requestData);
     axios
       .post("http://localhost:4000/clean", requestData) // Replace with your server endpoint
       .then((response) => {

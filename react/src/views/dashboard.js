@@ -1,14 +1,15 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import gsap from 'gsap';
-import { Link } from 'react-router-dom'
-import axios from 'axios';
+import React, { useEffect, useState, useCallback } from "react";
+import gsap from "gsap";
+import { Link } from "react-router-dom";
+import axios from "axios";
 
-import { Helmet } from 'react-helmet';
-import './dashboard.css';
-import Menu from './menu';
+import { Helmet } from "react-helmet";
+import "./dashboard.css";
+import Menu from "./menu";
 
 const Dashboard = (props) => {
   const [cleans, setCleans] = useState([]);
+  const [allCleans, setAllCleans] = useState([]);
   const [error, setError] = useState(null);
   const [userId, setUserId] = useState(null);
 
@@ -28,16 +29,16 @@ const Dashboard = (props) => {
     if (!userId) return; // Skip if userId is not available
     try {
       const response = await axios({
-        method: 'get',
+        method: "get",
         url: `http://localhost:4000/user-clean/${userId}`,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
-    
+
       // Check if the response data exists
       if (response.data) {
-        console.log(response.data)
+        console.log(response.data);
         setCleans(response.data.cleanRecords);
         setError(null);
         console.log("Cleans fetched successfully:", response.data); // Optional: Debug log
@@ -47,27 +48,83 @@ const Dashboard = (props) => {
     } catch (error) {
       // Extract error details
       let errorMessage = "An unexpected error occurred.";
-    
+
       if (error.response) {
         // The server responded with a status code outside the 2xx range
-        console.error("Server responded with an error:", error.response.status, error.response.data);
-        errorMessage = error.response.data?.message || `Server error: ${error.response.status}`;
+        console.error(
+          "Server responded with an error:",
+          error.response.status,
+          error.response.data
+        );
+        errorMessage =
+          error.response.data?.message ||
+          `Server error: ${error.response.status}`;
       } else if (error.request) {
         // The request was made but no response was received
         console.error("No response received from the server:", error.request);
-        errorMessage = "No response received from the server. Please check your network.";
+        errorMessage =
+          "No response received from the server. Please check your network.";
       } else {
         // An error occurred during the setup of the request
         console.error("Error setting up the request:", error.message);
         errorMessage = error.message;
       }
-    
+
       // Update state
       setCleans([]);
       setError(errorMessage);
     }
-    
   }, [userId]);
+
+  const fetchAllCleans = useCallback(async () => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `http://localhost:4000/cleans`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      // Check if the response data exists
+      if (response.data) {
+        console.log(response.data);
+        setAllCleans(response.data.cleanRecords);
+        setError(null);
+        console.log("All Cleans fetched successfully:", response.data); // Optional: Debug log
+      } else {
+        throw new Error("No data found in the response.");
+      }
+    } catch (error) {
+      // Extract error details
+      let errorMessage = "An unexpected error occurred.";
+
+      if (error.response) {
+        // The server responded with a status code outside the 2xx range
+        console.error(
+          "Server responded with an error:",
+          error.response.status,
+          error.response.data
+        );
+        errorMessage =
+          error.response.data?.message ||
+          `Server error: ${error.response.status}`;
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("No response received from the server:", error.request);
+        errorMessage =
+          "No response received from the server. Please check your network.";
+      } else {
+        // An error occurred during the setup of the request
+        console.error("Error setting up the request:", error.message);
+        errorMessage = error.message;
+      }
+
+      // Update state
+      setAllCleans([]);
+      setError(errorMessage);
+    }
+  }, []);
 
   // Effect to fetch userId on mount
   useEffect(() => {
@@ -78,18 +135,44 @@ const Dashboard = (props) => {
   useEffect(() => {
     if (userId) {
       fetchCleans();
+      fetchAllCleans();
     }
   }, [userId, fetchCleans]);
 
   // GSAP animations
   useEffect(() => {
-    gsap.timeline()
-      .fromTo(".dashboard-container118", { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7 })
-      .fromTo(".dashboard-container121", { y: -20, opacity: 0 }, { y: 0, opacity: 1, delay: 0.2, duration: 0.5 })
-      .fromTo(".dashboard-container160", { y: -20, opacity: 0 }, { y: 0, opacity: 1, delay: 0.4, duration: 0.5 })
-      .fromTo(".dashboard-container164", { x: -20, opacity: 0 }, { x: 0, opacity: 1, delay: 0.5, duration: 0.5 })
-      .fromTo(".dashboard-text207", { x: -20, opacity: 0 }, { x: 0, opacity: 1, delay: 0.6, duration: 0.5 })
-      .fromTo(".dashboard-container193", { x: -20, opacity: 0 }, { x: 0, opacity: 1, delay: 0.7, duration: 0.5 });
+    gsap
+      .timeline()
+      .fromTo(
+        ".dashboard-container118",
+        { y: -20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.7 }
+      )
+      .fromTo(
+        ".dashboard-container121",
+        { y: -20, opacity: 0 },
+        { y: 0, opacity: 1, delay: 0.2, duration: 0.5 }
+      )
+      .fromTo(
+        ".dashboard-container160",
+        { y: -20, opacity: 0 },
+        { y: 0, opacity: 1, delay: 0.4, duration: 0.5 }
+      )
+      .fromTo(
+        ".dashboard-container164",
+        { x: -20, opacity: 0 },
+        { x: 0, opacity: 1, delay: 0.5, duration: 0.5 }
+      )
+      .fromTo(
+        ".dashboard-text207",
+        { x: -20, opacity: 0 },
+        { x: 0, opacity: 1, delay: 0.6, duration: 0.5 }
+      )
+      .fromTo(
+        ".dashboard-container193",
+        { x: -20, opacity: 0 },
+        { x: 0, opacity: 1, delay: 0.7, duration: 0.5 }
+      );
   }, []);
 
   const handleMouseEnter = (button) => {
@@ -97,7 +180,7 @@ const Dashboard = (props) => {
       scale: 1.05,
       opacity: 0.9,
       duration: 0.3,
-      ease: 'power2.out',
+      ease: "power2.out",
     });
   };
 
@@ -106,104 +189,104 @@ const Dashboard = (props) => {
       scale: 1,
       opacity: 1,
       duration: 0.3,
-      ease: 'power2.out',
+      ease: "power2.out",
     });
   };
 
   const handleMouseEnterFade = (button) => {
     gsap.to(button, {
       // opacity: 0.8,
-      background:'rgba(250,250,250,0.7)',
+      background: "rgba(250,250,250,0.7)",
       // borderRadius:'100%',
       duration: 0.3,
-      ease: 'power2.out',
+      ease: "power2.out",
     });
   };
 
   const handleMouseLeaveFade = (button) => {
     gsap.to(button, {
-      background:'rgba(250,250,250,0)',
+      background: "rgba(250,250,250,0)",
       opacity: 1,
       duration: 0.3,
-      ease: 'power2.out',
+      ease: "power2.out",
     });
   };
   const handleMouseEnterFadeY = (button) => {
     gsap.to(button, {
       // opacity: 0.8,
-      background:'rgba(250,250,250,0.7)',
+      background: "rgba(250,250,250,0.7)",
       // borderRadius:'100%',
       duration: 0.3,
-      ease: 'power2.out',
+      ease: "power2.out",
     });
   };
 
   const handleMouseLeaveFadeY = (button) => {
     gsap.to(button, {
-      background:'#FFE2D0',
+      background: "#FFE2D0",
       opacity: 1,
       duration: 0.3,
-      ease: 'power2.out',
+      ease: "power2.out",
     });
   };
 
   const Colorit = (button) => {
     gsap.to(button, {
       // opacity: 0.8,
-      color:'#ff914d',
+      color: "#ff914d",
       // borderRadius:'100%',
       duration: 0.3,
-      ease: 'power2.out',
+      ease: "power2.out",
     });
   };
 
   const unColorit = (button) => {
     gsap.to(button, {
-      color:'#1F3042',
+      color: "#1F3042",
       opacity: 1,
       duration: 0.3,
-      ease: 'power2.out',
+      ease: "power2.out",
     });
   };
 
   const SearchColorit = (button) => {
     gsap.to(button, {
       // opacity: 0.8,
-      borderColor:'#ff914d',
+      borderColor: "#ff914d",
       // borderRadius:'100%',
       duration: 0.3,
-      ease: 'power2.out',
+      ease: "power2.out",
     });
   };
 
   const SearchunColorit = (button) => {
     gsap.to(button, {
-      borderColor:'#C3C3C3',
+      borderColor: "#C3C3C3",
       opacity: 1,
       duration: 0.3,
-      ease: 'power2.out',
+      ease: "power2.out",
     });
   };
 
   const handleMouseEnterFadex = (button) => {
     gsap.to(button, {
       // opacity: 0.8,
-      background:'rgba(0,0,0,0.1)',
+      background: "rgba(0,0,0,0.1)",
       // borderRadius:'100%',
       duration: 0.3,
-      ease: 'power2.out',
+      ease: "power2.out",
     });
   };
 
   const handleMouseLeaveFadex = (button) => {
     gsap.to(button, {
-      background:'rgba(250,250,250,0)',
+      background: "rgba(250,250,250,0)",
       opacity: 1,
       duration: 0.3,
-      ease: 'power2.out',
+      ease: "power2.out",
     });
   };
-  
+
   return (
     <div className="dashboard-container100">
       <Helmet>
@@ -219,11 +302,14 @@ const Dashboard = (props) => {
         />
       </Helmet>
       <div className="dashboard-container101">
-        <Link to="/"> <img
-          alt="image"
-          src={require("./img/logo-200h.png")}
-          className="dashboard-image10"
-        /></Link>
+        <Link to="/">
+          {" "}
+          <img
+            alt="image"
+            src={require("./img/logo-200h.png")}
+            className="dashboard-image10"
+          />
+        </Link>
         <div className="dashboard-container102">
           <span className="dashboard-text100">OVERVIEW</span>
           <div className="dashboard-container103">
@@ -241,8 +327,13 @@ const Dashboard = (props) => {
                 src={require("./img/calenderx-200h.png")}
                 className="dashboard-image12"
               />
-              <span className="dashboard-text102" onMouseEnter={(e) => Colorit(e.currentTarget)}
-        onMouseLeave={(e) => unColorit(e.currentTarget)}>Schedule</span>
+              <span
+                className="dashboard-text102"
+                onMouseEnter={(e) => Colorit(e.currentTarget)}
+                onMouseLeave={(e) => unColorit(e.currentTarget)}
+              >
+                Schedule
+              </span>
             </div>
           </Link>
           <Link to="/referral" className="dashboard-navlink11">
@@ -252,8 +343,13 @@ const Dashboard = (props) => {
                 src={require("./img/link-200h.png")}
                 className="dashboard-image13"
               />
-              <span className="dashboard-text103" onMouseEnter={(e) => Colorit(e.currentTarget)}
-        onMouseLeave={(e) => unColorit(e.currentTarget)}>Referrals</span>
+              <span
+                className="dashboard-text103"
+                onMouseEnter={(e) => Colorit(e.currentTarget)}
+                onMouseLeave={(e) => unColorit(e.currentTarget)}
+              >
+                Referrals
+              </span>
             </div>
           </Link>
           <Link to="/reward" className="dashboard-navlink12">
@@ -263,8 +359,13 @@ const Dashboard = (props) => {
                 src={require("./img/lock1-200h.png")}
                 className="dashboard-image14"
               />
-              <span className="dashboard-text104" onMouseEnter={(e) => Colorit(e.currentTarget)}
-        onMouseLeave={(e) => unColorit(e.currentTarget)}>Rewards</span>
+              <span
+                className="dashboard-text104"
+                onMouseEnter={(e) => Colorit(e.currentTarget)}
+                onMouseLeave={(e) => unColorit(e.currentTarget)}
+              >
+                Rewards
+              </span>
             </div>
           </Link>
           <Link to="/cleanerspass" className="dashboard-navlink13">
@@ -274,8 +375,13 @@ const Dashboard = (props) => {
                 src={require("./img/key-200h.png")}
                 className="dashboard-image15"
               />
-              <span className="dashboard-text105" onMouseEnter={(e) => Colorit(e.currentTarget)}
-        onMouseLeave={(e) => unColorit(e.currentTarget)}>Cleaner's Pass</span>
+              <span
+                className="dashboard-text105"
+                onMouseEnter={(e) => Colorit(e.currentTarget)}
+                onMouseLeave={(e) => unColorit(e.currentTarget)}
+              >
+                Cleaner's Pass
+              </span>
             </div>
           </Link>
         </div>
@@ -288,8 +394,13 @@ const Dashboard = (props) => {
                 src={require("./img/settings_x-200h.png")}
                 className="dashboard-image16"
               />
-              <span className="dashboard-text107" onMouseEnter={(e) => Colorit(e.currentTarget)}
-        onMouseLeave={(e) => unColorit(e.currentTarget)}>Settings</span>
+              <span
+                className="dashboard-text107"
+                onMouseEnter={(e) => Colorit(e.currentTarget)}
+                onMouseLeave={(e) => unColorit(e.currentTarget)}
+              >
+                Settings
+              </span>
             </div>
           </Link>
           <div className="dashboard-container110">
@@ -311,8 +422,11 @@ const Dashboard = (props) => {
               src={require("./img/question-200h.png")}
               className="dashboard-image18"
             />
-            <div className="dashboard-container114" onMouseEnter={(e) => SearchColorit(e.currentTarget)}
-        onMouseLeave={(e) => SearchunColorit(e.currentTarget)}>
+            <div
+              className="dashboard-container114"
+              onMouseEnter={(e) => SearchColorit(e.currentTarget)}
+              onMouseLeave={(e) => SearchunColorit(e.currentTarget)}
+            >
               <img
                 alt="image"
                 src={require("./img/search-200h.png")}
@@ -322,8 +436,11 @@ const Dashboard = (props) => {
               <input type="text" className="dashboard-textinput input" />
             </div>
           </div>
-          <div className="dashboard-container115"  onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
-        onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}>
+          <div
+            className="dashboard-container115"
+            onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
+            onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
+          >
             <span className="dashboard-text111">Book Now</span>
           </div>
           <Link to="/settingsroom" className="dashboard-navlink15">
@@ -338,19 +455,46 @@ const Dashboard = (props) => {
           <div className="dashboard-container117">
             <div className="dashboard-container118">
               <div className="dashboard-container119">
-                <span className="dashboard-text112">Upcoming: DD/MM/YY</span>
+                <span className="dashboard-text112">
+                  Upcoming:{" "}
+                  {cleans.length > 0 ? cleans[0].date : "No upcoming cleans"}
+                </span>
                 <span className="dashboard-text113">
                   <br></br>
-                  <span>Scheduled every ‘frequency’</span>
+                  <span>
+                    Scheduled for
+                    {cleans.length > 0 && (
+                      <span className="">
+                        {" "}
+                        "
+                        {cleans[0].typeOfClean == 280
+                          ? "Vacant"
+                          : cleans[0].typeOfClean == 135
+                          ? "Deep"
+                          : cleans[0].typeOfClean == 45
+                          ? "Regular"
+                          : "Unknown"}{" "}
+                        Clean"
+                      </span>
+                    )}
+                  </span>
                 </span>
               </div>
               <div className="dashboard-container120">
-                <button type="button" className="dashboard-button1 button" onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
-        onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}>
+                <button
+                  type="button"
+                  className="dashboard-button1 button"
+                  onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
+                  onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
+                >
                   Request cancellation
                 </button>
-                <button type="button" className="dashboard-button2 button" onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
-        onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}>
+                <button
+                  type="button"
+                  className="dashboard-button2 button"
+                  onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
+                  onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
+                >
                   Edit booking
                 </button>
               </div>
@@ -365,56 +509,81 @@ const Dashboard = (props) => {
                 className="custom-scroll dashboard-container122"
               >
                 {error ? (
-        <p style={{ color: 'red' }}>{error}</p>
-      ) : cleans.length > 0 ? (
-        <>
-          {cleans.map((clean) => (
-            // <div>
-            //   Clean ID: {clean.typeOfClean}, Bathroom: {clean.bathroom}, Kitchen: {clean.kitchen}, Bedroom: {clean.rooms},
-            // </div>
-            <div key={clean.id} className="dashboard-container123" onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)} onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}>
-            <div className="dashboard-container124">
-              <div className="dashboard-container125">
-                <div className="dashboard-container126">
-                  <img
-                    alt="image"
-                    src={require("./img/medal_x-200h.png")}
-                    className="dashboard-image21"
-                  />
-                  <div className="dashboard-container127">
-                    <div className="dashboard-container128"></div>
-                  </div>
-                </div>
-                <span className="dashboard-text119">{(clean.typeOfClean==280)?"Vacant":null}{(clean.typeOfClean==135)?"Deep":null}{(clean.typeOfClean==45)?"Regular":null} clean</span>
-              </div>
-              <div className="dashboard-container129">
-                <span className="dashboard-text120">{(clean.completed)?"Completed":"In Progress..."}</span>
-                <span className="dashboard-text121">
-                  <span>{(clean.typeOfClean==280)?"Vacant":null}{(clean.typeOfClean==135)?"Deep":null}{(clean.typeOfClean==45)?"Regular":null} clean</span>
-                  <br></br>
-                  <span>
-                  {clean.bathroom}X Bathroom, {clean.kitchen}X Kitchen, {clean.rooms}X Bedroom,...
-                  </span>
-                </span>
-              </div>
-            </div>
-            {(clean.completed)?<img
-              alt="image"
-              src={require("./img/click-400h.png")}
-              className="dashboard-image24"
-            />:<img
-              alt="image"
-              src={require("./img/progressbadge-400h.png")}
-              className="dashboard-image22"
-            />}
-            
-            </div>
-            
-          ))}
-        </>
-      ) : (
-        <p>No cleans found.</p>
-      )}
+                  <p style={{ color: "red" }}>{error}</p>
+                ) : cleans.length > 0 ? (
+                  <>
+                    {cleans.map((clean) => (
+                      // <div>
+                      //   Clean ID: {clean.typeOfClean}, Bathroom: {clean.bathroom}, Kitchen: {clean.kitchen}, Bedroom: {clean.rooms},
+                      // </div>
+                      <div
+                        key={clean.id}
+                        className="dashboard-container123"
+                        onMouseEnter={(e) =>
+                          handleMouseEnterFade(e.currentTarget)
+                        }
+                        onMouseLeave={(e) =>
+                          handleMouseLeaveFade(e.currentTarget)
+                        }
+                      >
+                        <div className="dashboard-container124">
+                          <div className="dashboard-container125">
+                            <div className="dashboard-container126">
+                              <img
+                                alt="image"
+                                src={require("./img/medal_x-200h.png")}
+                                className="dashboard-image21"
+                              />
+                              <div className="dashboard-container127">
+                                <div className="dashboard-container128"></div>
+                              </div>
+                            </div>
+                            <span className="dashboard-text119">
+                              {clean.typeOfClean == 280 ? "Vacant" : null}
+                              {clean.typeOfClean == 135 ? "Deep" : null}
+                              {clean.typeOfClean == 45 ? "Regular" : null} clean
+                            </span>
+                          </div>
+                          <div className="dashboard-container129">
+                            <span className="dashboard-text120">
+                              {clean.completed ? "Completed" : "In Progress..."}
+                            </span>
+                            <span className="dashboard-text121">
+                              <span>
+                                {clean.typeOfClean == 280 ? "Vacant" : null}
+                                {clean.typeOfClean == 135 ? "Deep" : null}
+                                {clean.typeOfClean == 45
+                                  ? "Regular"
+                                  : null}{" "}
+                                clean
+                              </span>
+                              <br></br>
+                              <span>
+                                {clean.bathroom}X Bathroom, {clean.kitchen}X
+                                Kitchen, {clean.rooms}X Bedroom,...
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+                        {clean.completed ? (
+                          <img
+                            alt="image"
+                            src={require("./img/click-400h.png")}
+                            className="dashboard-image24"
+                          />
+                        ) : (
+                          <img
+                            alt="image"
+                            src={require("./img/progressbadge-400h.png")}
+                            className="dashboard-image22"
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </>
+                ) : (
+                  <p>No cleans found.</p>
+                )}
                 {/* <div className="dashboard-container123" onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)} onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}>
                   <div className="dashboard-container124">
                     <div className="dashboard-container125">
@@ -579,17 +748,25 @@ const Dashboard = (props) => {
               </span>
             </div>
             <div className="dashboard-container160">
-              <Link to="/schedule" className="dashboard-container161" onMouseEnter={(e) => handleMouseEnterFadeY(e.currentTarget)}
-        onMouseLeave={(e) => handleMouseLeaveFadeY(e.currentTarget)}>
+              <Link
+                to="/schedule"
+                className="dashboard-container161"
+                onMouseEnter={(e) => handleMouseEnterFadeY(e.currentTarget)}
+                onMouseLeave={(e) => handleMouseLeaveFadeY(e.currentTarget)}
+              >
                 <span className="dashboard-text153">View Full Calender </span>
                 <img
-                    alt="image"
-                    src={require("./img/arrow-200w.png")}
-                    className="dashboard-image31"
-                  />
+                  alt="image"
+                  src={require("./img/arrow-200w.png")}
+                  className="dashboard-image31"
+                />
               </Link>
-              <Link to="/schedule"  className="dashboard-container162" onMouseEnter={(e) => handleMouseEnterFadeY(e.currentTarget)}
-        onMouseLeave={(e) => handleMouseLeaveFadeY(e.currentTarget)}>
+              <Link
+                to="/schedule"
+                className="dashboard-container162"
+                onMouseEnter={(e) => handleMouseEnterFadeY(e.currentTarget)}
+                onMouseLeave={(e) => handleMouseLeaveFadeY(e.currentTarget)}
+              >
                 <span className="dashboard-text155">
                   <span className="dashboard-text156">View Full Calender</span>
                   <br></br>
@@ -601,7 +778,7 @@ const Dashboard = (props) => {
             Invite Friends
             <span
               dangerouslySetInnerHTML={{
-                __html: ' ',
+                __html: " ",
               }}
             />
           </span>
@@ -609,183 +786,46 @@ const Dashboard = (props) => {
             <span className="dashboard-text160">Notifications</span>
             <br></br>
           </span>
+
           <div className="dashboard-container163">
             <span className="dashboard-text162">Notifications</span>
             <div className="dashboard-container164">
               <span className="dashboard-text163">Notifications</span>
               <div id="custom-scroll" className="dashboard-container165">
-                <div className="dashboard-container166" onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
-                onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}>
-                  <div className="dashboard-container167"></div>
-                  <div className="dashboard-container168">
-                    <span className="dashboard-text164">
-                      zvs.vonstoll@gmail.com accepted your invitation to
-                      collaborate
-                    </span>
-                    <span className="dashboard-text165">
-                      View People &amp; Roles
-                    </span>
-                    <span className="dashboard-text166">
-                      <span>Richmond Apartment | </span>
-                      <span className="dashboard-text168">
-                        November 24, 2023
+                {allCleans?.map((record) => (
+                  <div
+                    key={record._id}
+                    className="dashboard-container166"
+                    onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
+                    onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}
+                  >
+                    <div className="dashboard-container167"></div>
+                    <div className="dashboard-container168">
+                      <span className="dashboard-text164">
+                        New clean booked for {record.rooms} room(s) with pet(s):{" "}
+                        {record.pet}
                       </span>
-                    </span>
-                  </div>
-                </div>
-                <div className="dashboard-container169" onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
-                onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}>
-                  <div className="dashboard-container170"></div>
-                  <div className="dashboard-container171">
-                    <span className="dashboard-text169">
-                      zvs.vonstoll@gmail.com accepted your invitation to
-                      collaborate
-                    </span>
-                    <span className="dashboard-text170">
-                      View People &amp; Roles
-                    </span>
-                    <span className="dashboard-text171">
-                      <span>Richmond Apartment | </span>
-                      <span className="dashboard-text173">
-                        November 24, 2023
+                      <span className="dashboard-text165">
+                        {record.typeOfClean == 280 ? "Vacant" : null}
+                        {record.typeOfClean == 135 ? "Deep" : null}
+                        {record.typeOfClean == 45 ? "Regular" : null} Clean |
+                        Status: {record.completed ? "Completed" : "Pending"}
                       </span>
-                    </span>
-                  </div>
-                </div>
-                <div className="dashboard-container172" onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
-                onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}>
-                  <div className="dashboard-container173"></div>
-                  <div className="dashboard-container174">
-                    <span className="dashboard-text174">
-                      zvs.vonstoll@gmail.com accepted your invitation to
-                      collaborate
-                    </span>
-                    <span className="dashboard-text175">
-                      View People &amp; Roles
-                    </span>
-                    <span className="dashboard-text176">
-                      <span>Richmond Apartment | </span>
-                      <span className="dashboard-text178">
-                        November 24, 2023
+                      <span className="dashboard-text166">
+                        <span>{record.getinside} | </span>
+                        <span className="dashboard-text168">{record.date}</span>
                       </span>
-                    </span>
+                    </div>
                   </div>
-                </div>
-                <div className="dashboard-container175" onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
-                onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}>
-                  <div className="dashboard-container176"></div>
-                  <div className="dashboard-container177">
-                    <span className="dashboard-text179">
-                      zvs.vonstoll@gmail.com accepted your invitation to
-                      collaborate
-                    </span>
-                    <span className="dashboard-text180">
-                      View People &amp; Roles
-                    </span>
-                    <span className="dashboard-text181">
-                      <span>Richmond Apartment | </span>
-                      <span className="dashboard-text183">
-                        November 24, 2023
-                      </span>
-                    </span>
-                  </div>
-                </div>
-                <div className="dashboard-container178" onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
-                onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}>
-                  <div className="dashboard-container179"></div>
-                  <div className="dashboard-container180">
-                    <span className="dashboard-text184">
-                      zvs.vonstoll@gmail.com accepted your invitation to
-                      collaborate
-                    </span>
-                    <span className="dashboard-text185">
-                      View People &amp; Roles
-                    </span>
-                    <span className="dashboard-text186">
-                      <span>Richmond Apartment | </span>
-                      <span className="dashboard-text188">
-                        November 24, 2023
-                      </span>
-                    </span>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
-            <span className="dashboard-text189">
-              Invite Friends
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: ' ',
-                }}
-              />
-            </span>
-            <div className="dashboard-container181">
-              <div className="dashboard-container182">
-                <div className="dashboard-container183">
-                  <span className="dashboard-text190">Notifications</span>
-                  <span className="dashboard-text191">Mark all as read</span>
-                </div>
-                <div className="dashboard-container184">
-                  <div className="dashboard-container185"></div>
-                  <div className="dashboard-container186">
-                    <span className="dashboard-text192">
-                      zvs.vonstoll@gmail.com accepted your invitation to
-                      collaborate
-                    </span>
-                    <span className="dashboard-text193">
-                      View People &amp; Roles
-                    </span>
-                    <span className="dashboard-text194">
-                      <span>Richmond Apartment | </span>
-                      <span className="dashboard-text196">
-                        November 24, 2023
-                      </span>
-                    </span>
-                  </div>
-                </div>
-                <div className="dashboard-container187">
-                  <div className="dashboard-container188"></div>
-                  <div className="dashboard-container189">
-                    <span className="dashboard-text197">
-                      zvs.vonstoll@gmail.com accepted your invitation to
-                      collaborate
-                    </span>
-                    <span className="dashboard-text198">
-                      View People &amp; Roles
-                    </span>
-                    <span className="dashboard-text199">
-                      <span>Richmond Apartment | </span>
-                      <span className="dashboard-text201">
-                        November 24, 2023
-                      </span>
-                    </span>
-                  </div>
-                </div>
-                <div className="dashboard-container190">
-                  <div className="dashboard-container191"></div>
-                  <div className="dashboard-container192">
-                    <span className="dashboard-text202">
-                      zvs.vonstoll@gmail.com accepted your invitation to
-                      collaborate
-                    </span>
-                    <span className="dashboard-text203">
-                      View People &amp; Roles
-                    </span>
-                    <span className="dashboard-text204">
-                      <span>Richmond Apartment | </span>
-                      <span className="dashboard-text206">
-                        November 24, 2023
-                      </span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+
             <span className="dashboard-text207">
               Invite friends
               <span
                 dangerouslySetInnerHTML={{
-                  __html: ' ',
+                  __html: " ",
                 }}
               />
             </span>
@@ -826,8 +866,12 @@ const Dashboard = (props) => {
                     </span>
                   </div>
                 </div>
-                <Link to="/referral" className="dashboard-container200" onMouseEnter={(e) => handleMouseEnterFadeY(e.currentTarget)}
-        onMouseLeave={(e) => handleMouseLeaveFadeY(e.currentTarget)}>
+                <Link
+                  to="/referral"
+                  className="dashboard-container200"
+                  onMouseEnter={(e) => handleMouseEnterFadeY(e.currentTarget)}
+                  onMouseLeave={(e) => handleMouseLeaveFadeY(e.currentTarget)}
+                >
                   <span className="dashboard-text221">Your Referral Code</span>
                   <img
                     alt="image"
@@ -843,7 +887,7 @@ const Dashboard = (props) => {
       <Menu />
       <div className="dashboard-container207"></div>
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

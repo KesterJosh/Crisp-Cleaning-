@@ -388,7 +388,13 @@ const Schedule1 = (props) => {
                             <div className="schedule1-container312">
                               <div className="schedule1-container313">
                                 <span className="schedule1-text236">
-                                  Cleaning for {clean.typeOfClean}
+                                  Booked for{" "}
+                                  {clean.typeOfClean == 280 ? "Vacant" : null}
+                                  {clean.typeOfClean == 135 ? "Deep" : null}
+                                  {clean.typeOfClean == 45
+                                    ? "Regular"
+                                    : null}{" "}
+                                  Clean
                                 </span>
                                 <span className="schedule1-text237">
                                   {clean.completed
@@ -549,7 +555,12 @@ const Schedule1 = (props) => {
                           <div className="schedule1-container312">
                             <div className="schedule1-container313">
                               <span className="schedule1-text236">
-                                Cleaning for {clean.typeOfClean}
+                                {clean.typeOfClean == 280 ? "Vacant" : null}
+                                {clean.typeOfClean == 135 ? "Deep" : null}
+                                {clean.typeOfClean == 45
+                                  ? "Regular"
+                                  : null}{" "}
+                                Clean{" "}
                               </span>
                               <span className="schedule1-text237">
                                 {clean.completed
