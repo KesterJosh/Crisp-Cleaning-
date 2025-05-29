@@ -582,10 +582,6 @@ app.use("/webhook", webhookRoutes);
 
 app.post("/webhook", express.raw({ type: "application/json" }), webhookRoutes);
 
-app.listen(4000, () => {
-  console.log("App is running");
-});
-
 app.post("/create-checkout-session", async (req, res) => {
   const { items } = req.body;
 
@@ -602,8 +598,8 @@ app.post("/create-checkout-session", async (req, res) => {
       quantity: 1,
     })),
     mode: "payment",
-    success_url: "http://localhost:3000/success",
-    cancel_url: "http://localhost:3000/cancel",
+    success_url: "https://crisp-frontend.onrender.com/success",
+    cancel_url: "https://crisp-frontend.onrender.com/cancel",
     customer_email: req.body.email,
     // setup_future_usage: "off_session",
   });
@@ -631,8 +627,8 @@ app.post("/create-tip-session", async (req, res) => {
     ],
     mode: "payment",
     success_url:
-      "http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}",
-    cancel_url: "http://localhost:3000/cancel",
+      "https://crisp-frontend.onrender.com/success?session_id={CHECKOUT_SESSION_ID}",
+    cancel_url: "https://crisp-frontend.onrender.com/cancel",
   });
 
   res.json({ id: session.id });
@@ -642,6 +638,10 @@ app.get("/payments/:sessionId", async (req, res) => {
   const payment = await Payment.findOne({ sessionId: req.params.sessionId });
   if (!payment) return res.status(404).send("Not found");
   res.json(payment); // should include card object
+});
+
+app.listen(4000, () => {
+  console.log("App is running");
 });
 
 app.get("*", (req, res) => {
