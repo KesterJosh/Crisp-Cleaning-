@@ -4,12 +4,24 @@ import gsap from "gsap";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 import { Helmet } from "react-helmet";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { testimonials } from "./data";
 
 import "./review.css";
 import "./home.css";
 import Mobilex from "./mobile";
 
 const Review = (props) => {
+  const [visibleCount, setVisibleCount] = useState(3);
+  const [loading, setLoading] = useState(false);
+
+  const handleLoadMore = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setVisibleCount((prev) => prev + 3);
+      setLoading(false);
+    }, 1000); // 1 second delay
+  };
+
   const handleMouseEnter = (event) => {
     const container = event.currentTarget;
 
@@ -2198,359 +2210,69 @@ const Review = (props) => {
             />
           </div>
           <h1 className="review-heading1x">
-            <span>Popular Customer Videos</span>
+            <span>Real Customer Experiences</span>
           </h1>
         </div>
       </div>
 
       <div className="review-container31">
-        <h1 className="review-heading1">
-          <span>Customer videos</span>
-        </h1>
-
         <div className="home-container230">
           <div className="home-container231y">
-            <div className="home-container249s">
-              <div className="home-container250">
-                <div className="home-container251">
-                  <div className="home-container252">
-                    <img
-                      alt="image"
-                      src={require("./img/user5-200h.png")}
-                      className="home-image28"
-                    />
-                    <div className="home-container253">
-                      <p className="home-text234">Jonathan Kim</p>
-                      <p className="home-text235">Manager @ Samsung</p>
+            {testimonials.slice(0, visibleCount).map((t, index) => (
+              <div className="home-container249s" key={index}>
+                <div className="home-container250">
+                  <div className="home-container251">
+                    <div className="home-container252">
+                      <img
+                        alt="avatar"
+                        src={t.avatar}
+                        className="home-image28"
+                      />
+                      <div className="home-container253">
+                        <p className="home-text234">{t.name}</p>
+                        <p className="home-text235">{t.role}</p>
+                      </div>
                     </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r1-200h.png")}
-                    className="home-image29"
-                  />
-                </div>
-                <p className="home-text236">
-                  <span>
-                    Hats off to the Clean Team! They tackled the toughest
-                  </span>
-                  <span>
-                    stains with ease, leaving my office looking pristine.
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Their attention to detail and friendly staff make them
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>my go-to cleaning company</span>
-
-                  <br></br>
-                  <br></br>
-                </p>
-                <video
-                  src={require("./img/samplex.mp4")}
-                  poster="https://play.teleporthq.io/static/svg/videoposter.svg"
-                  preload="auto"
-                  controls
-                  className="home-video"
-                ></video>
-                <p className="home-text241">4:22 AM - Nov 29,2023</p>
-              </div>
-            </div>
-            <div className="home-container249s">
-              <div className="home-container250">
-                <div className="home-container251">
-                  <div className="home-container252">
                     <img
-                      alt="image"
-                      src={require("./img/user5-200h.png")}
-                      className="home-image28"
+                      alt="rating"
+                      src={t.ratingImage}
+                      className="home-image29"
                     />
-                    <div className="home-container253">
-                      <p className="home-text234">Jonathan Kim</p>
-                      <p className="home-text235">Manager @ Samsung</p>
-                    </div>
                   </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r1-200h.png")}
-                    className="home-image29"
-                  />
+                  <p className="home-text236">{t.message}</p>
+                  <video
+                    src={t.video}
+                    poster="https://play.teleporthq.io/static/svg/videoposter.svg"
+                    preload="auto"
+                    controls
+                    className="home-video"
+                  ></video>
+                  <p className="home-text241">{t.time}</p>
                 </div>
-                <p className="home-text236">
-                  <span>
-                    Hats off to the Clean Team! They tackled the toughest
-                  </span>
-                  <span>
-                    stains with ease, leaving my office looking pristine.
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Their attention to detail and friendly staff make them
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>my go-to cleaning company</span>
-
-                  <br></br>
-                  <br></br>
-                </p>
-                <video
-                  src={require("./img/samplex.mp4")}
-                  poster="https://play.teleporthq.io/static/svg/videoposter.svg"
-                  preload="auto"
-                  controls
-                  className="home-video"
-                ></video>
-                <p className="home-text241">4:22 AM - Nov 29,2023</p>
               </div>
-            </div>
-            <div className="home-container249s">
-              <div className="home-container250">
-                <div className="home-container251">
-                  <div className="home-container252">
-                    <img
-                      alt="image"
-                      src={require("./img/user5-200h.png")}
-                      className="home-image28"
-                    />
-                    <div className="home-container253">
-                      <p className="home-text234">Jonathan Kim</p>
-                      <p className="home-text235">Manager @ Samsung</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r1-200h.png")}
-                    className="home-image29"
-                  />
-                </div>
-                <p className="home-text236">
-                  <span>
-                    Hats off to the Clean Team! They tackled the toughest
-                  </span>
-                  <span>
-                    stains with ease, leaving my office looking pristine.
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Their attention to detail and friendly staff make them
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>my go-to cleaning company</span>
-
-                  <br></br>
-                  <br></br>
-                </p>
-                <video
-                  src={require("./img/samplex.mp4")}
-                  poster="https://play.teleporthq.io/static/svg/videoposter.svg"
-                  preload="auto"
-                  controls
-                  className="home-video"
-                ></video>
-                <p className="home-text241">4:22 AM - Nov 29,2023</p>
-              </div>
-            </div>
+            ))}
           </div>
-          <div className="home-container231yx">
-            <div className="home-container249s">
-              <div className="home-container250">
-                <div className="home-container251">
-                  <div className="home-container252">
-                    <img
-                      alt="image"
-                      src={require("./img/user5-200h.png")}
-                      className="home-image28"
-                    />
-                    <div className="home-container253">
-                      <p className="home-text234">Jonathan Kim</p>
-                      <p className="home-text235">Manager @ Samsung</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r1-200h.png")}
-                    className="home-image29"
-                  />
-                </div>
-                <p className="home-text236">
-                  <span>
-                    Hats off to the Clean Team! They tackled the toughest
-                  </span>
-                  <span>
-                    stains with ease, leaving my office looking pristine.
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Their attention to detail and friendly staff make them
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>my go-to cleaning company</span>
 
-                  <br></br>
-                  <br></br>
-                </p>
-                <video
-                  src={require("./img/samplex.mp4")}
-                  poster="https://play.teleporthq.io/static/svg/videoposter.svg"
-                  preload="auto"
-                  controls
-                  className="home-video"
-                ></video>
-                <p className="home-text241">4:22 AM - Nov 29,2023</p>
-              </div>
+          {loading && (
+            <div
+              style={{ marginTop: "20px", textAlign: "center", color: "#666" }}
+            >
+              Loading more testimonials...
             </div>
-            <div className="home-container249s">
-              <div className="home-container250">
-                <div className="home-container251">
-                  <div className="home-container252">
-                    <img
-                      alt="image"
-                      src={require("./img/user5-200h.png")}
-                      className="home-image28"
-                    />
-                    <div className="home-container253">
-                      <p className="home-text234">Jonathan Kim</p>
-                      <p className="home-text235">Manager @ Samsung</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r1-200h.png")}
-                    className="home-image29"
-                  />
-                </div>
-                <p className="home-text236">
-                  <span>
-                    Hats off to the Clean Team! They tackled the toughest
-                  </span>
-                  <span>
-                    stains with ease, leaving my office looking pristine.
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Their attention to detail and friendly staff make them
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>my go-to cleaning company</span>
+          )}
 
-                  <br></br>
-                  <br></br>
-                </p>
-                <video
-                  src={require("./img/samplex.mp4")}
-                  poster="https://play.teleporthq.io/static/svg/videoposter.svg"
-                  preload="auto"
-                  controls
-                  className="home-video"
-                ></video>
-                <p className="home-text241">4:22 AM - Nov 29,2023</p>
-              </div>
-            </div>
-            <div className="home-container249s">
-              <div className="home-container250">
-                <div className="home-container251">
-                  <div className="home-container252">
-                    <img
-                      alt="image"
-                      src={require("./img/user5-200h.png")}
-                      className="home-image28"
-                    />
-                    <div className="home-container253">
-                      <p className="home-text234">Jonathan Kim</p>
-                      <p className="home-text235">Manager @ Samsung</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r1-200h.png")}
-                    className="home-image29"
-                  />
-                </div>
-                <p className="home-text236">
-                  <span>
-                    Hats off to the Clean Team! They tackled the toughest
-                  </span>
-                  <span>
-                    stains with ease, leaving my office looking pristine.
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Their attention to detail and friendly staff make them
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>my go-to cleaning company</span>
-
-                  <br></br>
-                  <br></br>
-                </p>
-                <video
-                  src={require("./img/samplex.mp4")}
-                  poster="https://play.teleporthq.io/static/svg/videoposter.svg"
-                  preload="auto"
-                  controls
-                  className="home-video"
-                ></video>
-                <p className="home-text241">4:22 AM - Nov 29,2023</p>
-              </div>
-            </div>
-          </div>
-          <button
-            type="button"
-            className="home-button15f button"
-            onMouseEnter={activateX}
-            onMouseLeave={offX}
-          >
-            <span>Load More</span>
-          </button>
+          {!loading && visibleCount < testimonials.length && (
+            <button
+              type="button"
+              className="home-button15f button"
+              onClick={handleLoadMore}
+              onMouseEnter={activateX}
+              onMouseLeave={offX}
+              style={{ marginTop: "30px" }}
+            >
+              <span>Load More</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -2578,15 +2300,17 @@ const Review = (props) => {
               <br />
             </span>
             <div className="review-container51">
-              <button
-                type="button"
-                className="review-button button"
-                onMouseEnter={activateX}
-                onMouseLeave={offX}
-                style={{ cursor: "pointer" }}
-              >
-                Take Action
-              </button>
+              <Link to="/">
+                <button
+                  type="button"
+                  className="review-button button"
+                  onMouseEnter={activateX}
+                  onMouseLeave={offX}
+                  style={{ cursor: "pointer" }}
+                >
+                  Take Action
+                </button>
+              </Link>
               <Link
                 to="/contact"
                 type="button"

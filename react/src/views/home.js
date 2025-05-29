@@ -1228,7 +1228,7 @@ const Home = (props) => {
     e.preventDefault();
 
     axios
-      .post("http://localhost:4000/register", {
+      .post("https://api-crisp-cleaning.onrender.com/register", {
         first_name,
         last_name,
         email,
@@ -1291,7 +1291,7 @@ const Home = (props) => {
     // e.preventDefault();
 
     axios
-      .post("http://localhost:4000/commercial", {
+      .post("https://api-crisp-cleaning.onrender.com/commercial", {
         BusinessName,
         BusinessSize,
         BusinessEnvironment,
@@ -1362,7 +1362,7 @@ const Home = (props) => {
     };
     console.log(requestData);
     axios
-      .post("http://localhost:4000/clean", requestData) // Replace with your server endpoint
+      .post("https://api-crisp-cleaning.onrender.com/clean", requestData) // Replace with your server endpoint
       .then((response) => {
         alert("Clean record created successfully!");
         OpenLogin();
@@ -3655,14 +3655,16 @@ const Home = (props) => {
             </span>
             <span>that drive us to elevate the standards of cleanliness.</span>
           </p>
-          <button
-            type="button"
-            className="home-button14 button"
-            onMouseEnter={activateX}
-            onMouseLeave={offX}
-          >
-            <span>About us</span>
-          </button>
+          <Link to="/about">
+            <button
+              type="button"
+              className="home-button14 button"
+              onMouseEnter={activateX}
+              onMouseLeave={offX}
+            >
+              <span>About us</span>
+            </button>
+          </Link>
         </div>
       </div>
 
@@ -5455,14 +5457,16 @@ const Home = (props) => {
             className="home-image45"
           />
         </div>
-        <button
-          type="button"
-          className="home-button15 button"
-          onMouseEnter={activateX}
-          onMouseLeave={offX}
-        >
-          <span>Discover More</span>
-        </button>
+        <Link to="/review">
+          <button
+            type="button"
+            className="home-button15 button"
+            onMouseEnter={activateX}
+            onMouseLeave={offX}
+          >
+            <span>Discover More</span>
+          </button>
+        </Link>
       </div>
       <span className="home-text337">
         <span className="home-text338">Some valued</span>
@@ -6064,14 +6068,16 @@ const Home = (props) => {
             <span className="home-text392"> all the information</span>
             <span> necessary to choose us with confidence.</span>
           </p>
-          <button
-            type="button"
-            className="home-button16 button"
-            onMouseEnter={activateX}
-            onMouseLeave={offX}
-          >
-            <span>FAQs</span>
-          </button>
+          <Link to="/faqs">
+            <button
+              type="button"
+              className="home-button16 button"
+              onMouseEnter={activateX}
+              onMouseLeave={offX}
+            >
+              <span>FAQs</span>
+            </button>
+          </Link>
         </div>
       </div>
       <div className="home-container299">
@@ -6083,14 +6089,16 @@ const Home = (props) => {
             </p>
           </div>
           <div className="home-container302">
-            <button
-              type="button"
-              className="home-button17 button"
-              onMouseEnter={activateX}
-              onMouseLeave={offX}
-            >
-              Contact us
-            </button>
+            <Link to="/contact">
+              <button
+                type="button"
+                className="home-button17 button"
+                onMouseEnter={activateX}
+                onMouseLeave={offX}
+              >
+                Contact us
+              </button>
+            </Link>
           </div>
         </div>
       </div>

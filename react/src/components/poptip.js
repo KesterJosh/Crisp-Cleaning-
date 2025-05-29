@@ -22,7 +22,7 @@ const Poptip = ({ CloseTip }) => {
     }
 
     const response = await fetch(
-      "http://localhost:4000/create-tip-session",
+      "https://api-crisp-cleaning.onrender.com/create-tip-session",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -575,10 +575,12 @@
   object-fit: fill;
 }
 .home1-image04x {
-  min-width: 38%;
+  border-bottom-right-radius: 50px;
+  width: 48%;
   position: absolute;
   height: 900px;
   overflow: hidden;
+  margin-top: 20px;
   /* background-color: #000000; */
   /* opacity: 0.4; */
 }
@@ -702,7 +704,8 @@
   overflow: hidden;
   border-radius: 50px;
   z-index: 10;
-  background-image: url('https://aheioqhobo.cloudimg.io/v7/_playground-bucket-v2.teleporthq.io_/d5fa5283-60b3-4996-9cc5-66cb59380128/05cc7d5f-3a9b-48db-be44-fa6dc649ff72?org_if_sml=1&force_format=original');
+  background-position: center;
+  background-image: url('/img/img.jpg');
   /* background-repeat: no-repeat; */
   background-size: cover;
 }
@@ -1750,7 +1753,7 @@
     left: -5px;
   }
   .home1-image04x{
-    margin-top: -500px;
+    margin-top: -450px;
     z-index: 10;
     height: 600px;
     margin-left: 5%;
