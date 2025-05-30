@@ -141,7 +141,7 @@ const Schedule1 = (props) => {
     if (!userId) return;
     try {
       const response = await axios.get(
-        `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`
+        `http://localhost:4000/user-clean/${userId}`
       );
       if (response.data && response.data.cleanRecords) {
         setCleans(response.data.cleanRecords);

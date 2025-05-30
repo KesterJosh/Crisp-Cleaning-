@@ -9,11 +9,15 @@ const CalenFortnightlySchedule = ({
   setSelectedDatex,
   changeCalend,
 }) => {
-  const [currentStartDate, setCurrentStartDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   const calendarRef = useRef(null);
   const [calendarMode, setCalendarMode] = useState("fortnightly"); // or "monthly"
   const [cleans, setCleans] = useState([]);
+  const [currentStartDate, setCurrentStartDate] = useState(new Date());
+
+  useEffect(() => {
+    setCurrentStartDate(moment().startOf("week").add(14, "days").toDate());
+  }, []);
 
   const userId = JSON.parse(localStorage.getItem("user"))?.userId;
 
@@ -21,7 +25,7 @@ const CalenFortnightlySchedule = ({
     if (!userId) return;
     try {
       const response = await axios.get(
-        `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`
+        `http://localhost:4000/user-clean/${userId}`
       );
       if (response.data && response.data.cleanRecords) {
         setCleans(response.data.cleanRecords); // Save cleans to state
@@ -91,26 +95,21 @@ const CalenFortnightlySchedule = ({
     });
   };
 
-  const generateMonthCalendar = (date) => {
-    const startOfMonth = moment(date).startOf("month");
-    const endOfMonth = moment(date).endOf("month");
-
-    const startDate = startOfMonth.clone().startOf("week");
-    const endDate = endOfMonth.clone().endOf("week");
-
-    const day = startDate.clone();
+  const generateFortnightCalendar = (startDate) => {
+    const start = moment(startDate).startOf("day");
     const calendar = [];
 
-    while (day.isBefore(endDate, "day")) {
-      const week = [];
+    let day = start.clone();
+    for (let week = 0; week < 2; week++) {
+      const weekDays = [];
       for (let i = 0; i < 7; i++) {
-        week.push(day.clone());
+        weekDays.push(day.clone());
         day.add(1, "day");
       }
-      calendar.push(week);
+      calendar.push(weekDays);
     }
 
-    return calendar; // Array of weeks (each week = array of 7 days)
+    return calendar;
   };
 
   const renderTableHeader = () => {
@@ -281,11 +280,13 @@ const CalenFortnightlySchedule = ({
       </div>
       {renderTableHeader()}
       <div className="calendar-grid">
-        {generateMonthCalendar(currentStartDate).map((week, weekIdx) => (
-          <div key={weekIdx} className="calendar-week">
-            {week.map((day) => renderDay(day))}
-          </div>
-        ))}
+        <div className="calendar-grid">
+          {generateFortnightCalendar(currentStartDate).map((week, weekIdx) => (
+            <div key={weekIdx} className="calendar-week">
+              {week.map((day) => renderDay(day))}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

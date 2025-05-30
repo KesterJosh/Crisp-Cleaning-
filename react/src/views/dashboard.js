@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import gsap from "gsap";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { parse, isAfter } from "date-fns";
 
 import { Helmet } from "react-helmet";
 import "./dashboard.css";
@@ -24,13 +25,30 @@ const Dashboard = (props) => {
     setUserId(storedUserId);
   }, []);
 
+  const today = new Date();
+
+  const upcomingClean = cleans
+    ?.map((c) => {
+      const parsedDate = parse(c.date, "dd/MM/yyyy", new Date());
+      return { ...c, parsedDate };
+    })
+    .filter((c) => isAfter(c.parsedDate, today))
+    .sort((a, b) => a.parsedDate - b.parsedDate)[0];
+
+  const cleanType = (code) => {
+    if (code == 280 || code === "280") return "Vacant Clean";
+    if (code == 135 || code === "135") return "Deep Clean";
+    if (code == 45 || code === "45") return "Regular Clean";
+    return "Unknown Type";
+  };
+
   // Fetch cleans based on userId
   const fetchCleans = useCallback(async () => {
     if (!userId) return; // Skip if userId is not available
     try {
       const response = await axios({
         method: "get",
-        url: `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`,
+        url: `http://localhost:4000/user-clean/${userId}`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -80,7 +98,7 @@ const Dashboard = (props) => {
     try {
       const response = await axios({
         method: "get",
-        url: `https://api-crisp-cleaning.onrender.com/cleans`,
+        url: `http://localhost:4000/cleans`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -146,32 +164,32 @@ const Dashboard = (props) => {
       .fromTo(
         ".dashboard-container118",
         { y: -20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.7 }
+        { y: 0, opacity: 1, duration: 0.1 }
       )
       .fromTo(
         ".dashboard-container121",
         { y: -20, opacity: 0 },
-        { y: 0, opacity: 1, delay: 0.2, duration: 0.5 }
+        { y: 0, opacity: 1, delay: 0.0, duration: 0.1 }
       )
       .fromTo(
         ".dashboard-container160",
         { y: -20, opacity: 0 },
-        { y: 0, opacity: 1, delay: 0.4, duration: 0.5 }
+        { y: 0, opacity: 1, delay: 0.0, duration: 0.1 }
       )
       .fromTo(
         ".dashboard-container164",
         { x: -20, opacity: 0 },
-        { x: 0, opacity: 1, delay: 0.5, duration: 0.5 }
+        { x: 0, opacity: 1, delay: 0.0, duration: 0.1 }
       )
       .fromTo(
         ".dashboard-text207",
         { x: -20, opacity: 0 },
-        { x: 0, opacity: 1, delay: 0.6, duration: 0.5 }
+        { x: 0, opacity: 1, delay: 0.0, duration: 0.1 }
       )
       .fromTo(
         ".dashboard-container193",
         { x: -20, opacity: 0 },
-        { x: 0, opacity: 1, delay: 0.7, duration: 0.5 }
+        { x: 0, opacity: 1, delay: 0.0, duration: 0.1 }
       );
   }, []);
 
@@ -747,26 +765,67 @@ const Dashboard = (props) => {
                 <br></br>
               </span>
             </div>
+            <div className="text-lg uc-text text-gray-500 font-semibold mb-1">
+              Upcoming
+            </div>
             <div className="dashboard-container160">
+              {upcomingClean ? (
+                <div className="google-style-clean-card">
+                  <div className="font-medium text-slate-600 text-md mb-1">
+                    {upcomingClean.date}
+                  </div>
+                  <div className="uc">
+                    <div className="uc-border"></div>
+                    {cleanType(upcomingClean.typeOfClean)}
+                  </div>
+                  <small className="uc-date">
+                    {upcomingClean.date.split("/")[2]}
+                  </small>
+                </div>
+              ) : (
+                <div className="text-gray-400 italic text-sm">
+                  No upcoming cleans
+                </div>
+              )}
               <Link
                 to="/schedule"
                 className="dashboard-container161"
                 onMouseEnter={(e) => handleMouseEnterFadeY(e.currentTarget)}
                 onMouseLeave={(e) => handleMouseLeaveFadeY(e.currentTarget)}
               >
-                <span className="dashboard-text153">View Full Calender </span>
-                <img
-                  alt="image"
-                  src={require("./img/arrow-200w.png")}
-                  className="dashboard-image31"
-                />
+                <div className="dashboard-text153">
+                  <span>View Full Calender </span>
+                  <img
+                    alt="image"
+                    src={require("./img/arrow-200w.png")}
+                    className="dashboard-image31"
+                  />
+                </div>
               </Link>
+
               <Link
                 to="/schedule"
                 className="dashboard-container162"
                 onMouseEnter={(e) => handleMouseEnterFadeY(e.currentTarget)}
                 onMouseLeave={(e) => handleMouseLeaveFadeY(e.currentTarget)}
               >
+                {cleans ? (
+                  <div className="google-style-clean-card p-4 bg-white shadow-md rounded-lg border-l-4 border-blue-600 max-w-md">
+                    <div className="text-sm text-gray-500 font-semibold mb-1">
+                      {cleans.date}
+                    </div>
+                    <div className="font-medium text-black text-base mb-1">
+                      {cleanType(cleans.typeOfClean)}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {cleans.date} • {cleans.getinside}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-gray-400 italic text-sm">
+                    No upcoming cleans
+                  </div>
+                )}
                 <span className="dashboard-text155">
                   <span className="dashboard-text156">View Full Calender</span>
                   <br></br>
@@ -783,41 +842,51 @@ const Dashboard = (props) => {
             />
           </span>
           <span className="dashboard-text159">
-            <span className="dashboard-text160">Notifications</span>
+            <span className="dashboard-text160">What's New?</span>
             <br></br>
           </span>
 
           <div className="dashboard-container163">
-            <span className="dashboard-text162">Notifications</span>
+            <span className="dashboard-text162">What's New</span>
             <div className="dashboard-container164">
-              <span className="dashboard-text163">Notifications</span>
+              <span className="dashboard-text163">What's New</span>
               <div id="custom-scroll" className="dashboard-container165">
-                {allCleans?.map((record) => (
-                  <div
-                    key={record._id}
-                    className="dashboard-container166"
-                    onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
-                    onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}
-                  >
-                    <div className="dashboard-container167"></div>
-                    <div className="dashboard-container168">
-                      <span className="dashboard-text164">
-                        New clean booked for {record.rooms} room(s) with pet(s):{" "}
-                        {record.pet}
-                      </span>
-                      <span className="dashboard-text165">
-                        {record.typeOfClean == 280 ? "Vacant" : null}
-                        {record.typeOfClean == 135 ? "Deep" : null}
-                        {record.typeOfClean == 45 ? "Regular" : null} Clean |
-                        Status: {record.completed ? "Completed" : "Pending"}
-                      </span>
-                      <span className="dashboard-text166">
-                        <span>{record.getinside} | </span>
-                        <span className="dashboard-text168">{record.date}</span>
-                      </span>
+                {allCleans?.length > 0 ? (
+                  allCleans.map((record) => (
+                    <div
+                      key={record._id}
+                      className="dashboard-container166"
+                      onMouseEnter={(e) =>
+                        handleMouseEnterFadex(e.currentTarget)
+                      }
+                      onMouseLeave={(e) =>
+                        handleMouseLeaveFadex(e.currentTarget)
+                      }
+                    >
+                      <div className="dashboard-container167"></div>
+                      <div className="dashboard-container168">
+                        <span className="dashboard-text164">
+                          New clean booked for {record.rooms} room(s) with
+                          pet(s): {record.pet}
+                        </span>
+                        <span className="dashboard-text165">
+                          {record.typeOfClean == 280 ? "Vacant" : null}
+                          {record.typeOfClean == 135 ? "Deep" : null}
+                          {record.typeOfClean == 45 ? "Regular" : null} Clean |
+                          Status: {record.completed ? "Completed" : "Pending"}
+                        </span>
+                        <span className="dashboard-text166">
+                          <span>{record.getinside} | </span>
+                          <span className="dashboard-text168">
+                            {record.date}
+                          </span>
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <div className="p-4 text-slate-600">It's quiet for now.</div>
+                )}
               </div>
             </div>
 

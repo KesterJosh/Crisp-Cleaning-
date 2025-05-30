@@ -1228,7 +1228,7 @@ const Home = (props) => {
     e.preventDefault();
 
     axios
-      .post("https://api-crisp-cleaning.onrender.com/register", {
+      .post("http://localhost:4000/register", {
         first_name,
         last_name,
         email,
@@ -1291,7 +1291,7 @@ const Home = (props) => {
     // e.preventDefault();
 
     axios
-      .post("https://api-crisp-cleaning.onrender.com/commercial", {
+      .post("http://localhost:4000/commercial", {
         BusinessName,
         BusinessSize,
         BusinessEnvironment,
@@ -1362,7 +1362,7 @@ const Home = (props) => {
     };
     console.log(requestData);
     axios
-      .post("https://api-crisp-cleaning.onrender.com/clean", requestData) // Replace with your server endpoint
+      .post("http://localhost:4000/clean", requestData) // Replace with your server endpoint
       .then((response) => {
         alert("Clean record created successfully!");
         OpenLogin();

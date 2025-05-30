@@ -22,7 +22,7 @@ const CalenSchedule = ({
     if (!userId) return;
     try {
       const response = await axios.get(
-        `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`
+        `http://localhost:4000/user-clean/${userId}`
       );
       if (response.data && response.data.cleanRecords) {
         setCleans(response.data.cleanRecords); // Save cleans to state
@@ -61,6 +61,14 @@ const CalenSchedule = ({
           nextMonth.setMonth(prevMonth.getMonth() + 1);
           return nextMonth;
         });
+
+        requestAnimationFrame(() => {
+          gsap.fromTo(
+            calendarRef.current,
+            { opacity: 0, x: -20 },
+            { opacity: 1, x: 0, duration: 0.5 }
+          );
+        });
       },
     });
   };
@@ -75,6 +83,15 @@ const CalenSchedule = ({
           const prevMonthCopy = new Date(prevMonth);
           prevMonthCopy.setMonth(prevMonth.getMonth() - 1);
           return prevMonthCopy;
+        });
+
+        // Force immediate animation after the DOM updates
+        requestAnimationFrame(() => {
+          gsap.fromTo(
+            calendarRef.current,
+            { opacity: 0, x: 20 },
+            { opacity: 1, x: 0, duration: 0.5 }
+          );
         });
       },
     });
@@ -255,7 +272,7 @@ const CalenSchedule = ({
             <small className="no-clean">No cleans</small>
           )}
         </div>
-        {dayCleans.length === 0 && (
+        {dayCleans.length === 0 && isCurrentMonth && !isPastDay(day) && (
           <div
             className={`${
               isCurrentDay ? "schedule-container438" : "schedule-container147"
