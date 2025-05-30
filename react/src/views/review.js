@@ -2276,15 +2276,6 @@ const Review = (props) => {
         </div>
       </div>
 
-      <div className="review-container41">
-        {/* <div className="review-container42">
-          <div className="review-container43"></div>
-          <div className="review-container44"></div>
-          <div className="review-container45"></div>
-          <div className="review-container46"></div>
-          <div className="review-container47"></div>
-        </div> */}
-      </div>
       <div className="review-container48">
         <div className="review-container49">
           <div className="review-container50">
