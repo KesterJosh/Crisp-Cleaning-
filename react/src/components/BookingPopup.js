@@ -1278,10 +1278,10 @@ const BookingPopup = ({ onClose }) => {
     );
     const session = await response.json();
     
-    handleSubmitClean();
     const result = await stripe.redirectToCheckout({
       sessionId: session.id,
     });
+    handleSubmitClean();
 
     if (result.error) {
       console.error(result.error);
