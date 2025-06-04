@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { loadStripe } from "@stripe/stripe-js";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 import { Helmet } from "react-helmet";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -50,6 +52,7 @@ import { SpriteAnimator } from "react-sprite-animator";
 import Mobilex from "./mobile";
 import CalenSchedule from "./calendSchedule";
 import Login from "./login";
+import RegisterPopup from "../components/RegisterPopup";
 
 let defValue = 1;
 let direction = 1;
@@ -139,7 +142,7 @@ const Home = (props) => {
   };
 
   // Select Cleaning Type
-
+  const [showPopup, setShowPopup] = useState(false);
   const handleMouseEnterS = (event) => {
     const container = event.currentTarget;
 
@@ -1224,8 +1227,28 @@ const Home = (props) => {
 
   const [layer, setLayer] = useState(1);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const initialValues = {
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    password: "",
+    address: "",
+    referral: "",
+  };
+
+  const validationSchema = Yup.object().shape({
+    first_name: Yup.string().required("First name is required"),
+    last_name: Yup.string().required("Last name is required"),
+    email: Yup.string().email("Invalid email").required("Email is required"),
+    phone: Yup.string().required("Phone number is required"),
+    password: Yup.string().required("Password is required"),
+    address: Yup.string().required("Address is required"),
+  });
+
+  const handleSubmit = (values) => {
+    const { first_name, last_name, email, phone, password, address, referral } =
+      values;
 
     axios
       .post("http://localhost:4000/register", {
@@ -1240,14 +1263,12 @@ const Home = (props) => {
       .then((result) => {
         console.log(result);
         if (result.data.message === "Successful") {
-          OpenLogin();
           if (layer === 2) handleSubmitCommercial();
           if (layer === 1) setSum(true);
         } else {
-          alert(result.data.error || result.data); // fallback to error message
+          alert(result.data.error || result.data);
         }
       })
-
       .catch((error) => {
         console.error(error);
         if (error.response?.status === 400) {
@@ -1374,8 +1395,45 @@ const Home = (props) => {
       });
   };
 
+  const makePayment = async () => {
+    const stripe = await loadStripe(
+      "pk_test_51ROhYnH9E7pqq95xLp67muP87yzw3XmN9BdV5ZbF2ZoAQuFJPBDYN0HgbnPfaYiN0Z9scDimOVICuZ7iD5kvBaq900M6capXFd"
+    );
+
+    const body = {
+      items: [
+        {
+          name: "Crisp Cleaning Service",
+          price: Math.round(Total * 100), // In cents
+        },
+      ],
+    };
+
+    const response = await fetch(
+      "http://localhost:4000/create-checkout-session",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+    const session = await response.json();
+
+    handleSubmitClean();
+    const result = await stripe.redirectToCheckout({
+      sessionId: session.id,
+    });
+
+    if (result.error) {
+      console.error(result.error);
+    }
+  };
+
   return (
     <div className="home-container">
+      {showPopup && <RegisterPopup onClose={() => setShowPopup(false)} />}
       <Helmet>
         <title>Crisp Cleaning</title>
         <meta
@@ -1516,6 +1574,7 @@ const Home = (props) => {
           </span>
           <span
             className="home-text011"
+            onClick={() => setShowPopup(true)}
             onMouseEnter={handleMouseEnterX}
             onMouseLeave={handleMouseLeaveX}
           >
@@ -3043,6 +3102,7 @@ const Home = (props) => {
               </span>
               <span>and spoiled with gifts from our many reward systems!</span>
             </p>
+
             <div className="home-container193">
               <div className="home-container194">
                 <button type="button" className="home-button09 button">
@@ -3053,151 +3113,192 @@ const Home = (props) => {
                   />
                   <span className="home-text116">Continue With Google</span>
                 </button>
-                {/* <p>{fName} / {lName} / {email} / {phone} / {address} /{referral}</p> */}
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} style={{ width: "100%" }}>
-              <div className="home-container197">
-                <div className="home-container198">
-                  <p className="home-text118">First Name</p>
-                  <input
-                    type="text"
-                    className="home-textinput input"
-                    onChange={(e) => setFName(e.target.value)}
-                  />
-                </div>
-                <div className="home-container199">
-                  <p className="home-text119">Last Name</p>
-                  <input
-                    type="text"
-                    className="home-textinput01 input"
-                    onChange={(e) => setLName(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="home-container200">
-                <div className="home-container201">
-                  <p className="home-text120">Email</p>
-                  <input
-                    type="email"
-                    className="home-textinput02 input"
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                <div className="home-container202">
-                  <p className="home-text121">Phone Number</p>
-                  <input
-                    type="tel"
-                    className="home-textinput03 input"
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="home-container203X">
-                <div className="home-container204">
-                  <p className="home-text122x">Password</p>
-                  <input
-                    type="password"
-                    className="home-textinput04x input"
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="home-container203">
-                <div className="home-container204">
-                  <p className="home-text122X">Address</p>
-                  <input
-                    type="text"
-                    className="home-textinput04x input"
-                    onChange={(e) => setAddress(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="home-container205">
-                <div className="home-container206">
-                  <p className="home-text123">
-                    Referral Code (Not required)
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </p>
-                  <input
-                    type="text"
-                    className="home-textinput05X input"
-                    onChange={(e) => setReferral(e.target.value)}
-                    value={referral}
-                  />
-                </div>
-              </div>
-              <div className="extraConfirm">
-                <p className="home-text124">
-                  <span>
-                    <input type="checkbox" className="checker" /> I accept the
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span className="home-text126">Terms & Conditions</span>
-                </p>
-                <p className="home-text124x">
-                  <span>
-                    Already have an account?
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span className="home-text126">Login</span>
-                </p>
-              </div>
-              <div className="home-container207">
-                {supports ? (
-                  <img
-                    className="home-container191"
-                    src={require("./img/supportOn.png")}
-                  />
-                ) : (
-                  <img
-                    className="home-container191"
-                    src={require("./img/support.png")}
-                  />
-                )}
-                <p
-                  className="home-text108"
-                  onMouseEnter={(e) => handleMouseEnterSupport(e.currentTarget)}
-                  onMouseLeave={(e) => handleMouseLeaveSupport(e.currentTarget)}
-                >
-                  Support
-                </p>
-                <button
-                  onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}
-                  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)}
-                  type="button"
-                  className="home-button03 button"
-                  onClick={() => setTabs(4)}
-                >
-                  <span>
-                    <span>Go </span>
-                    <span>back</span>
-                  </span>
-                </button>
-                <button
-                  type="submit"
-                  onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}
-                  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)}
-                  className="home-button04 button"
-                >
-                  Proceed
-                </button>
-              </div>
-            </form>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+            >
+              {({ errors, touched }) => (
+                <Form style={{ width: "100%" }}>
+                  <div className="home-container197">
+                    <div className="home-container198">
+                      <p className="home-text118">First Name</p>
+                      <Field
+                        name="first_name"
+                        className={`home-textinput input ${
+                          errors.first_name && touched.first_name
+                            ? "input-error"
+                            : ""
+                        }`}
+                      />
+                      <ErrorMessage
+                        name="first_name"
+                        component="div"
+                        className="error-message"
+                      />
+                    </div>
+                    <div className="home-container199">
+                      <p className="home-text119">Last Name</p>
+                      <Field
+                        name="last_name"
+                        className={`home-textinput01 input ${
+                          errors.last_name && touched.last_name
+                            ? "input-error"
+                            : ""
+                        }`}
+                      />
+                      <ErrorMessage
+                        name="last_name"
+                        component="div"
+                        className="error-message"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="home-container200">
+                    <div className="home-container201">
+                      <p className="home-text120">Email</p>
+                      <Field
+                        name="email"
+                        type="email"
+                        className={`home-textinput02 input ${
+                          errors.email && touched.email ? "input-error" : ""
+                        }`}
+                      />
+                      <ErrorMessage
+                        name="email"
+                        component="div"
+                        className="error-message"
+                      />
+                    </div>
+                    <div className="home-container202">
+                      <p className="home-text121">Phone Number</p>
+                      <Field
+                        name="phone"
+                        type="tel"
+                        className={`home-textinput03 input ${
+                          errors.phone && touched.phone ? "input-error" : ""
+                        }`}
+                      />
+                      <ErrorMessage
+                        name="phone"
+                        component="div"
+                        className="error-message"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="home-container203X">
+                    <div className="home-container204">
+                      <p className="home-text122x">Password</p>
+                      <Field
+                        name="password"
+                        type="password"
+                        className={`home-textinput04x input ${
+                          errors.password && touched.password
+                            ? "input-error"
+                            : ""
+                        }`}
+                      />
+                      <ErrorMessage
+                        name="password"
+                        component="div"
+                        className="error-message"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="home-container203">
+                    <div className="home-container204">
+                      <p className="home-text122X">Address</p>
+                      <Field
+                        name="address"
+                        className={`home-textinput04x input ${
+                          errors.address && touched.address ? "input-error" : ""
+                        }`}
+                      />
+                      <ErrorMessage
+                        name="address"
+                        component="div"
+                        className="error-message"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="home-container205">
+                    <div className="home-container206">
+                      <p className="home-text123">
+                        Referral Code (Not required)
+                      </p>
+                      <Field
+                        name="referral"
+                        className="home-textinput05X input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="extraConfirm">
+                    <p className="home-text124">
+                      <input type="checkbox" className="checker" /> I accept the{" "}
+                      <span className="home-text126">Terms & Conditions</span>
+                    </p>
+                    <p className="home-text124x">
+                      <span>Already have an account? </span>
+                      <span className="home-text126" onClick={OpenLogin}>
+                        Login
+                      </span>
+                    </p>
+                  </div>
+
+                  <div className="home-container207">
+                    {supports ? (
+                      <img
+                        className="home-container191"
+                        src={require("./img/supportOn.png")}
+                      />
+                    ) : (
+                      <img
+                        className="home-container191"
+                        src={require("./img/support.png")}
+                      />
+                    )}
+                    <p
+                      className="home-text108"
+                      onMouseEnter={(e) =>
+                        handleMouseEnterSupport(e.currentTarget)
+                      }
+                      onMouseLeave={(e) =>
+                        handleMouseLeaveSupport(e.currentTarget)
+                      }
+                    >
+                      Support
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setTabs(4)}
+                      onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}
+                      onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)}
+                      className="home-button03 button"
+                    >
+                      <span>Go back</span>
+                    </button>
+                    <button
+                      type="submit"
+                      onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}
+                      onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)}
+                      className="home-button04 button"
+                    >
+                      Proceed
+                    </button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
           </div>
+
           <div className="home-container192y" style={{ right: -100 + "%" }}>
             {/* <form> */}
             <span className="home-text112">Cleaning Information</span>
@@ -3583,7 +3684,7 @@ const Home = (props) => {
             <button
               onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}
               onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)}
-              onClick={handleSubmitClean}
+              onClick={makePayment}
               type="button"
               className="home-button13 button"
             >

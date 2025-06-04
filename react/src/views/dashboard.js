@@ -2,17 +2,31 @@ import React, { useEffect, useState, useCallback } from "react";
 import gsap from "gsap";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import moment from "moment";
 import { parse, isAfter } from "date-fns";
 
 import { Helmet } from "react-helmet";
 import "./dashboard.css";
 import Menu from "./menu";
+import BookingPopup from "../components/BookingPopup";
+import UpdateClean from "../components/UpdateClean";
+import CancelBookingPopup from "../components/CancelBooking";
 
 const Dashboard = (props) => {
   const [cleans, setCleans] = useState([]);
   const [allCleans, setAllCleans] = useState([]);
   const [error, setError] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [booking, setBooking] = useState(false);
+  const [editClean, setEditClean] = useState(false);
+  const [selectedCleanId, setSelectedCleanId] = useState(null);
+
+  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = "/";
+  };
 
   // Fetch userId from sessionStorage
   const fetchUserData = useCallback(() => {
@@ -27,7 +41,7 @@ const Dashboard = (props) => {
 
   const today = new Date();
 
-  const upcomingClean = cleans
+  const Next = cleans
     ?.map((c) => {
       const parsedDate = parse(c.date, "dd/MM/yyyy", new Date());
       return { ...c, parsedDate };
@@ -305,8 +319,48 @@ const Dashboard = (props) => {
     });
   };
 
+  const sortedCleans = [...cleans].sort((a, b) => {
+    const dateA = moment(a.date, "DD/MM/YYYY").toDate();
+    const dateB = moment(b.date, "DD/MM/YYYY").toDate();
+    return dateA - dateB; // ascending
+  });
+
+  const upcomingClean = sortedCleans.find((clean) => {
+    const cleanDate = moment(clean.date, "DD/MM/YYYY").toDate();
+    return cleanDate >= new Date(); // only future or today
+  });
+
+  const [showCancelPopup, setShowCancelPopup] = useState(false);
+  const [cancelCleanId, setCancelCleanId] = useState(null);
+
   return (
     <div className="dashboard-container100">
+      {booking && <BookingPopup onClose={() => setBooking(false)} />}
+      {editClean && upcomingClean && (
+        <UpdateClean
+          cleanId={upcomingClean._id}
+          onClose={() => setEditClean(false)}
+        />
+      )}
+      {showCancelPopup && upcomingClean && (
+        <CancelBookingPopup
+          cleanId={upcomingClean._id}
+          onClose={() => setShowCancelPopup(false)}
+          onCancelSuccess={fetchCleans} // refetch cleans after deletion
+        />
+      )}
+
+      {showLogoutPopup && (
+        <div className="logout-popup-overlay">
+          <div className="logout-popup">
+            <p>Are you sure you want to logout?</p>
+            <div className="logout-popup-buttons">
+              <button onClick={handleLogout}>Yes</button>
+              <button onClick={() => setShowLogoutPopup(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
       <Helmet>
         <title>dashboard - Crips Cleaning</title>
         <meta
@@ -421,7 +475,10 @@ const Dashboard = (props) => {
               </span>
             </div>
           </Link>
-          <div className="dashboard-container110">
+          <div
+            onClick={() => setShowLogoutPopup(true)}
+            className="dashboard-container110"
+          >
             <img
               alt="image"
               src={require("./img/exitx-200h.png")}
@@ -458,6 +515,7 @@ const Dashboard = (props) => {
             className="dashboard-container115"
             onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
             onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
+            onClick={() => setBooking(true)}
           >
             <span className="dashboard-text111">Book Now</span>
           </div>
@@ -474,22 +532,21 @@ const Dashboard = (props) => {
             <div className="dashboard-container118">
               <div className="dashboard-container119">
                 <span className="dashboard-text112">
-                  Upcoming:{" "}
-                  {cleans.length > 0 ? cleans[0].date : "No upcoming cleans"}
+                  Upcoming: {Next ? Next.date : "No upcoming cleans"}
                 </span>
                 <span className="dashboard-text113">
-                  <br></br>
+                  <br />
                   <span>
                     Scheduled for
-                    {cleans.length > 0 && (
-                      <span className="">
+                    {Next && (
+                      <span>
                         {" "}
                         "
-                        {cleans[0].typeOfClean == 280
+                        {Next.typeOfClean == 280
                           ? "Vacant"
-                          : cleans[0].typeOfClean == 135
+                          : Next.typeOfClean == 135
                           ? "Deep"
-                          : cleans[0].typeOfClean == 45
+                          : Next.typeOfClean == 45
                           ? "Regular"
                           : "Unknown"}{" "}
                         Clean"
@@ -498,20 +555,30 @@ const Dashboard = (props) => {
                   </span>
                 </span>
               </div>
+
               <div className="dashboard-container120">
                 <button
                   type="button"
                   className="dashboard-button1 button"
                   onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
                   onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
+                  onClick={() => {
+                    setCancelCleanId(Next?.id);
+                    setShowCancelPopup(true);
+                  }}
                 >
                   Request cancellation
                 </button>
+
                 <button
                   type="button"
                   className="dashboard-button2 button"
                   onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
                   onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
+                  onClick={() => {
+                    setSelectedCleanId(Next?.id);
+                    setEditClean(true);
+                  }}
                 >
                   Edit booking
                 </button>
@@ -600,7 +667,41 @@ const Dashboard = (props) => {
                     ))}
                   </>
                 ) : (
-                  <p>No cleans found.</p>
+                  <div
+                    className="dashboard-container123"
+                    onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)}
+                    onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}
+                  >
+                    <div className="dashboard-container124">
+                      <div className="dashboard-container125">
+                        <div className="dashboard-container126">
+                          <img
+                            alt="image"
+                            src={require("./img/medal_x-200h.png")}
+                            className="dashboard-image21"
+                          />
+                          <div className="dashboard-container127">
+                            <div className="dashboard-container128"></div>
+                          </div>
+                        </div>
+                        <span className="dashboard-text119">no clean type</span>
+                      </div>
+                      <div className="dashboard-container129">
+                        <span className="dashboard-text120">no status</span>
+                        <span className="dashboard-text121">
+                          <span>no booked clean</span>
+                          <br></br>
+                          <span>no room data</span>
+                        </span>
+                      </div>
+                    </div>
+
+                    <img
+                      alt="image"
+                      src={require("./img/progressbadge-400h.png")}
+                      className="dashboard-image22"
+                    />
+                  </div>
                 )}
                 {/* <div className="dashboard-container123" onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)} onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}>
                   <div className="dashboard-container124">
@@ -783,8 +884,15 @@ const Dashboard = (props) => {
                   </small>
                 </div>
               ) : (
-                <div className="text-gray-400 italic text-sm">
-                  No upcoming cleans
+                <div className="google-style-clean-card">
+                  <div className="font-medium text-slate-600 text-md mb-1">
+                    No upcoming clean
+                  </div>
+                  <div className="uc">
+                    <div className="uc-border"></div>
+                    No clean type
+                  </div>
+                  <small className="uc-date">No year</small>
                 </div>
               )}
               <Link
@@ -809,23 +917,6 @@ const Dashboard = (props) => {
                 onMouseEnter={(e) => handleMouseEnterFadeY(e.currentTarget)}
                 onMouseLeave={(e) => handleMouseLeaveFadeY(e.currentTarget)}
               >
-                {cleans ? (
-                  <div className="google-style-clean-card p-4 bg-white shadow-md rounded-lg border-l-4 border-blue-600 max-w-md">
-                    <div className="text-sm text-gray-500 font-semibold mb-1">
-                      {cleans.date}
-                    </div>
-                    <div className="font-medium text-black text-base mb-1">
-                      {cleanType(cleans.typeOfClean)}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {cleans.date} • {cleans.getinside}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-gray-400 italic text-sm">
-                    No upcoming cleans
-                  </div>
-                )}
                 <span className="dashboard-text155">
                   <span className="dashboard-text156">View Full Calender</span>
                   <br></br>

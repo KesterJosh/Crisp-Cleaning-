@@ -487,6 +487,103 @@ app.post("/clean", (req, res) => {
     });
 });
 
+app.put("/edit/clean/:id", async (req, res) => {
+  const {
+    Total,
+    type,
+    sliderValueO,
+    sliderValueK,
+    sliderValue,
+    sliderValueOX,
+    windows,
+    walls,
+    Cabinets,
+    organization,
+    blind,
+    stovetop,
+    fridge,
+    Dishwasher,
+    garage,
+    microwave,
+    Laundry,
+    tiles,
+    MyDate,
+    timeFrame,
+    email,
+    CleanType,
+    intervalValue,
+    daySelect1,
+    daySelect2,
+    daySelect3,
+    daySelect4,
+    daySelect5,
+    daySelect6,
+    daySelect7,
+    GetInside,
+    Park,
+    Animal,
+    spComments,
+    discountNew,
+  } = req.body;
+
+  const currentTimeInMilliseconds = Date.now();
+  const { id } = req.params;
+
+  try {
+    const updatedClean = await cleanModel.findByIdAndUpdate(
+      id,
+      {
+        typeOfClean: type,
+        rooms: sliderValueO,
+        kitchen: sliderValueK,
+        bathroom: sliderValue,
+        others: sliderValueOX,
+        windows,
+        walls,
+        cabinets: Cabinets,
+        orginization: organization,
+        blinds: blind,
+        stove: stovetop,
+        fridge,
+        dishwasher: Dishwasher,
+        garage,
+        microwave,
+        laundry: Laundry,
+        tiles,
+        date: MyDate,
+        time: timeFrame,
+        deltatime: currentTimeInMilliseconds,
+        regularOronetime: CleanType,
+        frequency: intervalValue,
+        mon: daySelect1,
+        tue: daySelect2,
+        wed: daySelect3,
+        thu: daySelect4,
+        fri: daySelect5,
+        sat: daySelect6,
+        sun: daySelect7,
+        getinside: GetInside,
+        parkspot: Park,
+        pet: Animal,
+        spComments,
+        discount: discountNew,
+        email,
+        completed: false,
+        total: Total,
+      },
+      { new: true } // return the updated document
+    );
+
+    if (!updatedClean) {
+      return res.status(404).send("Clean record not found");
+    }
+
+    res.status(200).send("Clean record updated successfully");
+  } catch (error) {
+    res.status(500).send("Error updating clean record: " + error.message);
+  }
+});
+
 // Get Cleans by User ID
 app.get("/user-clean/:id", async (req, res) => {
   try {
@@ -529,6 +626,23 @@ app.get("/cleans", async (req, res) => {
   } catch (error) {
     console.error("Error fetching cleaning records:", error);
     res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+app.delete("/clean/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedClean = await cleanModel.findByIdAndDelete(id);
+
+    if (!deletedClean) {
+      return res.status(404).json({ message: "Booking not found." });
+    }
+
+    res.status(200).json({ message: "Booking cancelled successfully." });
+  } catch (error) {
+    console.error("Error deleting booking:", error);
+    res.status(500).json({ message: "Server error while cancelling booking." });
   }
 });
 

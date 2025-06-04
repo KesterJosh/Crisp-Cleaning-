@@ -11,9 +11,20 @@ import CalenFortnightlySchedule from "./CalenFortnightlySchedule";
 import Popschedule from "../components/popschedule";
 import Popschedule1 from "../components/popschedule1";
 import axios from "axios";
+import BookingPopup from "../components/BookingPopup";
+import UpdateClean from "../components/UpdateClean";
+import CancelBookingPopup from "../components/CancelBooking";
 
 const Schedule1 = (props) => {
   const [forthNightly, setforthNighly] = useState(true);
+  const [myDate, setMyDate] = useState(null);
+  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+  const [booking, setBooking] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = "/";
+  };
 
   const changeCalender = () => {
     setforthNighly(!forthNightly);
@@ -162,10 +173,29 @@ const Schedule1 = (props) => {
     }
   }, [userId, fetchCleans]);
 
+  const [showCancelPopup, setShowCancelPopup] = useState(false);
+  const [editClean, setEditClean] = useState(false);
+  const [editId, setEditId] = useState(null);
+
   return (
     <div className="schedule1-container100">
+      {booking && <BookingPopup onClose={() => setBooking(false)} />}
+      {editClean && cleans && (
+        <UpdateClean cleanId={editId} onClose={() => setEditClean(false)} />
+      )}
+      {showLogoutPopup && (
+        <div className="logout-popup-overlay">
+          <div className="logout-popup">
+            <p>Are you sure you want to logout?</p>
+            <div className="logout-popup-buttons">
+              <button onClick={handleLogout}>Yes</button>
+              <button onClick={() => setShowLogoutPopup(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
       <Helmet>
-        <title>Schedule1 - Crips Cleaning</title>
+        <title>Schedule - Crips Cleaning</title>
         <meta
           name="description"
           content="We bring out the beauty in your environment. Eliminating every dirt and stains in your residence"
@@ -177,7 +207,7 @@ const Schedule1 = (props) => {
         />
       </Helmet>
       {cancelScreenX ? (
-        <Popschedule CloseCancelScreen={CloseCancelScreen} />
+        <Popschedule CloseCancelScreen={CloseCancelScreen} cleanId={editId} />
       ) : null}
       {cancelScreenY ? (
         <Popschedule1 CloseCancelScreenY={CloseCancelScreenY} />
@@ -283,7 +313,10 @@ const Schedule1 = (props) => {
               </span>
             </div>
           </Link>
-          <div className="schedule1-container110">
+          <div
+            onClick={() => setShowLogoutPopup(true)}
+            className="schedule1-container110"
+          >
             <img
               alt="image"
               src={require("./img/exitx-200h.png")}
@@ -347,6 +380,7 @@ const Schedule1 = (props) => {
             className="schedule1-container118"
             onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
             onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
+            onClick={() => setBooking(true)}
           >
             <span className="schedule1-text114">Book Now</span>
           </div>
@@ -357,7 +391,7 @@ const Schedule1 = (props) => {
             <div className="schedule1-container120">
               <CalenFortnightlySchedule
                 onTimeSlotSelected={handleSelectDate}
-                setSelectedDatex={setSelectedDate}
+                setSelectedDatex={setMyDate}
                 changeCalend={changeCalender}
               />
 
@@ -482,6 +516,10 @@ const Schedule1 = (props) => {
                         </div>
                         <div className="schedule1-container317">
                           <div
+                            onClick={() => {
+                              setEditClean(true);
+                              setEditId(clean._id);
+                            }}
                             className="schedule1-container318"
                             onMouseEnter={(e) =>
                               handleMouseEnter(e.currentTarget)
@@ -500,7 +538,10 @@ const Schedule1 = (props) => {
                             onMouseLeave={(e) =>
                               handleMouseLeave(e.currentTarget)
                             }
-                            onClick={CancelScreen}
+                            onClick={() => {
+                              setCancelScreenX(true);
+                              setEditId(clean._id);
+                            }}
                           >
                             <span className="schedule1-text243">Cancel</span>
                           </div>
@@ -649,6 +690,10 @@ const Schedule1 = (props) => {
                       <div className="schedule1-container317">
                         <div
                           className="schedule1-container318"
+                          onClick={() => {
+                            setEditClean(true);
+                            setEditId(clean._id);
+                          }}
                           onMouseEnter={(e) =>
                             handleMouseEnter(e.currentTarget)
                           }
@@ -666,7 +711,10 @@ const Schedule1 = (props) => {
                           onMouseLeave={(e) =>
                             handleMouseLeave(e.currentTarget)
                           }
-                          onClick={CancelScreen}
+                          onClick={() => {
+                            setCancelScreenX(true);
+                            setEditId(clean._id);
+                          }}
                         >
                           <span className="schedule1-text243">Cancel</span>
                         </div>

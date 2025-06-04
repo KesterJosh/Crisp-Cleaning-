@@ -7,7 +7,49 @@
   align-items: flex-start;
   flex-direction: column;
   justify-content: flex-start;
-  background-image: linear-gradient(135deg, rgb(250, 250, 250) 1.00%,rgb(214, 214, 214) 100.00%);
+  background-image: linear-gradient(
+    135deg,
+    rgb(250, 250, 250) 1%,
+    rgb(214, 214, 214) 100%
+  );
+}
+.logout-popup {
+  background: #fff;
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.logout-popup-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.logout-popup-buttons button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #ff914d;
+  color: white;
+  font-weight: bold;
+}
+
+.logout-popup-buttons button:last-child {
+  background-color: #ccc;
+  color: black;
+}
+.payment-button {
+  background-color: #ff914d;
+  padding: 6px 20px;
+  border-radius: 10px;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
 }
 .schedule1-container101 {
   top: 0px;
@@ -43,8 +85,8 @@
   justify-content: flex-start;
 }
 .schedule1-text100 {
-  fill: #9C9C9C;
-  color: #9C9C9C;
+  fill: #9c9c9c;
+  color: #9c9c9c;
   font-size: 14px;
 }
 .schedule1-navlink10 {
@@ -65,8 +107,8 @@
   object-fit: cover;
 }
 .schedule1-text101 {
-  fill: #1F3042;
-  color: #1F3042;
+  fill: #1f3042;
+  color: #1f3042;
   font-size: 17px;
   font-style: normal;
   font-weight: 500;
@@ -111,8 +153,8 @@
   object-fit: cover;
 }
 .schedule1-text103 {
-  fill: #1F3042;
-  color: #1F3042;
+  fill: #1f3042;
+  color: #1f3042;
   font-size: 17px;
   font-style: normal;
   font-weight: 500;
@@ -136,8 +178,8 @@
   object-fit: cover;
 }
 .schedule1-text104 {
-  fill: #1F3042;
-  color: #1F3042;
+  fill: #1f3042;
+  color: #1f3042;
   font-size: 17px;
   font-style: normal;
   font-weight: 500;
@@ -161,7 +203,7 @@
   object-fit: cover;
 }
 .schedule1-text105 {
-  fill: #1F3042;
+  fill: #1f3042;
   color: rgb(31, 48, 66);
   font-size: 17px;
   font-style: normal;
@@ -181,7 +223,7 @@
   justify-content: flex-start;
 }
 .schedule1-text106 {
-  fill: #9C9C9C;
+  fill: #9c9c9c;
   color: rgb(156, 156, 156);
   font-size: 10px;
 }
@@ -202,7 +244,7 @@
   object-fit: cover;
 }
 .schedule1-text107 {
-  fill: #1F3042;
+  fill: #1f3042;
   color: rgb(31, 48, 66);
   font-size: 17px;
   font-style: normal;
@@ -222,8 +264,8 @@
   object-fit: cover;
 }
 .schedule1-text108 {
-  fill: #FF0000;
-  color: #FF0000;
+  fill: #ff0000;
+  color: #ff0000;
   font-size: 17px;
   font-style: normal;
   font-weight: 500;
@@ -265,13 +307,13 @@
   position: relative;
   align-items: center;
   margin-left: var(--dl-space-space-unit);
-  border-color: #C3C3C3;
+  border-color: #c3c3c3;
   border-style: solid;
   border-width: 2px;
   margin-right: var(--dl-space-space-unit);
   border-radius: 25px;
   justify-content: flex-start;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 }
 .schedule1-image19 {
   width: 25px;
@@ -318,7 +360,7 @@
   margin-right: var(--dl-space-space-unit);
   border-radius: 25px;
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text111 {
   color: #ffffff;
@@ -371,13 +413,13 @@
   position: relative;
   align-items: center;
   margin-left: var(--dl-space-space-unit);
-  border-color: #C3C3C3;
+  border-color: #c3c3c3;
   border-style: solid;
   border-width: 2px;
   margin-right: var(--dl-space-space-unit);
   border-radius: 25px;
   justify-content: flex-start;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 }
 .schedule1-image22 {
   width: 25px;
@@ -418,7 +460,7 @@
   margin-right: var(--dl-space-space-unit);
   border-radius: 25px;
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text114 {
   color: #ffffff;
@@ -478,8 +520,8 @@
   background-color: rgb(255, 222, 201);
 }
 .schedule1-navlink17 {
-  fill: #1F3042;
-  color: #1F3042;
+  fill: #1f3042;
+  color: #1f3042;
   cursor: pointer;
   font-size: 15px;
   font-style: normal;
@@ -500,8 +542,8 @@
   justify-content: flex-start;
 }
 .schedule1-text115 {
-  fill: #1F3042;
-  color: #1F3042;
+  fill: #1f3042;
+  color: #1f3042;
   font-size: 15px;
   font-style: normal;
   font-weight: 600;
@@ -523,11 +565,11 @@
   height: 36px;
   display: flex;
   align-items: center;
-  border-color: #FF914D;
+  border-color: #ff914d;
   border-width: 2px;
   border-radius: var(--dl-radius-radius-round);
   justify-content: center;
-  background-color: #FFDEC9;
+  background-color: #ffdec9;
 }
 .schedule1-image23 {
   width: 12px;
@@ -540,11 +582,11 @@
   display: flex;
   align-items: center;
   margin-left: var(--dl-space-space-unit);
-  border-color: #FF914D;
+  border-color: #ff914d;
   border-width: 2px;
   border-radius: var(--dl-radius-radius-round);
   justify-content: center;
-  background-color: #FFDEC9;
+  background-color: #ffdec9;
 }
 .schedule1-image24 {
   width: 12px;
@@ -569,8 +611,8 @@
   justify-content: flex-start;
 }
 .schedule1-text116 {
-  fill: #A7A7A7;
-  color: #A7A7A7;
+  fill: #a7a7a7;
+  color: #a7a7a7;
   font-size: 15px;
   font-style: normal;
   text-align: left;
@@ -709,8 +751,8 @@
   justify-content: space-between;
 }
 .schedule1-text123 {
-  fill: #1F3042;
-  color: #1F3042;
+  fill: #1f3042;
+  color: #1f3042;
   font-size: 15px;
   font-style: normal;
   font-weight: 500;
@@ -723,7 +765,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-text124 {
   fill: var(--dl-color-gray-white);
@@ -741,7 +783,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text125 {
   fill: var(--dl-color-gray-white);
@@ -759,7 +801,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-text126 {
   fill: var(--dl-color-gray-white);
@@ -779,7 +821,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #CAC9FF;
+  background-color: #cac9ff;
 }
 .schedule1-text127 {
   color: rgb(31, 48, 66);
@@ -799,7 +841,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-container143 {
   width: 100%;
@@ -812,7 +854,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFDEC9;
+  background-color: #ffdec9;
 }
 .schedule1-text128 {
   color: rgb(31, 48, 66);
@@ -832,7 +874,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-container145 {
   width: 100%;
@@ -845,7 +887,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFC9C9;
+  background-color: #ffc9c9;
 }
 .schedule1-text129 {
   color: rgb(31, 48, 66);
@@ -865,7 +907,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-container147 {
   width: 100%;
@@ -879,7 +921,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text130 {
   fill: var(--dl-color-gray-white);
@@ -922,7 +964,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-text132 {
   fill: var(--dl-color-gray-white);
@@ -940,7 +982,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text133 {
   fill: var(--dl-color-gray-white);
@@ -958,7 +1000,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-text134 {
   fill: var(--dl-color-gray-white);
@@ -978,7 +1020,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #CAC9FF;
+  background-color: #cac9ff;
 }
 .schedule1-text135 {
   color: rgb(31, 48, 66);
@@ -998,7 +1040,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-container155 {
   width: 100%;
@@ -1011,7 +1053,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFDEC9;
+  background-color: #ffdec9;
 }
 .schedule1-text136 {
   color: rgb(31, 48, 66);
@@ -1031,7 +1073,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-container157 {
   width: 100%;
@@ -1044,7 +1086,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFC9C9;
+  background-color: #ffc9c9;
 }
 .schedule1-text137 {
   color: rgb(31, 48, 66);
@@ -1064,7 +1106,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-container159 {
   width: 100%;
@@ -1078,7 +1120,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text138 {
   fill: var(--dl-color-gray-white);
@@ -1121,7 +1163,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-text140 {
   fill: var(--dl-color-gray-white);
@@ -1139,7 +1181,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text141 {
   fill: var(--dl-color-gray-white);
@@ -1157,7 +1199,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-text142 {
   fill: var(--dl-color-gray-white);
@@ -1177,7 +1219,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #CAC9FF;
+  background-color: #cac9ff;
 }
 .schedule1-text143 {
   color: rgb(31, 48, 66);
@@ -1197,7 +1239,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-container167 {
   width: 100%;
@@ -1210,7 +1252,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFDEC9;
+  background-color: #ffdec9;
 }
 .schedule1-text144 {
   color: rgb(31, 48, 66);
@@ -1230,7 +1272,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-container169 {
   width: 100%;
@@ -1243,7 +1285,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFC9C9;
+  background-color: #ffc9c9;
 }
 .schedule1-text145 {
   color: rgb(31, 48, 66);
@@ -1263,7 +1305,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-container171 {
   width: 100%;
@@ -1277,7 +1319,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text146 {
   fill: var(--dl-color-gray-white);
@@ -1320,7 +1362,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-text148 {
   fill: var(--dl-color-gray-white);
@@ -1338,7 +1380,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text149 {
   fill: var(--dl-color-gray-white);
@@ -1356,7 +1398,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-text150 {
   fill: var(--dl-color-gray-white);
@@ -1376,7 +1418,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #CAC9FF;
+  background-color: #cac9ff;
 }
 .schedule1-text151 {
   color: rgb(31, 48, 66);
@@ -1396,7 +1438,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-container179 {
   width: 100%;
@@ -1409,7 +1451,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFDEC9;
+  background-color: #ffdec9;
 }
 .schedule1-text152 {
   color: rgb(31, 48, 66);
@@ -1429,7 +1471,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-container181 {
   width: 100%;
@@ -1442,7 +1484,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFC9C9;
+  background-color: #ffc9c9;
 }
 .schedule1-text153 {
   color: rgb(31, 48, 66);
@@ -1462,7 +1504,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-container183 {
   width: 100%;
@@ -1476,7 +1518,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text154 {
   fill: var(--dl-color-gray-white);
@@ -1519,7 +1561,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-text156 {
   fill: var(--dl-color-gray-white);
@@ -1537,7 +1579,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text157 {
   fill: var(--dl-color-gray-white);
@@ -1555,7 +1597,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-text158 {
   fill: var(--dl-color-gray-white);
@@ -1575,7 +1617,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #CAC9FF;
+  background-color: #cac9ff;
 }
 .schedule1-text159 {
   color: rgb(31, 48, 66);
@@ -1595,7 +1637,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-container191 {
   width: 100%;
@@ -1608,7 +1650,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFDEC9;
+  background-color: #ffdec9;
 }
 .schedule1-text160 {
   color: rgb(31, 48, 66);
@@ -1628,7 +1670,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-container193 {
   width: 100%;
@@ -1641,7 +1683,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFC9C9;
+  background-color: #ffc9c9;
 }
 .schedule1-text161 {
   color: rgb(31, 48, 66);
@@ -1661,7 +1703,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-container195 {
   width: 100%;
@@ -1675,7 +1717,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text162 {
   fill: var(--dl-color-gray-white);
@@ -1718,7 +1760,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-text164 {
   fill: var(--dl-color-gray-white);
@@ -1736,7 +1778,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text165 {
   fill: var(--dl-color-gray-white);
@@ -1754,7 +1796,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-text166 {
   fill: var(--dl-color-gray-white);
@@ -1774,7 +1816,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #CAC9FF;
+  background-color: #cac9ff;
 }
 .schedule1-text167 {
   color: rgb(31, 48, 66);
@@ -1794,7 +1836,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-container203 {
   width: 100%;
@@ -1807,7 +1849,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFDEC9;
+  background-color: #ffdec9;
 }
 .schedule1-text168 {
   color: rgb(31, 48, 66);
@@ -1827,7 +1869,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-container205 {
   width: 100%;
@@ -1840,7 +1882,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFC9C9;
+  background-color: #ffc9c9;
 }
 .schedule1-text169 {
   color: rgb(31, 48, 66);
@@ -1860,7 +1902,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-container207 {
   width: 100%;
@@ -1874,7 +1916,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text170 {
   fill: var(--dl-color-gray-white);
@@ -1917,7 +1959,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-text172 {
   fill: var(--dl-color-gray-white);
@@ -1935,7 +1977,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text173 {
   fill: var(--dl-color-gray-white);
@@ -1953,7 +1995,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-text174 {
   fill: var(--dl-color-gray-white);
@@ -1973,7 +2015,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #CAC9FF;
+  background-color: #cac9ff;
 }
 .schedule1-text175 {
   color: rgb(31, 48, 66);
@@ -1993,7 +2035,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-container215 {
   width: 100%;
@@ -2006,7 +2048,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFDEC9;
+  background-color: #ffdec9;
 }
 .schedule1-text176 {
   color: rgb(31, 48, 66);
@@ -2026,7 +2068,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-container217 {
   width: 100%;
@@ -2039,7 +2081,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFC9C9;
+  background-color: #ffc9c9;
 }
 .schedule1-text177 {
   color: rgb(31, 48, 66);
@@ -2059,7 +2101,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-container219 {
   width: 100%;
@@ -2073,7 +2115,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text178 {
   fill: var(--dl-color-gray-white);
@@ -2126,7 +2168,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-text180 {
   fill: var(--dl-color-gray-white);
@@ -2144,7 +2186,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text181 {
   fill: var(--dl-color-gray-white);
@@ -2162,7 +2204,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-text182 {
   fill: var(--dl-color-gray-white);
@@ -2182,7 +2224,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #CAC9FF;
+  background-color: #cac9ff;
 }
 .schedule1-text183 {
   color: rgb(31, 48, 66);
@@ -2202,7 +2244,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-container228 {
   width: 100%;
@@ -2215,7 +2257,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFDEC9;
+  background-color: #ffdec9;
 }
 .schedule1-text184 {
   color: rgb(31, 48, 66);
@@ -2235,7 +2277,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-container230 {
   width: 100%;
@@ -2248,7 +2290,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFC9C9;
+  background-color: #ffc9c9;
 }
 .schedule1-text185 {
   color: rgb(31, 48, 66);
@@ -2268,7 +2310,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-container232 {
   width: 100%;
@@ -2282,7 +2324,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text186 {
   fill: var(--dl-color-gray-white);
@@ -2325,7 +2367,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-text188 {
   fill: var(--dl-color-gray-white);
@@ -2343,7 +2385,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text189 {
   fill: var(--dl-color-gray-white);
@@ -2361,7 +2403,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-text190 {
   fill: var(--dl-color-gray-white);
@@ -2381,7 +2423,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #CAC9FF;
+  background-color: #cac9ff;
 }
 .schedule1-text191 {
   color: rgb(31, 48, 66);
@@ -2401,7 +2443,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-container240 {
   width: 100%;
@@ -2414,7 +2456,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFDEC9;
+  background-color: #ffdec9;
 }
 .schedule1-text192 {
   color: rgb(31, 48, 66);
@@ -2434,7 +2476,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-container242 {
   width: 100%;
@@ -2447,7 +2489,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFC9C9;
+  background-color: #ffc9c9;
 }
 .schedule1-text193 {
   color: rgb(31, 48, 66);
@@ -2467,7 +2509,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-container244 {
   width: 100%;
@@ -2481,7 +2523,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text194 {
   fill: var(--dl-color-gray-white);
@@ -2524,7 +2566,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-text196 {
   fill: var(--dl-color-gray-white);
@@ -2542,7 +2584,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text197 {
   fill: var(--dl-color-gray-white);
@@ -2560,7 +2602,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-text198 {
   fill: var(--dl-color-gray-white);
@@ -2580,7 +2622,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #CAC9FF;
+  background-color: #cac9ff;
 }
 .schedule1-text199 {
   color: rgb(31, 48, 66);
@@ -2600,7 +2642,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-container252 {
   width: 100%;
@@ -2613,7 +2655,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFDEC9;
+  background-color: #ffdec9;
 }
 .schedule1-text200 {
   color: rgb(31, 48, 66);
@@ -2633,7 +2675,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-container254 {
   width: 100%;
@@ -2646,7 +2688,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFC9C9;
+  background-color: #ffc9c9;
 }
 .schedule1-text201 {
   color: rgb(31, 48, 66);
@@ -2666,7 +2708,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-container256 {
   width: 100%;
@@ -2680,7 +2722,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text202 {
   fill: var(--dl-color-gray-white);
@@ -2723,7 +2765,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-text204 {
   fill: var(--dl-color-gray-white);
@@ -2741,7 +2783,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text205 {
   fill: var(--dl-color-gray-white);
@@ -2759,7 +2801,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-text206 {
   fill: var(--dl-color-gray-white);
@@ -2779,7 +2821,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #CAC9FF;
+  background-color: #cac9ff;
 }
 .schedule1-text207 {
   color: rgb(31, 48, 66);
@@ -2799,7 +2841,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-container264 {
   width: 100%;
@@ -2812,7 +2854,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFDEC9;
+  background-color: #ffdec9;
 }
 .schedule1-text208 {
   color: rgb(31, 48, 66);
@@ -2832,7 +2874,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-container266 {
   width: 100%;
@@ -2845,7 +2887,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFC9C9;
+  background-color: #ffc9c9;
 }
 .schedule1-text209 {
   color: rgb(31, 48, 66);
@@ -2865,7 +2907,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-container268 {
   width: 100%;
@@ -2879,7 +2921,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text210 {
   fill: var(--dl-color-gray-white);
@@ -2923,7 +2965,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-text212 {
   fill: var(--dl-color-gray-white);
@@ -2941,7 +2983,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text213 {
   fill: var(--dl-color-gray-white);
@@ -2960,7 +3002,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-text214 {
   color: var(--dl-color-gray-white);
@@ -2979,7 +3021,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #CAC9FF;
+  background-color: #cac9ff;
 }
 .schedule1-text215 {
   color: rgb(31, 48, 66);
@@ -2999,7 +3041,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-container276 {
   width: 100%;
@@ -3012,7 +3054,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFDEC9;
+  background-color: #ffdec9;
 }
 .schedule1-text216 {
   color: rgb(31, 48, 66);
@@ -3032,7 +3074,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-container278 {
   width: 100%;
@@ -3045,7 +3087,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFC9C9;
+  background-color: #ffc9c9;
 }
 .schedule1-text217 {
   color: rgb(31, 48, 66);
@@ -3065,7 +3107,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-container280 {
   width: 100%;
@@ -3079,7 +3121,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text218 {
   fill: var(--dl-color-gray-white);
@@ -3122,7 +3164,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-text220 {
   fill: var(--dl-color-gray-white);
@@ -3140,7 +3182,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text221 {
   fill: var(--dl-color-gray-white);
@@ -3158,7 +3200,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-text222 {
   fill: var(--dl-color-gray-white);
@@ -3178,7 +3220,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #CAC9FF;
+  background-color: #cac9ff;
 }
 .schedule1-text223 {
   color: rgb(31, 48, 66);
@@ -3198,7 +3240,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-container288 {
   width: 100%;
@@ -3211,7 +3253,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFDEC9;
+  background-color: #ffdec9;
 }
 .schedule1-text224 {
   color: rgb(31, 48, 66);
@@ -3231,7 +3273,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-container290 {
   width: 100%;
@@ -3244,7 +3286,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFC9C9;
+  background-color: #ffc9c9;
 }
 .schedule1-text225 {
   color: rgb(31, 48, 66);
@@ -3264,7 +3306,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-container292 {
   width: 100%;
@@ -3278,7 +3320,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text226 {
   fill: var(--dl-color-gray-white);
@@ -3321,7 +3363,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-text228 {
   fill: var(--dl-color-gray-white);
@@ -3339,7 +3381,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text229 {
   fill: var(--dl-color-gray-white);
@@ -3357,7 +3399,7 @@
   border-radius: var(--dl-radius-radius-round);
   flex-direction: column;
   justify-content: center;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-text230 {
   fill: var(--dl-color-gray-white);
@@ -3377,7 +3419,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #CAC9FF;
+  background-color: #cac9ff;
 }
 .schedule1-text231 {
   color: rgb(31, 48, 66);
@@ -3397,7 +3439,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #615EFF;
+  background-color: #615eff;
 }
 .schedule1-container300 {
   width: 100%;
@@ -3410,7 +3452,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFDEC9;
+  background-color: #ffdec9;
 }
 .schedule1-text232 {
   color: rgb(31, 48, 66);
@@ -3430,7 +3472,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-container302 {
   width: 100%;
@@ -3443,7 +3485,7 @@
   flex-direction: row;
   padding-bottom: 3px;
   justify-content: space-between;
-  background-color: #FFC9C9;
+  background-color: #ffc9c9;
 }
 .schedule1-text233 {
   color: rgb(31, 48, 66);
@@ -3463,7 +3505,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: flex-start;
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 .schedule1-container304 {
   width: 100%;
@@ -3477,7 +3519,7 @@
   flex-direction: row;
   padding-bottom: var(--dl-space-space-halfunit);
   justify-content: center;
-  background-color: #FF914D;
+  background-color: #ff914d;
 }
 .schedule1-text234 {
   fill: var(--dl-color-gray-white);
@@ -3506,7 +3548,7 @@
   display: flex;
   align-items: center;
   padding-top: var(--dl-space-space-oneandhalfunits);
-  border-color: #CECECE;
+  border-color: #cecece;
   border-width: 0px;
   padding-left: var(--dl-space-space-halfunit);
   padding-right: var(--dl-space-space-halfunit);
@@ -3566,7 +3608,7 @@
   height: 12px;
   display: flex;
   border-radius: var(--dl-radius-radius-round);
-  background-color: #00A106;
+  background-color: #00a106;
 }
 .schedule1-container312 {
   display: flex;
@@ -3646,7 +3688,7 @@
   height: 12px;
   display: flex;
   border-radius: var(--dl-radius-radius-round);
-  background-color: #00A106;
+  background-color: #00a106;
 }
 .schedule1-container317 {
   display: flex;
@@ -3659,7 +3701,7 @@
   height: 31px;
   display: flex;
   align-items: center;
-  border-color: #FF914D;
+  border-color: #ff914d;
   border-style: solid;
   border-width: 1px;
   padding-left: var(--dl-space-space-oneandhalfunits);
@@ -3667,7 +3709,7 @@
   padding-right: var(--dl-space-space-oneandhalfunits);
   flex-direction: column;
   justify-content: center;
-  background-color: #FFDEC9;
+  background-color: #ffdec9;
 }
 .schedule1-text242 {
   color: rgb(255, 145, 77);
@@ -3679,7 +3721,7 @@
   display: flex;
   align-items: center;
   margin-left: var(--dl-space-space-unit);
-  border-color: #FF0000;
+  border-color: #ff0000;
   border-style: solid;
   border-width: 1px;
   padding-left: var(--dl-space-space-oneandhalfunits);
@@ -3687,11 +3729,11 @@
   padding-right: var(--dl-space-space-oneandhalfunits);
   flex-direction: column;
   justify-content: center;
-  background-color: #FFC9C9;
+  background-color: #ffc9c9;
 }
 .schedule1-text243 {
-  fill: #FF0000;
-  color: #FF0000;
+  fill: #ff0000;
+  color: #ff0000;
   font-size: 14px;
 }
 .schedule1-container320 {
@@ -3700,7 +3742,7 @@
   display: flex;
   align-items: center;
   padding-top: var(--dl-space-space-oneandhalfunits);
-  border-color: #CECECE;
+  border-color: #cecece;
   border-width: 0px;
   padding-left: var(--dl-space-space-halfunit);
   padding-right: var(--dl-space-space-halfunit);
@@ -3760,7 +3802,7 @@
   height: 12px;
   display: flex;
   border-radius: var(--dl-radius-radius-round);
-  background-color: #00A106;
+  background-color: #00a106;
 }
 .schedule1-container326 {
   display: flex;
@@ -3840,7 +3882,7 @@
   height: 12px;
   display: flex;
   border-radius: var(--dl-radius-radius-round);
-  background-color: #00A106;
+  background-color: #00a106;
 }
 .schedule1-container331 {
   display: flex;
@@ -3853,7 +3895,7 @@
   height: 31px;
   display: flex;
   align-items: center;
-  border-color: #FF914D;
+  border-color: #ff914d;
   border-style: solid;
   border-width: 1px;
   padding-left: var(--dl-space-space-oneandhalfunits);
@@ -3861,7 +3903,7 @@
   padding-right: var(--dl-space-space-oneandhalfunits);
   flex-direction: column;
   justify-content: center;
-  background-color: #FFDEC9;
+  background-color: #ffdec9;
 }
 .schedule1-text251 {
   color: rgb(255, 145, 77);
@@ -3873,7 +3915,7 @@
   display: flex;
   align-items: center;
   margin-left: var(--dl-space-space-unit);
-  border-color: #FF0000;
+  border-color: #ff0000;
   border-style: solid;
   border-width: 1px;
   padding-left: var(--dl-space-space-oneandhalfunits);
@@ -3881,11 +3923,11 @@
   padding-right: var(--dl-space-space-oneandhalfunits);
   flex-direction: column;
   justify-content: center;
-  background-color: #FFC9C9;
+  background-color: #ffc9c9;
 }
 .schedule1-text252 {
-  fill: #FF0000;
-  color: #FF0000;
+  fill: #ff0000;
+  color: #ff0000;
   font-size: 14px;
 }
 .schedule1-container334 {
@@ -3998,15 +4040,15 @@
   flex-direction: column;
   justify-content: flex-start;
 }
-@media(max-width: 1200px) {
+@media (max-width: 1200px) {
   .schedule1-container101 {
     padding-left: var(--dl-space-space-halfunit);
   }
   .schedule1-text103 {
-    fill: #1F3042;
-    color: #1F3042;
+    fill: #1f3042;
+    color: #1f3042;
   }
- 
+
   .schedule1-container113 {
     width: 90%;
   }
@@ -4389,7 +4431,7 @@
     font-size: 11px;
   }
 }
-@media(max-width: 991px) {
+@media (max-width: 991px) {
   .schedule1-container101 {
     display: none;
   }
@@ -4398,7 +4440,7 @@
     height: 105px;
     display: flex;
     padding-top: var(--dl-space-space-unit);
-    border-color: #D9D9D9;
+    border-color: #d9d9d9;
     border-width: 0px;
     padding-left: var(--dl-space-space-twounits);
     margin-bottom: var(--dl-space-space-unit);
@@ -4523,13 +4565,13 @@
     display: flex;
     align-items: center;
     padding-top: var(--dl-space-space-halfunit);
-    border-color: #D2D2D2;
+    border-color: #d2d2d2;
     padding-left: 0px;
     padding-right: 0px;
     flex-direction: row;
     padding-bottom: var(--dl-space-space-twounits);
     justify-content: center;
-    background-color: #F0F0F0;
+    background-color: #f0f0f0;
     border-top-width: 1px;
     border-left-width: 0px;
     border-right-width: 0px;
@@ -4591,7 +4633,7 @@
     display: flex;
     position: static;
     align-items: center;
-    border-color: #D2D2D2;
+    border-color: #d2d2d2;
     border-style: hidden;
     border-width: 0px;
     padding-left: 0px;
@@ -4604,7 +4646,7 @@
     border-bottom-width: 0px;
   }
 }
-@media(max-width: 767px) {
+@media (max-width: 767px) {
   .schedule1-text109 {
     color: rgb(31, 48, 66);
     font-size: 20px;
@@ -4682,7 +4724,7 @@
     border-top-width: 0px;
   }
 }
-@media(max-width: 479px) {
+@media (max-width: 479px) {
   .schedule1-container111 {
     height: 70px;
     padding-left: var(--dl-space-space-halfunit);
@@ -4929,7 +4971,7 @@
   .schedule1-container334 {
     height: 6vh;
     padding-bottom: var(--dl-space-space-halfunit);
-    background-color: #F0F0F0;
+    background-color: #f0f0f0;
   }
   .schedule1-container335 {
     height: 50px;

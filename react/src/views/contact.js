@@ -9,6 +9,8 @@ import { Link } from "react-router-dom";
 import "./contact.css";
 import "./home.css";
 import Mobilex from "./mobile";
+import Login from "./login";
+import RegisterPopup from "../components/RegisterPopup";
 
 const Contact = (props) => {
   const handleMouseEnter = (event) => {
@@ -67,6 +69,9 @@ const Contact = (props) => {
     gsap.to(MobileMenu.current, { bottom: "20%", duration: 0.8 });
     MobileMenu.current.style.display = "block";
   };
+
+  const [login, setLogin] = useState(false);
+  const [register, setRegister] = useState(false);
 
   const closemenu = () => {
     // MobileMenu.current.style.bottom='100%';
@@ -197,8 +202,16 @@ const Contact = (props) => {
       });
   };
 
+  const navigateS = () => {
+    window.location.href = "/#/dashboard"; // Full page reload
+  };
+
   return (
     <div className="contact-container">
+      {login && (
+        <Login CloseLogin={() => setLogin(false)} navigateS={navigateS} />
+      )}
+      {register && <RegisterPopup onClose={() => setRegister(false)} />}
       <Helmet>
         <title>Contact - Crisp Cleaning</title>
         <meta property="og:title" content="Contact - Crisp Cleaning" />
@@ -319,6 +332,7 @@ const Contact = (props) => {
               className="home-container013"
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
+              onClick={() => setLogin(true)}
             >
               <span className="home-text010">Login</span>
             </div>
@@ -326,6 +340,7 @@ const Contact = (props) => {
               className="home-text011"
               onMouseEnter={handleMouseEnterX}
               onMouseLeave={handleMouseLeaveX}
+              onClick={() => setRegister(true)}
             >
               Get Started Now
             </span>
@@ -364,7 +379,7 @@ const Contact = (props) => {
             We have a record of answering everything in 3 hours or less.
           </span>
         </div>
-        <div className="contact-container06">
+        {/* <div className="contact-container06">
           <div className="contact-container07">
             <div className="contact-container08">
               <div className="contact-container09"></div>
@@ -407,7 +422,7 @@ const Contact = (props) => {
               Visit Now
             </Link>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="contact-container16"></div>
       <div className="contact-container17">

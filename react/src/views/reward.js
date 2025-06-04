@@ -11,6 +11,7 @@ import Popreward from "../components/popreward";
 import { useCallback } from "react";
 import axios from "axios";
 import { useRef } from "react";
+import BookingPopup from "../components/BookingPopup";
 
 const Reward = (props) => {
   const [showPopup, setShowPopup] = useState(false);
@@ -19,6 +20,13 @@ const Reward = (props) => {
   const [reviewText, setReviewText] = useState("");
   const [videoFile, setVideoFile] = useState(null);
   const [videoURL, setVideoURL] = useState(null);
+  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+  const [booking, setBooking] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = "/";
+  };
 
   useEffect(() => {
     if (showPopup) {
@@ -71,7 +79,7 @@ const Reward = (props) => {
     }
 
     try {
-      const res = await fetch("https://api-crisp-cleaning.onrender.com/api/reviews", {
+      const res = await fetch("http://localhost:4000/reviews", {
         method: "POST",
         body: formData,
       });
@@ -262,7 +270,7 @@ const Reward = (props) => {
     if (!userId) return;
     try {
       const response = await axios.get(
-        `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`
+        `http://localhost:4000/user-clean/${userId}`
       );
       if (response.data && response.data.cleanRecords) {
         setCleans(response.data.cleanRecords); // Save cleans to state
@@ -285,7 +293,7 @@ const Reward = (props) => {
   useEffect(() => {
     if (!userId) return;
 
-    fetch(`https://api-crisp-cleaning.onrender.com/api/rewards/${userId}`)
+    fetch(`http://localhost:4000/rewards/${userId}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error(`API error: ${res.status}`);
@@ -314,6 +322,18 @@ const Reward = (props) => {
 
   return (
     <div className="reward-container10">
+      {booking && <BookingPopup onClose={() => setBooking(false)} />}
+      {showLogoutPopup && (
+        <div className="logout-popup-overlay">
+          <div className="logout-popup">
+            <p>Are you sure you want to logout?</p>
+            <div className="logout-popup-buttons">
+              <button onClick={handleLogout}>Yes</button>
+              <button onClick={() => setShowLogoutPopup(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
       <Helmet>
         <title>reward - Crips Cleaning</title>
         <meta
@@ -430,7 +450,10 @@ const Reward = (props) => {
               </span>
             </div>
           </Link>
-          <div className="reward-container20">
+          <div
+            onClick={() => setShowLogoutPopup(true)}
+            className="reward-container20"
+          >
             <img
               alt="image"
               src={require("./img/exitx-200h.png")}
@@ -498,6 +521,7 @@ const Reward = (props) => {
             className="reward-container28"
             onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
             onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
+            onClick={() => setBooking(true)}
           >
             <span className="reward-text24">Book Now</span>
           </div>
@@ -571,9 +595,6 @@ const Reward = (props) => {
                   onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
                 >
                   Challenges
-                </span>
-                <span className="review" onClick={() => setShowPopup(true)}>
-                  Add review
                 </span>
               </div>
 

@@ -3,6 +3,7 @@ import "./calender.css";
 import gsap from "gsap";
 import axios from "axios";
 import moment from "moment";
+import BookingPopup from "../components/BookingPopup";
 
 const CalenFortnightlySchedule = ({
   onTimeSlotSelected,
@@ -14,9 +15,18 @@ const CalenFortnightlySchedule = ({
   const [calendarMode, setCalendarMode] = useState("fortnightly"); // or "monthly"
   const [cleans, setCleans] = useState([]);
   const [currentStartDate, setCurrentStartDate] = useState(new Date());
+  const [booking, setBooking] = useState(false);
 
   useEffect(() => {
-    setCurrentStartDate(moment().startOf("week").add(14, "days").toDate());
+    const now = new Date();
+    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const dayOfWeek = firstDayOfMonth.getDay(); // 0 (Sun) - 6 (Sat)
+
+    // Subtract the day index to get back to Sunday
+    const sundayOfWeek = new Date(firstDayOfMonth);
+    sundayOfWeek.setDate(firstDayOfMonth.getDate() - dayOfWeek);
+
+    setCurrentStartDate(sundayOfWeek);
   }, []);
 
   const userId = JSON.parse(localStorage.getItem("user"))?.userId;
@@ -195,10 +205,18 @@ const CalenFortnightlySchedule = ({
     const isSelected = selectedDate && dayMoment.isSame(selectedDate, "day");
     const isCurrentMonth =
       dayMoment.month() === moment(currentStartDate).month();
+    const isPastDate = dayMoment.isBefore(moment(), "day");
 
     const matchingCleans = cleans.filter((clean) =>
       moment(clean.date, "DD/MM/YYYY").isSame(dayMoment, "day")
     );
+
+    const handleClick = () => {
+      if (!isPastDate) {
+        setSelectedDate(dayMoment.toDate());
+        setSelectedDatex(formatDate(dayMoment.toDate()));
+      }
+    };
 
     return (
       <div
@@ -206,89 +224,108 @@ const CalenFortnightlySchedule = ({
         className={`calendar-day ${isToday ? "today" : ""} ${
           isSelected ? "selected" : ""
         } ${!isCurrentMonth ? "other-month" : ""}`}
-        onClick={() => {
-          setSelectedDate(dayMoment.toDate());
-        }}
+        onClick={handleClick}
       >
         <span className="day-number">{dayMoment.date()}</span>
 
-        {matchingCleans.map((clean, i) => (
-          <div key={i} className="scheduled-clean">
-            {clean.typeOfClean == 280 ? "Vacant" : null}
-            {clean.typeOfClean == 135 ? "Deep" : null}
-            {clean.typeOfClean == 45 ? "Regular" : null} Clean
-          </div>
-        ))}
+        {matchingCleans.map((clean, i) => {
+          let typeClass = "";
+          if (clean.typeOfClean == 280) typeClass = "vacant";
+          else if (clean.typeOfClean == 135) typeClass = "deep";
+          else if (clean.typeOfClean == 45) typeClass = "regular";
+
+          return (
+            <>
+              <div key={i} className={`scheduled-clean ${typeClass}`}>
+                {clean.typeOfClean == 280 && "Vacant"}
+                {clean.typeOfClean == 135 && "Deep"}
+                {clean.typeOfClean == 45 && "Regular"} Clean
+                <span className="clean-circle"></span>
+              </div>
+            </>
+          );
+        })}
+
+        {!isPastDate && isSelected && (
+          <button onClick={() => setBooking(true)} className="book-now-btn">
+            Book Now
+          </button>
+        )}
       </div>
     );
   };
 
   return (
-    <div className="home-container087x" ref={calendarRef}>
-      <div className="schedule-container121">
-        <div className="schedule-container122">
-          <span
-            className="schedule-text115"
-            onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
-            onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}
-          >
-            Fortnightly
-          </span>
-          <span
-            onClick={changeCalend}
-            className="schedule-navlink17"
-            onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
-            onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}
-          >
-            Monthly
-          </span>
-        </div>
-        <div className="schedule-container123">
-          <span className="schedule-text116">
-            {currentStartDate.toLocaleDateString("default", {
-              month: "long",
-              year: "numeric",
-            })}
-          </span>
-          <div className="schedule-container124">
-            <div
-              className="schedule-container125"
-              onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
-              onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}
-              onClick={handlePrevFortnight}
+    <>
+      {booking && <BookingPopup onClose={() => setBooking(false)} />}
+      <div className="home-container087x" ref={calendarRef}>
+        <div className="schedule-container121">
+          <div className="schedule-container122">
+            <span
+              className="schedule-text115"
+              onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
+              onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}
             >
-              <img
-                alt="image"
-                src={require("./img/left-200w.png")}
-                className="schedule-image23"
-              />
-            </div>
-            <div
-              className="schedule-container126"
-              onClick={handleNextFortnight}
-              onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
-              onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}
+              Fortnightly
+            </span>
+            <span
+              onClick={changeCalend}
+              className="schedule-navlink17"
+              onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
+              onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}
             >
-              <img
-                alt="image"
-                src={require("./img/right-200w.png")}
-                className="schedule-image24"
-              />
+              Monthly
+            </span>
+          </div>
+          <div className="schedule-container123">
+            <span className="schedule-text116">
+              {currentStartDate.toLocaleDateString("default", {
+                month: "long",
+                year: "numeric",
+              })}
+            </span>
+            <div className="schedule-container124">
+              <div
+                className="schedule-container125"
+                onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
+                onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}
+                onClick={handlePrevFortnight}
+              >
+                <img
+                  alt="image"
+                  src={require("./img/left-200w.png")}
+                  className="schedule-image23"
+                />
+              </div>
+              <div
+                className="schedule-container126"
+                onClick={handleNextFortnight}
+                onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
+                onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}
+              >
+                <img
+                  alt="image"
+                  src={require("./img/right-200w.png")}
+                  className="schedule-image24"
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      {renderTableHeader()}
-      <div className="calendar-grid">
+        {renderTableHeader()}
         <div className="calendar-grid">
-          {generateFortnightCalendar(currentStartDate).map((week, weekIdx) => (
-            <div key={weekIdx} className="calendar-week">
-              {week.map((day) => renderDay(day))}
-            </div>
-          ))}
+          <div className="calendar-grid">
+            {generateFortnightCalendar(currentStartDate).map(
+              (week, weekIdx) => (
+                <div key={weekIdx} className="calendar-week">
+                  {week.map((day) => renderDay(day))}
+                </div>
+              )
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

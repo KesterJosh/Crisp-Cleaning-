@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import gsap from "gsap";
 
@@ -14,21 +14,31 @@ import stripeCheckoutButton from "../components/stripeCheckoutButton";
 import { useCallback } from "react";
 import axios from "axios";
 import { useRef } from "react";
-import { loadStripe } from "@stripe/stripe-js";
+import BookingPopup from "../components/BookingPopup";
 
 const Transaction = (props) => {
   const [cleans, setCleans] = useState([]);
+  const location = useLocation();
+  const isSettingsActive = location.pathname == "/transaction";
+  const [booking, setBooking] = useState(false);
 
   const [Total, setTotal] = useState(0);
 
   const userId = JSON.parse(localStorage.getItem("user"))?.userId;
   const user = JSON.parse(localStorage.getItem("user"));
 
+  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = "/";
+  };
+
   const fetchCleans = useCallback(async () => {
     if (!userId) return;
     try {
       const response = await axios.get(
-        `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`
+        `http://localhost:4000/user-clean/${userId}`
       );
       if (response.data && response.data.cleanRecords) {
         setCleans(response.data.cleanRecords);
@@ -55,42 +65,6 @@ const Transaction = (props) => {
       fetchCleans();
     }
   }, [userId, fetchCleans]);
-
-  const makePayment = async () => {
-    const stripe = await loadStripe(
-      "pk_test_51ROhYnH9E7pqq95xLp67muP87yzw3XmN9BdV5ZbF2ZoAQuFJPBDYN0HgbnPfaYiN0Z9scDimOVICuZ7iD5kvBaq900M6capXFd"
-    );
-
-    const body = {
-      items: [
-        {
-          name: "Crisp Cleaning Service",
-          price: Math.round(Total * 100), // In cents
-        },
-      ],
-    };
-
-    const response = await fetch(
-      "https://api-crisp-cleaning.onrender.com/create-checkout-session",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      }
-    );
-
-    const session = await response.json();
-
-    const result = await stripe.redirectToCheckout({
-      sessionId: session.id,
-    });
-
-    if (result.error) {
-      console.error(result.error);
-    }
-  };
 
   const handleMouseEnterFade = (button) => {
     gsap.to(button, {
@@ -246,7 +220,7 @@ const Transaction = (props) => {
     }
 
     try {
-      const res = await fetch("https://api-crisp-cleaning.onrender.com/api/reviews", {
+      const res = await fetch("http://localhost:4000/api/reviews", {
         method: "POST",
         body: formData,
       });
@@ -333,6 +307,18 @@ const Transaction = (props) => {
 
   return (
     <div className="transaction-container10">
+      {booking && <BookingPopup onClose={() => setBooking(false)} />}
+      {showLogoutPopup && (
+        <div className="logout-popup-overlay">
+          <div className="logout-popup">
+            <p>Are you sure you want to logout?</p>
+            <div className="logout-popup-buttons">
+              <button onClick={handleLogout}>Yes</button>
+              <button onClick={() => setShowLogoutPopup(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
       {showPopup && (
         <div className="popup-overlay">
           <div className="popup-content" ref={popupRef}>
@@ -502,10 +488,16 @@ const Transaction = (props) => {
                 src={require("./img/settings_x-200h.png")}
                 className="transaction-image19"
               />
-              <span className="transaction-text20">Settings</span>
+              <span className={` ${isSettingsActive ? "active-settings" : ""}`}>
+                Settings
+              </span>
             </div>
           </Link>
-          <div className="transaction-container24">
+
+          <div
+            onClick={() => setShowLogoutPopup(true)}
+            className="transaction-container24"
+          >
             <img
               alt="image"
               src={require("./img/exitx-200h.png")}
@@ -542,6 +534,7 @@ const Transaction = (props) => {
             className="transaction-container29"
             onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
             onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
+            onClick={() => setBooking(true)}
           >
             <span className="transaction-text24">Book Now</span>
           </div>
@@ -685,9 +678,6 @@ const Transaction = (props) => {
                     Tip the cleaner
                   </span>
                 </div>
-                <button className="payment-button" onClick={makePayment}>
-                  Pay
-                </button>
               </div>
             ))}
             <div className="transaction-container94">

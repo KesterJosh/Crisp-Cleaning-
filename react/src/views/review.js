@@ -9,10 +9,14 @@ import { testimonials } from "./data";
 import "./review.css";
 import "./home.css";
 import Mobilex from "./mobile";
+import Login from "./login";
+import RegisterPopup from "../components/RegisterPopup";
 
 const Review = (props) => {
   const [visibleCount, setVisibleCount] = useState(3);
   const [loading, setLoading] = useState(false);
+  const [login, setLogin] = useState(false);
+  const [register, setRegister] = useState(false);
 
   const handleLoadMore = () => {
     setLoading(true);
@@ -402,6 +406,9 @@ const Review = (props) => {
 
   // Menu Section
   const [closedx, setClosedx] = useState(0);
+  const navigateS = () => {
+    window.location.href = "/#/dashboard"; // Full page reload
+  };
   const mobileMenu = () => {
     gsap.fromTo(
       ".Mobilegeneral",
@@ -425,6 +432,10 @@ const Review = (props) => {
 
   return (
     <div className="review-container">
+      {login && (
+        <Login CloseLogin={() => setLogin(false)} navigateS={navigateS} />
+      )}
+      {register && <RegisterPopup onClose={() => setRegister(false)} />}
       <Helmet>
         <title>Review - Crisp Cleaning</title>
         <meta
@@ -525,6 +536,7 @@ const Review = (props) => {
           <div className="home-container017">
             <div
               className="home-container013"
+              onClick={() => setLogin(true)}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
@@ -532,6 +544,7 @@ const Review = (props) => {
             </div>
             <span
               className="home-text011"
+              onClick={() => setRegister(true)}
               onMouseEnter={handleMouseEnterX}
               onMouseLeave={handleMouseLeaveX}
             >

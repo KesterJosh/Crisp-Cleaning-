@@ -4,15 +4,19 @@ import { ImgComparisonSlider } from "@img-comparison-slider/react";
 import gsap from "gsap";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 import { Helmet } from "react-helmet";
-import aboutImage from './img/about_2.jpg';
-
+import aboutImage from "./img/about_2.jpg";
 
 import "./home1.css";
 import "./home.css";
 import BeforeAfterImage from "./BeforeAfterImage";
 import Mobilex from "./mobile";
+import Login from "./login";
+import RegisterPopup from "../components/RegisterPopup";
 
 const About = (props) => {
+  const [login, setLogin] = useState(false);
+  const [register, setRegister] = useState(false);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "auto" });
   };
@@ -371,8 +375,17 @@ const About = (props) => {
     );
   };
 
+  const navigateS = () => {
+    window.location.href = "/#/dashboard"; // Full page reload
+  };
+
   return (
     <div className="home1-container">
+      {login && (
+        <Login CloseLogin={() => setLogin(false)} navigateS={navigateS} />
+      )}
+      {register && <RegisterPopup onClose={() => setRegister(false)} />}
+
       <Helmet>
         <title>About - Crisp Cleaning</title>
         <meta property="og:title" content="About Crisp Cleaning" />
@@ -473,12 +486,14 @@ const About = (props) => {
             <div
               className="home-container013"
               onMouseEnter={handleMouseEnter}
+              onClick={() => setLogin(true)}
               onMouseLeave={handleMouseLeave}
             >
               <span className="home-text010">Login</span>
             </div>
             <span
               className="home-text011"
+              onClick={() => setRegister(true)}
               onMouseEnter={handleMouseEnterX}
               onMouseLeave={handleMouseLeaveX}
             >
@@ -751,16 +766,8 @@ const About = (props) => {
               onMouseMove={handleMouseMove}
             >
               <ImgComparisonSlider value={position}>
-                <img
-                  slot="first"
-                  src={aboutImage}
-                  className="containX"
-                />
-                <img
-                  slot="second"
-                  src={aboutImage}
-                  className="containX"
-                />
+                <img slot="first" src={aboutImage} className="containX" />
+                <img slot="second" src={aboutImage} className="containX" />
               </ImgComparisonSlider>
             </div>
             <div className="home1-container34">
