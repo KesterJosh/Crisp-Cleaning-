@@ -208,7 +208,7 @@ const CalenFortnightlySchedule = ({
     const isPastDate = dayMoment.isBefore(moment(), "day");
 
     const matchingCleans = cleans.filter((clean) =>
-      moment(clean.date, "DD/MM/YYYY").isSame(dayMoment, "day")
+      moment(clean.date).isSame(dayMoment, "day")
     );
 
     const handleClick = () => {

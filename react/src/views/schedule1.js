@@ -14,6 +14,7 @@ import axios from "axios";
 import BookingPopup from "../components/BookingPopup";
 import UpdateClean from "../components/UpdateClean";
 import CancelBookingPopup from "../components/CancelBooking";
+import GlobalSearch from "../components/GlobalSearch";
 
 const Schedule1 = (props) => {
   const [forthNightly, setforthNighly] = useState(true);
@@ -358,24 +359,8 @@ const Schedule1 = (props) => {
       <div className="schedule1-container115">
         <div className="schedule1-container116">
           <span className="schedule1-text112">Schedule</span>
-          <img
-            alt="image"
-            src={require("./img/question-200h.png")}
-            className="schedule1-image21"
-          />
-          <div
-            className="schedule1-container117"
-            onMouseEnter={(e) => SearchColorit(e.currentTarget)}
-            onMouseLeave={(e) => SearchunColorit(e.currentTarget)}
-          >
-            <img
-              alt="image"
-              src={require("./img/search-200h.png")}
-              className="schedule1-image22"
-            />
-            <span className="schedule1-text113">Search for anything...</span>
-            <input type="text" className="schedule1-textinput2 input" />
-          </div>
+
+          <GlobalSearch />
           <div
             className="schedule1-container118"
             onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}

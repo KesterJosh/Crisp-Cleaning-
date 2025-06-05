@@ -198,13 +198,16 @@ const CalenSchedule = ({
   };
 
   const cleansByDate = React.useMemo(() => {
-    return cleans.reduce((acc, clean) => {
-      const dateKey = moment(clean.date, "DD/MM/YYYY").format("YYYY-MM-DD");
+    const map = {};
+    cleans.forEach((clean) => {
+      const parsed = moment(clean.date); // parse natural language date
+      if (!parsed.isValid()) return;
 
-      if (!acc[dateKey]) acc[dateKey] = [];
-      acc[dateKey].push(clean);
-      return acc;
-    }, {});
+      const key = parsed.format("YYYY-MM-DD");
+      if (!map[key]) map[key] = [];
+      map[key].push(clean);
+    });
+    return map;
   }, [cleans]);
 
   const renderDay = ({ day, isCurrentMonth, fullDate }) => {

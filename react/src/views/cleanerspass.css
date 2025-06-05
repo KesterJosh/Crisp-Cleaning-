@@ -355,6 +355,7 @@
   font-size: 30px;
   font-style: normal;
   font-weight: 500;
+  white-space: nowrap;
 }
 .cleanerspass-container27 {
   width: 55%;
@@ -548,23 +549,12 @@
 .cleanerspass-container36 {
   width: 100%;
   display: flex;
-  align-items: flex-start;
-  flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
 }
 .cleanerspass-container37 {
-  flex: 0 0 auto;
-  width: 59%;
-  height: 350px;
-  display: flex;
-  position: relative;
   margin-top: var(--dl-space-space-twounits);
-  align-items: flex-start;
-  padding-top: OneAndH0alfUnits;
-  border-radius: 12px;
-  flex-direction: column;
-  padding-bottom: var(--dl-space-space-oneandhalfunits);
-  justify-content: flex-start;
+  width: 100%;
 }
 .cleanerspass-text30 {
   color: var(--dl-color-gray-black);
@@ -696,6 +686,7 @@
 }
 .cleanerspass-container46 {
   width: 49%;
+  margin-left: 15px;
   display: flex;
   align-items: flex-start;
   flex-direction: column;
@@ -767,11 +758,10 @@
 }
 .cleanerspass-container51 {
   flex: 0 0 auto;
-  width: 34%;
+  width: 40%;
   height: 430px;
   overflow: hidden;
   display: flex;
-  margin-top: var(--dl-space-space-twounits);
   align-items: flex-start;
   border-radius: 10px;
   flex-direction: column;
@@ -1336,7 +1326,7 @@
     font-weight: 700;
   }
   .cleanerspass-container51 {
-    width: 45%;
+    width: 100%;
   }
   .cleanerspass-text51 {
     color: var(--dl-color-gray-white);
@@ -1617,7 +1607,7 @@
     margin-left: var(--dl-space-space-halfunit);
   }
   .cleanerspass-container51 {
-    width: 48%;
+    width: 100%;
     padding-bottom: var(--dl-space-space-halfunit);
   }
   .cleanerspass-container53 {

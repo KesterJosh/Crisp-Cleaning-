@@ -15,6 +15,7 @@ import { useCallback } from "react";
 import axios from "axios";
 import { useRef } from "react";
 import BookingPopup from "../components/BookingPopup";
+import GlobalSearch from "../components/GlobalSearch";
 
 const Transaction = (props) => {
   const [cleans, setCleans] = useState([]);
@@ -510,26 +511,7 @@ const Transaction = (props) => {
       <div className="transaction-container25">
         <div className="transaction-container26">
           <span className="transaction-text22">Transactions</span>
-          <div className="transaction-container27">
-            <img
-              alt="image"
-              src={require("./img/question-200h.png")}
-              className="transaction-image21"
-            />
-            <div
-              className="transaction-container28"
-              onMouseEnter={(e) => SearchColorit(e.currentTarget)}
-              onMouseLeave={(e) => SearchunColorit(e.currentTarget)}
-            >
-              <img
-                alt="image"
-                src={require("./img/search-200h.png")}
-                className="transaction-image22"
-              />
-              <span className="transaction-text23">Search for anything...</span>
-              <input type="text" className="transaction-textinput2 input" />
-            </div>
-          </div>
+          <GlobalSearch />
           <div
             className="transaction-container29"
             onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}

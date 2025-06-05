@@ -11,6 +11,7 @@ import Menu from "./menu";
 import BookingPopup from "../components/BookingPopup";
 import UpdateClean from "../components/UpdateClean";
 import CancelBookingPopup from "../components/CancelBooking";
+import GlobalSearch from "../components/GlobalSearch";
 
 const Dashboard = (props) => {
   const [cleans, setCleans] = useState([]);
@@ -43,7 +44,7 @@ const Dashboard = (props) => {
 
   const Next = cleans
     ?.map((c) => {
-      const parsedDate = parse(c.date, "dd/MM/yyyy", new Date());
+      const parsedDate = new Date(c.date);
       return { ...c, parsedDate };
     })
     .filter((c) => isAfter(c.parsedDate, today))
@@ -326,8 +327,8 @@ const Dashboard = (props) => {
   });
 
   const upcomingClean = sortedCleans.find((clean) => {
-    const cleanDate = moment(clean.date, "DD/MM/YYYY").toDate();
-    return cleanDate >= new Date(); // only future or today
+    const cleanDate = moment(clean.date).toDate();
+    return cleanDate >= new Date();
   });
 
   const [showCancelPopup, setShowCancelPopup] = useState(false);
@@ -491,26 +492,8 @@ const Dashboard = (props) => {
       <div className="dashboard-container111">
         <div className="dashboard-container112">
           <span className="dashboard-text109">Dashboard</span>
-          <div className="dashboard-container113">
-            <img
-              alt="image"
-              src={require("./img/question-200h.png")}
-              className="dashboard-image18"
-            />
-            <div
-              className="dashboard-container114"
-              onMouseEnter={(e) => SearchColorit(e.currentTarget)}
-              onMouseLeave={(e) => SearchunColorit(e.currentTarget)}
-            >
-              <img
-                alt="image"
-                src={require("./img/search-200h.png")}
-                className="dashboard-image19"
-              />
-              <span className="dashboard-text110">Search for anything...</span>
-              <input type="text" className="dashboard-textinput input" />
-            </div>
-          </div>
+
+          <GlobalSearch />
           <div
             className="dashboard-container115"
             onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}

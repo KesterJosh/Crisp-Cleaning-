@@ -8,6 +8,7 @@ import { Helmet } from "react-helmet";
 import "./referral.css";
 import Menu from "./menu";
 import BookingPopup from "../components/BookingPopup";
+import GlobalSearch from "../components/GlobalSearch";
 
 const Referral = (props) => {
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
@@ -425,26 +426,7 @@ const Referral = (props) => {
       <div className="referral-container25">
         <div className="referral-container26">
           <span className="referral-text22">Referrals</span>
-          <div className="referral-container27">
-            <img
-              alt="image"
-              src={require("./img/question-200h.png")}
-              className="referral-image21"
-            />
-            <div
-              className="referral-container28"
-              onMouseEnter={(e) => SearchColorit(e.currentTarget)}
-              onMouseLeave={(e) => SearchunColorit(e.currentTarget)}
-            >
-              <img
-                alt="image"
-                src={require("./img/search-200h.png")}
-                className="referral-image22"
-              />
-              <span className="referral-text23">Search for anything...</span>
-              <input type="text" className="referral-textinput2 input" />
-            </div>
-          </div>
+          <GlobalSearch />
           <Link to="/settings" className="referral-navlink16">
             <img
               alt="image"

@@ -12,6 +12,7 @@ import { useCallback } from "react";
 import axios from "axios";
 import { useRef } from "react";
 import BookingPopup from "../components/BookingPopup";
+import GlobalSearch from "../components/GlobalSearch";
 
 const Reward = (props) => {
   const [showPopup, setShowPopup] = useState(false);
@@ -499,24 +500,7 @@ const Reward = (props) => {
       <div className="reward-container25">
         <div className="reward-container26">
           <span className="reward-text22">Rewards</span>
-          <img
-            alt="image"
-            src={require("./img/question-200h.png")}
-            className="reward-image21"
-          />
-          <div
-            className="reward-container27"
-            onMouseEnter={(e) => SearchColorit(e.currentTarget)}
-            onMouseLeave={(e) => SearchunColorit(e.currentTarget)}
-          >
-            <img
-              alt="image"
-              src={require("./img/search-200h.png")}
-              className="reward-image22"
-            />
-            <span className="reward-text23">Search for anything...</span>
-            <input type="text" className="reward-textinput2 input" />
-          </div>
+          <GlobalSearch />
           <div
             className="reward-container28"
             onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}

@@ -12,6 +12,7 @@ import "./settings.css";
 import Menu from "./menu";
 import Popsave from "../components/popsave";
 import Popclearn from "../components/popclearn";
+import GlobalSearch from "../components/GlobalSearch";
 let defValue = 1;
 let direction = 1;
 
@@ -852,31 +853,7 @@ const Settings = (props) => {
       <div className="settings-container26">
         <div className="settings-container27">
           <span className="settings-text24">Settings</span>
-          <div className="settings-container28">
-            <img
-              alt="image"
-              src={require("./img/question-200h.png")}
-              className="settings-image20"
-            />
-            <div
-              className="settings-container29"
-              onMouseEnter={(e) => SearchColorit(e.currentTarget)}
-              onMouseLeave={(e) => SearchunColorit(e.currentTarget)}
-            >
-              <img
-                alt="image"
-                src={require("./img/search-200h.png")}
-                className="settings-image21"
-              />
-              <span className="settings-text25">Search for anything...</span>
-              <input
-                type="text"
-                className="settings-textinput2 input"
-                onMouseEnter={(e) => handleMouseEnterZ(e.currentTarget)}
-                onMouseLeave={(e) => handleMouseLeaveZ(e.currentTarget)}
-              />
-            </div>
-          </div>
+          <GlobalSearch />
           <Link to="/settings" className="settings-navlink4">
             <img
               alt="image"
