@@ -341,7 +341,7 @@ const Dashboard = (props) => {
       )}
       {showCancelPopup && upcomingClean && (
         <CancelBookingPopup
-          cleanId={cancelCleanId}
+          cleanId={upcomingClean._id}
           onClose={() => setShowCancelPopup(false)}
           onCancelSuccess={fetchCleans} // refetch cleans after deletion
         />
@@ -626,74 +626,46 @@ const Dashboard = (props) => {
                               <br />
                               <span className="book-details">
                                 {clean.bathroom !== "0" && (
-                                  <span>
-                                    {clean.bathroom}X Bathroom
-                                  </span>
+                                  <span>{clean.bathroom}X Bathroom</span>
                                 )}{" "}
                                 {clean.kitchen !== "0" && (
-                                  <span>
-                                    {clean.kitchen}X Kitchen
-                                  </span>
+                                  <span>{clean.kitchen}X Kitchen</span>
                                 )}{" "}
                                 {clean.rooms !== "0" && (
-                                  <span>
-                                    {clean.rooms}X Rooms
-                                  </span>
+                                  <span>{clean.rooms}X Rooms</span>
                                 )}{" "}
                                 {clean.microwave !== "0" && (
-                                  <span>
-                                    {clean.microwave}X Microwave
-                                  </span>
+                                  <span>{clean.microwave}X Microwave</span>
                                 )}{" "}
                                 {clean.blinds !== "0" && (
-                                  <span>
-                                    {clean.blinds}X Blinds
-                                  </span>
+                                  <span>{clean.blinds}X Blinds</span>
                                 )}{" "}
                                 {clean.cabinets !== "0" && (
-                                  <span>
-                                    {clean.cabinets}X Cabinets
-                                  </span>
+                                  <span>{clean.cabinets}X Cabinets</span>
                                 )}{" "}
                                 {clean.dishwasher !== "0" && (
-                                  <span>
-                                    {clean.dishwasher}X Dishwasher
-                                  </span>
+                                  <span>{clean.dishwasher}X Dishwasher</span>
                                 )}{" "}
                                 {clean.fridge !== "0" && (
-                                  <span>
-                                    {clean.fridge}X Fridge
-                                  </span>
+                                  <span>{clean.fridge}X Fridge</span>
                                 )}{" "}
                                 {clean.garage !== "0" && (
-                                  <span>
-                                    {clean.garage}X Garage
-                                  </span>
+                                  <span>{clean.garage}X Garage</span>
                                 )}{" "}
                                 {clean.laundry !== "0" && (
-                                  <span>
-                                    {clean.laundry}X Laundry
-                                  </span>
+                                  <span>{clean.laundry}X Laundry</span>
                                 )}{" "}
                                 {clean.stove !== "0" && (
-                                  <span>
-                                    {clean.stove}X Stove
-                                  </span>
+                                  <span>{clean.stove}X Stove</span>
                                 )}{" "}
                                 {clean.tiles !== "0" && (
-                                  <span>
-                                    {clean.tiles}X Tiles
-                                  </span>
+                                  <span>{clean.tiles}X Tiles</span>
                                 )}{" "}
                                 {clean.walls !== "0" && (
-                                  <span>
-                                    {clean.walls}X Walls
-                                  </span>
+                                  <span>{clean.walls}X Walls</span>
                                 )}{" "}
                                 {clean.windows !== "0" && (
-                                  <span>
-                                    {clean.windows}X Windows
-                                  </span>
+                                  <span>{clean.windows}X Windows</span>
                                 )}
                               </span>
                             </span>
@@ -919,18 +891,16 @@ const Dashboard = (props) => {
               Upcoming
             </div>
             <div className="dashboard-container160">
-              {upcomingClean ? (
+              {Next ? (
                 <div className="google-style-clean-card">
                   <div className="font-medium text-slate-600 text-md mb-1">
-                    {upcomingClean.date}
+                    {Next.date}
                   </div>
                   <div className="uc">
                     <div className="uc-border"></div>
-                    {cleanType(upcomingClean.typeOfClean)}
+                    {cleanType(Next.typeOfClean)}
                   </div>
-                  <small className="uc-date">
-                    {upcomingClean.date.split("/")[2]}
-                  </small>
+                  <small className="uc-date">{Next.date.split("/")[2]}</small>
                 </div>
               ) : (
                 <div className="google-style-clean-card">
