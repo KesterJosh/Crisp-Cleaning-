@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "./static/css/main.048cae5f.css",
-    "main.js": "./static/js/main.4522b6ef.js",
+    "main.css": "./static/css/main.23b29ff3.css",
+    "main.js": "./static/js/main.623bc49b.js",
     "static/media/Final.mp4": "./static/media/Final.1f6e0488ea38a6458473.mp4",
     "static/media/samplex.mp4": "./static/media/samplex.ce921d54fa6deb6f2e83.mp4",
     "static/media/after.png": "./static/media/after.ca0a1809ff0dc432ea03.png",
@@ -29,6 +29,7 @@
     "static/media/fridge_on.png": "./static/media/fridge_on.3f09d90ad6666aecaac4.png",
     "static/media/blind_on.png": "./static/media/blind_on.ac3344aa2c29ff267c36.png",
     "static/media/fridge_off.png": "./static/media/fridge_off.47fb054997ffa71a076f.png",
+    "static/media/about_2.jpg": "./static/media/about_2.a4049d9d079d6ba3ce35.jpg",
     "static/media/blind_off.png": "./static/media/blind_off.16b2610b44afcf16d465.png",
     "static/media/organisation_on.png": "./static/media/organisation_on.6e44eb78759bbd2627dc.png",
     "static/media/organisation_off.png": "./static/media/organisation_off.5a51dfdf6c4acd0433ac.png",
@@ -47,11 +48,11 @@
     "static/media/fullperson-200w.png": "./static/media/fullperson-200w.c5af628c06c885189232.png",
     "static/media/crisp.png": "./static/media/crisp.32b5e7daf2dd213cfdcf.png",
     "index.html": "./index.html",
-    "main.048cae5f.css.map": "./static/css/main.048cae5f.css.map",
-    "main.4522b6ef.js.map": "./static/js/main.4522b6ef.js.map"
+    "main.23b29ff3.css.map": "./static/css/main.23b29ff3.css.map",
+    "main.623bc49b.js.map": "./static/js/main.623bc49b.js.map"
   },
   "entrypoints": [
-    "static/css/main.048cae5f.css",
-    "static/js/main.4522b6ef.js"
+    "static/css/main.23b29ff3.css",
+    "static/js/main.623bc49b.js"
   ]
 }
