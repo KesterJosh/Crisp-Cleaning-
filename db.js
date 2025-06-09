@@ -11,3 +11,4 @@ const connectDB = async () => {
 };
 
 module.exports = connectDB;
+//mongodb+srv://adeyelukester2:7EoKqh6yYM3uEd2f@crispsite.iuhh1.mongodb.net/?retryWrites=true&w=majority&appName=CrispSite
