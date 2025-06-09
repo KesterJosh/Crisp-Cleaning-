@@ -1,14 +1,3 @@
-.current-day {
-  flex: 0 0 auto;
-  width: 25px;
-  height: 25px;
-  display: flex;
-  align-items: center;
-  border-radius: var(--dl-radius-radius-round);
-  justify-content: center;
-  background-color: #ff914d;
-  color: white;
-}
 .line-through {
   text-decoration: line-through;
   color: gray; /* Optional: to visually distinguish past dates */
@@ -148,12 +137,101 @@
   position: relative;
   border-radius: 8px;
 }
-.calendar-day.today {
-  background-color: #eefaff;
+.schedule-container427x .day-number {
+  color: white;
+  background-color: red;
 }
+.schedule-container427x {
+  border: 2px solid white;
+}
+.day-number {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  border-radius: 50%;
+}
+
+.calendar-day.today .day-number {
+  background: #ff5050;
+  color: white;
+  font-weight: bold;
+}
+
 .calendar-day.selected {
-  border: 2px solid #007bff;
+  border: 2px solid orange;
+  border-radius: 8px;
+  background-color: #fff8e1;
+  display: flex;
+  flex-direction: column;
 }
+
+.scheduled-clean.vacant {
+  background-color: #ffc9c9;
+  color: #333;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2px;
+}
+.clean-circle {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-left: 6px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.scheduled-clean.vacant .clean-circle {
+  background-color: #b30000;
+}
+
+.scheduled-clean.deep .clean-circle {
+  background-color: #615eff;
+}
+
+.scheduled-clean.regular .clean-circle {
+  background-color: #ff914d;
+}
+
+.scheduled-clean.deep {
+  background-color: #cac9ff;
+  color: white;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.scheduled-clean.regular {
+  background-color: #fcbb93;
+  color: white;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.book-now-btn {
+  margin-top: 4px;
+  background-color: orange;
+  color: white;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.book-now-btn:hover {
+  background-color: darkorange;
+}
+
 .calendar-day.other-month {
   background-color: #f8f8f8;
   color: #aaa;
@@ -162,7 +240,10 @@
   margin-top: 4px;
   font-size: 0.75rem;
   background: #ff914d;
+  display: flex;
+  justify-content: space-between;
   color: white;
+  display: flex;
   border-radius: 4px;
   padding: 4px 6px;
 }

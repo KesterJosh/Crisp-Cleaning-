@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
+import "./popupReview.css";
 
 import { Helmet } from "react-helmet";
 
@@ -9,8 +10,101 @@ import Menu from "./menu";
 import Popreward from "../components/popreward";
 import { useCallback } from "react";
 import axios from "axios";
+import { useRef } from "react";
+import BookingPopup from "../components/BookingPopup";
+import GlobalSearch from "../components/GlobalSearch";
+import TimelineContainer from "../components/TimelineContainer";
 
 const Reward = (props) => {
+  const [showPopup, setShowPopup] = useState(false);
+  const [mode, setMode] = useState("text");
+  const popupRef = useRef();
+  const [reviewText, setReviewText] = useState("");
+  const [videoFile, setVideoFile] = useState(null);
+  const [videoURL, setVideoURL] = useState(null);
+  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+  const [booking, setBooking] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = "/#/";
+  };
+
+  useEffect(() => {
+    if (showPopup) {
+      gsap.from(popupRef.current, {
+        duration: 0.4,
+        scale: 0.8,
+        opacity: 0,
+        ease: "power2.out",
+      });
+    }
+  }, [showPopup]);
+
+  const handleVideoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const maxSizeInBytes = 10 * 1024 * 1024;
+      if (file.size > maxSizeInBytes) {
+        alert("Video size exceeds 10MB limit. Please choose a smaller file.");
+        e.target.value = null;
+        setVideoFile(null);
+        setVideoURL(null);
+        return;
+      }
+
+      setVideoFile(file);
+      const url = URL.createObjectURL(file);
+      setVideoURL(url);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user) {
+      alert("User information is missing. Please log in again.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("reviewType", mode);
+    formData.append("userId", user.userId);
+    formData.append("userName", `${user.first_name} ${user.last_name}`);
+
+    if (mode === "text") {
+      formData.append("text", reviewText);
+    } else {
+      formData.append("video", videoFile);
+    }
+
+    try {
+      const res = await fetch("https://api-crisp-cleaning.onrender.com/reviews", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Review submitted!");
+      } else {
+        alert(data.message || "Submission failed.");
+      }
+
+      setShowPopup(false);
+      setReviewText("");
+      setVideoFile(null);
+      setVideoURL(null);
+      setMode("text");
+    } catch (err) {
+      console.error(err);
+      alert("An error occurred while submitting the review.");
+    }
+  };
+
   const handleMouseEnterFade = (button) => {
     gsap.to(button, {
       scale: 1.1,
@@ -213,7 +307,7 @@ const Reward = (props) => {
   }, []);
 
   const claimReward = (rewardId) => {
-    fetch(`/api/rewards/claim/${rewardId}`, {
+    fetch(`https://api-crisp-cleaning.onrender.com/api/rewards/claim/${rewardId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     })
@@ -230,6 +324,18 @@ const Reward = (props) => {
 
   return (
     <div className="reward-container10">
+      {booking && <BookingPopup onClose={() => setBooking(false)} />}
+      {showLogoutPopup && (
+        <div className="logout-popup-overlay">
+          <div className="logout-popup">
+            <p>Are you sure you want to logout?</p>
+            <div className="logout-popup-buttons">
+              <button onClick={handleLogout}>Yes</button>
+              <button onClick={() => setShowLogoutPopup(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
       <Helmet>
         <title>reward - Crips Cleaning</title>
         <meta
@@ -346,7 +452,10 @@ const Reward = (props) => {
               </span>
             </div>
           </Link>
-          <div className="reward-container20">
+          <div
+            onClick={() => setShowLogoutPopup(true)}
+            className="reward-container20"
+          >
             <img
               alt="image"
               src={require("./img/exitx-200h.png")}
@@ -392,42 +501,88 @@ const Reward = (props) => {
       <div className="reward-container25">
         <div className="reward-container26">
           <span className="reward-text22">Rewards</span>
-          <img
-            alt="image"
-            src={require("./img/question-200h.png")}
-            className="reward-image21"
-          />
-          <div
-            className="reward-container27"
-            onMouseEnter={(e) => SearchColorit(e.currentTarget)}
-            onMouseLeave={(e) => SearchunColorit(e.currentTarget)}
-          >
-            <img
-              alt="image"
-              src={require("./img/search-200h.png")}
-              className="reward-image22"
-            />
-            <span className="reward-text23">Search for anything...</span>
-            <input type="text" className="reward-textinput2 input" />
-          </div>
+          <GlobalSearch />
           <div
             className="reward-container28"
             onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
             onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
+            onClick={() => setBooking(true)}
           >
             <span className="reward-text24">Book Now</span>
           </div>
         </div>
+
+        {showPopup && (
+          <div className="popup-overlay">
+            <div className="popup-content" ref={popupRef}>
+              <button className="close-btn" onClick={() => setShowPopup(false)}>
+                ×
+              </button>
+              <h2>Add Your Review</h2>
+
+              <div className="mode-switch">
+                <button
+                  className={mode === "text" ? "active" : ""}
+                  onClick={() => setMode("text")}
+                >
+                  Text Review
+                </button>
+                <button
+                  className={mode === "video" ? "active" : ""}
+                  onClick={() => setMode("video")}
+                >
+                  Video Review
+                </button>
+              </div>
+
+              <form onSubmit={handleSubmit}>
+                {mode === "text" ? (
+                  <textarea
+                    className="text-input"
+                    placeholder="Write your review..."
+                    value={reviewText}
+                    onChange={(e) => setReviewText(e.target.value)}
+                    required
+                  />
+                ) : (
+                  <>
+                    <input
+                      type="file"
+                      accept="video/*"
+                      onChange={handleVideoChange}
+                      required
+                    />
+                    {videoURL && (
+                      <video
+                        controls
+                        className="video-preview"
+                        src={videoURL}
+                      />
+                    )}
+                  </>
+                )}
+
+                <button type="submit" className="submit-btn">
+                  Submit Review
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
         <div className="reward-container29">
           <div className="reward-container30">
             <div className="reward-container31">
-              <span
-                className="reward-text25"
-                onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
-                onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
-              >
-                Challenges
-              </span>
+              <div className="review-cover">
+                <span
+                  className="reward-text25"
+                  onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
+                  onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
+                >
+                  Challenges
+                </span>
+              </div>
+
               <span className="reward-text26">
                 Complete challenges for lifetime rewards
               </span>
@@ -453,50 +608,7 @@ const Reward = (props) => {
                     View challenges
                   </span>
                 </div>
-                <div className="reward-container34">
-                  <div
-                    className="reward-container35"
-                    onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)}
-                    onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}
-                  >
-                    <img
-                      alt="image"
-                      src={require("./img/arrowleft-200h.png")}
-                      className="reward-image23"
-                    />
-                  </div>
-                  <div className="reward-container36">
-                    <div className="reward-container37">
-                      <div className="reward-container38"></div>
-                    </div>
-                    <div className="reward-container39">
-                      <span className="reward-text29">1</span>
-                    </div>
-                    <div className="reward-container40">
-                      <p className="reward-text30">
-                        <span>2</span>
-                        <br></br>
-                      </p>
-                    </div>
-                    <div className="reward-container41">
-                      <p className="reward-text33">3</p>
-                    </div>
-                    <div className="reward-container42">
-                      <span className="reward-text34">4</span>
-                    </div>
-                  </div>
-                  <div
-                    className="reward-container43"
-                    onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)}
-                    onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}
-                  >
-                    <img
-                      alt="image"
-                      src={require("./img/arrowright-200h.png")}
-                      className="reward-image24"
-                    />
-                  </div>
-                </div>
+                <TimelineContainer />
               </div>
             </div>
             <div className="reward-container44">
@@ -595,16 +707,16 @@ const Reward = (props) => {
                   </span>
                 </div>
               </div>
-              <div className="reward-container62">
-                <img
-                  alt="image"
-                  src={require("./img/reward-200w.png")}
-                  className="reward-image28"
-                />
-                <span className="reward-text45">Rewards</span>
-              </div>
               <div className="reward-container63">
                 <div className="reward-container65">
+                  <div className="reward-container602">
+                    <img
+                      alt="image"
+                      src={require("./img/reward-200w.png")}
+                      className="reward-image28"
+                    />
+                    <span className="reward-text45">Rewards</span>
+                  </div>
                   {rewards.length > 0 ? (
                     rewards.map((reward) => (
                       <div key={reward._id} className="reward-container67">
@@ -617,25 +729,41 @@ const Reward = (props) => {
                           </span>
                         </div>
 
-                        {!reward.claimed &&
-                        reward.completed >= reward.required ? (
-                          <div
-                            className="reward-container71"
-                            onClick={() => claimReward(reward._id)}
-                            onMouseEnter={(e) =>
-                              handleMouseEnterFade(e.currentTarget)
-                            }
-                            onMouseLeave={(e) =>
-                              handleMouseLeaveFade(e.currentTarget)
-                            }
-                          >
-                            <span className="reward-text52">Claim reward</span>
-                          </div>
-                        ) : reward.claimed ? (
-                          <div className="reward-container71 claimed">
-                            <span className="reward-text52">Claimed</span>
-                          </div>
-                        ) : null}
+                        {/* Modified section for the claim button */}
+                        <div
+                          className={`reward-container71 ${
+                            reward.claimed
+                              ? "claimed"
+                              : reward.completed < reward.required
+                              ? "disabled"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            !reward.claimed &&
+                            reward.completed >= reward.required &&
+                            claimReward(reward._id)
+                          }
+                          onMouseEnter={(e) =>
+                            !reward.claimed &&
+                            reward.completed >= reward.required &&
+                            handleMouseEnterFade(e.currentTarget)
+                          }
+                          onMouseLeave={(e) =>
+                            !reward.claimed &&
+                            reward.completed >= reward.required &&
+                            handleMouseLeaveFade(e.currentTarget)
+                          }
+                        >
+                          <span className="reward-text52">
+                            {reward.claimed ? (
+                              "Claimed"
+                            ) : reward.completed >= reward.required ? (
+                              "Claim reward"
+                            ) : (
+                              <img src="/img/lock.png" className="not-ready" />
+                            )}
+                          </span>
+                        </div>
                       </div>
                     ))
                   ) : (

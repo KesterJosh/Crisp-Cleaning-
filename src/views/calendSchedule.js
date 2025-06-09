@@ -4,6 +4,7 @@ import gsap from "gsap";
 import moment from "moment";
 import { useCallback } from "react";
 import axios from "axios";
+import BookingPopup from "../components/BookingPopup";
 
 const CalenSchedule = ({
   onTimeSlotSelected,
@@ -12,6 +13,7 @@ const CalenSchedule = ({
 }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
+  const [booking, setBooking] = useState(false);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const calendarRef = useRef(null);
   const [cleans, setCleans] = useState([]);
@@ -61,6 +63,14 @@ const CalenSchedule = ({
           nextMonth.setMonth(prevMonth.getMonth() + 1);
           return nextMonth;
         });
+
+        requestAnimationFrame(() => {
+          gsap.fromTo(
+            calendarRef.current,
+            { opacity: 0, x: -20 },
+            { opacity: 1, x: 0, duration: 0.5 }
+          );
+        });
       },
     });
   };
@@ -75,6 +85,15 @@ const CalenSchedule = ({
           const prevMonthCopy = new Date(prevMonth);
           prevMonthCopy.setMonth(prevMonth.getMonth() - 1);
           return prevMonthCopy;
+        });
+
+        // Force immediate animation after the DOM updates
+        requestAnimationFrame(() => {
+          gsap.fromTo(
+            calendarRef.current,
+            { opacity: 0, x: 20 },
+            { opacity: 1, x: 0, duration: 0.5 }
+          );
         });
       },
     });
@@ -142,17 +161,6 @@ const CalenSchedule = ({
     return dateToCheck < currentDate.setHours(0, 0, 0, 0);
   };
 
-  const handleDateClick = (day, isCurrentMonth) => {
-    if (!isCurrentMonth || isPastDay(day)) return;
-    const newDate = new Date(
-      currentMonth.getFullYear(),
-      currentMonth.getMonth(),
-      day
-    );
-    setSelectedDate(newDate);
-    setSelectedDatex(formatDate(newDate));
-  };
-
   const handleMouseEnterFade = (button) => {
     gsap.to(button, {
       scale: 1.1,
@@ -190,79 +198,73 @@ const CalenSchedule = ({
   };
 
   const cleansByDate = React.useMemo(() => {
-    return cleans.reduce((acc, clean) => {
-      const dateKey = moment(clean.date, "DD/MM/YYYY").format("YYYY-MM-DD");
+    const map = {};
+    cleans.forEach((clean) => {
+      const parsed = moment(clean.date); // parse natural language date
+      if (!parsed.isValid()) return;
 
-      if (!acc[dateKey]) acc[dateKey] = [];
-      acc[dateKey].push(clean);
-      return acc;
-    }, {});
+      const key = parsed.format("YYYY-MM-DD");
+      if (!map[key]) map[key] = [];
+      map[key].push(clean);
+    });
+    return map;
   }, [cleans]);
 
   const renderDay = ({ day, isCurrentMonth, fullDate }) => {
-    const isCurrentDay = highlightCurrentDay(fullDate.getDate());
-    const isPast = !isCurrentMonth;
+    const isToday = moment().isSame(fullDate, "day");
     const isSelected =
-      selectedDate &&
-      selectedDate.getDate() === fullDate.getDate() &&
-      selectedDate.getMonth() === currentMonth.getMonth() &&
-      selectedDate.getFullYear() === currentMonth.getFullYear();
+      selectedDate && moment(selectedDate).isSame(fullDate, "day");
+    const isPast = moment(fullDate).isBefore(moment(), "day");
 
-    // Get cleans for this day
     const dateKey = moment(fullDate).format("YYYY-MM-DD");
     const dayCleans = cleansByDate[dateKey] || [];
 
+    const handleClick = () => {
+      if (!isPast) {
+        setSelectedDate(fullDate);
+        setSelectedDatex(formatDate(fullDate));
+      }
+    };
+
     return (
       <div
-        className={`${
-          isCurrentDay ? "schedule-container427x" : "schedule-container136x"
+        className={`calendar-day ${
+          isToday ? "schedule-container427x" : "schedule-container136x"
+        } ${isSelected ? "selected" : ""} ${
+          !isCurrentMonth ? "other-month" : ""
         }`}
+        onClick={handleClick}
       >
-        <div
-          className="schedule-container137"
-          onClick={() => handleDateClick(day, isCurrentMonth)}
-        >
-          <span
-            className={`${isPast ? "schedule-text388" : "schedule-text124"}`}
-          >
-            {day}
-          </span>
-          <div className="schedule-container138">
-            <span className="schedule-text125">{day}</span>
-          </div>
-          <div className="schedule-container139">
-            <span className="schedule-text126">{day}</span>
-          </div>
-          <div className="schedule-container140">
-            <span className="schedule-text127">{day}</span>
-          </div>
-        </div>
-        <div className="cleans-info">
-          {dayCleans.length > 0 ? (
-            dayCleans.map((clean, i) => (
-              <div
-                key={i}
-                className={`scheduled-clean ${clean.typeOfClean
-                  ?.toLowerCase()
-                  ?.replace(" ", "-")}`}
-              >
-                Booked for {clean.typeOfClean}
+        <span className="day-number">{day}</span>
+
+        {dayCleans.length > 0 &&
+          dayCleans.map((clean, i) => {
+            let typeClass = "";
+            let typeLabel = "Unknown";
+
+            if (clean.typeOfClean === "280") {
+              typeClass = "vacant";
+              typeLabel = "Vacant";
+            } else if (clean.typeOfClean === "135") {
+              typeClass = "deep";
+              typeLabel = "Deep";
+            } else if (clean.typeOfClean === "45") {
+              typeClass = "regular";
+              typeLabel = "Regular";
+            }
+
+            return (
+              <div key={i} className={`scheduled-clean ${typeClass}`}>
+                {typeLabel} Clean
+                <span className="clean-circle"></span>
               </div>
-            ))
-          ) : (
-            <small className="no-clean">No cleans</small>
-          )}
-        </div>
-        {dayCleans.length === 0 && (
-          <div
-            className={`${
-              isCurrentDay ? "schedule-container438" : "schedule-container147"
-            }`}
-            onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
-            onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
-          >
-            <span className="schedule-text131">Book Now</span>
-          </div>
+            );
+          })}
+
+        {dayCleans.length === 0 && !isPast && isCurrentMonth && isSelected && (
+          <button className="book-now-btn" onClick={() => setBooking(true)}>
+            Book Now
+          </button>
         )}
       </div>
     );
@@ -294,71 +296,74 @@ const CalenSchedule = ({
   };
 
   return (
-    <div className="home-container087x" ref={calendarRef}>
-      <div className="schedule-container121">
-        <div className="schedule-container122">
-          <span
-            onClick={changeCalend}
-            className="schedule-navlink17"
-            onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)}
-            onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}
-          >
-            Fortnightly
-          </span>
-          <span
-            className="schedule-text115"
-            onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
-            onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}
-          >
-            Monthly
-          </span>
-        </div>
-        <div className="schedule-container123">
-          <span className="schedule-text116">
-            {currentMonth.toLocaleString("default", {
-              month: "long",
-              year: "numeric",
-            })}
-          </span>
-          <div className="schedule-container124">
-            <div
-              className="schedule-container125"
-              onClick={handlePrevMonth}
+    <>
+      {booking && <BookingPopup onClose={() => setBooking(false)} />}
+      <div className="home-container087x" ref={calendarRef}>
+        <div className="schedule-container121">
+          <div className="schedule-container122">
+            <span
+              onClick={changeCalend}
+              className="schedule-navlink17"
               onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)}
-              onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}
+              onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}
             >
-              <img
-                alt="image"
-                src={require("./img/left-200w.png")}
-                className="schedule-image23"
-              />
-            </div>
-            <div
-              className="schedule-container126"
-              onClick={handleNextMonth}
-              onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
-              onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}
+              Fortnightly
+            </span>
+            <span
+              className="schedule-text115"
+              onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
+              onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}
             >
-              <img
-                alt="image"
-                src={require("./img/right-200w.png")}
-                className="schedule-image24"
-              />
+              Monthly
+            </span>
+          </div>
+          <div className="schedule-container123">
+            <span className="schedule-text116">
+              {currentMonth.toLocaleString("default", {
+                month: "long",
+                year: "numeric",
+              })}
+            </span>
+            <div className="schedule-container124">
+              <div
+                className="schedule-container125"
+                onClick={handlePrevMonth}
+                onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)}
+                onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}
+              >
+                <img
+                  alt="image"
+                  src={require("./img/left-200w.png")}
+                  className="schedule-image23"
+                />
+              </div>
+              <div
+                className="schedule-container126"
+                onClick={handleNextMonth}
+                onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
+                onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}
+              >
+                <img
+                  alt="image"
+                  src={require("./img/right-200w.png")}
+                  className="schedule-image24"
+                />
+              </div>
             </div>
           </div>
         </div>
+        {renderTableHeader()}
+        {generateMonthCalendar(currentMonth).map((week, weekIdx) => (
+          <div className="schedule-container135" key={weekIdx}>
+            {week.map((dayInfo, index) => (
+              <div style={{ width: "12%" }} key={index}>
+                {renderDay(dayInfo)}
+              </div>
+            ))}
+          </div>
+        ))}
       </div>
-      {renderTableHeader()}
-      {generateMonthCalendar(currentMonth).map((week, weekIdx) => (
-        <div className="schedule-container135" key={weekIdx}>
-          {week.map((dayInfo, index) => (
-            <div style={{ width: "12%" }} key={index}>
-              {renderDay(dayInfo)}
-            </div>
-          ))}
-        </div>
-      ))}
-    </div>
+    </>
   );
 };
 

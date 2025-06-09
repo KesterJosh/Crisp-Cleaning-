@@ -1,0 +1,97 @@
+.review-trigger {
+  color: #ff914D;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+h2 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.mode-switch {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.mode-switch button {
+  flex: 1;
+  padding: 0.5rem;
+  margin: 0 0.25rem;
+  border: 1px solid #ccc;
+  background: #f7f7f7;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.mode-switch button.active {
+  background: #ff914D;
+  color: white;
+  border-color: #ff914D;
+}
+
+.text-input {
+  width: 100%;
+  padding: 0.5rem;
+  min-height: 100px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: vertical;
+  margin-bottom: 1rem;
+}
+
+.video-preview {
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+.submit-btn {
+  width: 100%;
+  background: #fd914D;
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.submit-btn:hover {
+  background: #0056b3;
+}

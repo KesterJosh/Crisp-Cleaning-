@@ -11,9 +11,21 @@ import CalenFortnightlySchedule from "./CalenFortnightlySchedule";
 import Popschedule from "../components/popschedule";
 import Popschedule1 from "../components/popschedule1";
 import axios from "axios";
+import BookingPopup from "../components/BookingPopup";
+import UpdateClean from "../components/UpdateClean";
+import CancelBookingPopup from "../components/CancelBooking";
+import GlobalSearch from "../components/GlobalSearch";
 
 const Schedule1 = (props) => {
   const [forthNightly, setforthNighly] = useState(true);
+  const [myDate, setMyDate] = useState(null);
+  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+  const [booking, setBooking] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = "/#/";
+  };
 
   const changeCalender = () => {
     setforthNighly(!forthNightly);
@@ -162,10 +174,29 @@ const Schedule1 = (props) => {
     }
   }, [userId, fetchCleans]);
 
+  const [showCancelPopup, setShowCancelPopup] = useState(false);
+  const [editClean, setEditClean] = useState(false);
+  const [editId, setEditId] = useState(null);
+
   return (
     <div className="schedule1-container100">
+      {booking && <BookingPopup onClose={() => setBooking(false)} />}
+      {editClean && cleans && (
+        <UpdateClean cleanId={editId} onClose={() => setEditClean(false)} />
+      )}
+      {showLogoutPopup && (
+        <div className="logout-popup-overlay">
+          <div className="logout-popup">
+            <p>Are you sure you want to logout?</p>
+            <div className="logout-popup-buttons">
+              <button onClick={handleLogout}>Yes</button>
+              <button onClick={() => setShowLogoutPopup(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
       <Helmet>
-        <title>Schedule1 - Crips Cleaning</title>
+        <title>Schedule - Crips Cleaning</title>
         <meta
           name="description"
           content="We bring out the beauty in your environment. Eliminating every dirt and stains in your residence"
@@ -177,7 +208,7 @@ const Schedule1 = (props) => {
         />
       </Helmet>
       {cancelScreenX ? (
-        <Popschedule CloseCancelScreen={CloseCancelScreen} />
+        <Popschedule CloseCancelScreen={CloseCancelScreen} cleanId={editId} />
       ) : null}
       {cancelScreenY ? (
         <Popschedule1 CloseCancelScreenY={CloseCancelScreenY} />
@@ -283,7 +314,10 @@ const Schedule1 = (props) => {
               </span>
             </div>
           </Link>
-          <div className="schedule1-container110">
+          <div
+            onClick={() => setShowLogoutPopup(true)}
+            className="schedule1-container110"
+          >
             <img
               alt="image"
               src={require("./img/exitx-200h.png")}
@@ -325,28 +359,13 @@ const Schedule1 = (props) => {
       <div className="schedule1-container115">
         <div className="schedule1-container116">
           <span className="schedule1-text112">Schedule</span>
-          <img
-            alt="image"
-            src={require("./img/question-200h.png")}
-            className="schedule1-image21"
-          />
-          <div
-            className="schedule1-container117"
-            onMouseEnter={(e) => SearchColorit(e.currentTarget)}
-            onMouseLeave={(e) => SearchunColorit(e.currentTarget)}
-          >
-            <img
-              alt="image"
-              src={require("./img/search-200h.png")}
-              className="schedule1-image22"
-            />
-            <span className="schedule1-text113">Search for anything...</span>
-            <input type="text" className="schedule1-textinput2 input" />
-          </div>
+
+          <GlobalSearch />
           <div
             className="schedule1-container118"
             onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
             onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
+            onClick={() => setBooking(true)}
           >
             <span className="schedule1-text114">Book Now</span>
           </div>
@@ -357,7 +376,7 @@ const Schedule1 = (props) => {
             <div className="schedule1-container120">
               <CalenFortnightlySchedule
                 onTimeSlotSelected={handleSelectDate}
-                setSelectedDatex={setSelectedDate}
+                setSelectedDatex={setMyDate}
                 changeCalend={changeCalender}
               />
 
@@ -388,7 +407,13 @@ const Schedule1 = (props) => {
                             <div className="schedule1-container312">
                               <div className="schedule1-container313">
                                 <span className="schedule1-text236">
-                                  Cleaning for {clean.typeOfClean}
+                                  Booked for{" "}
+                                  {clean.typeOfClean == 280 ? "Vacant" : null}
+                                  {clean.typeOfClean == 135 ? "Deep" : null}
+                                  {clean.typeOfClean == 45
+                                    ? "Regular"
+                                    : null}{" "}
+                                  Clean
                                 </span>
                                 <span className="schedule1-text237">
                                   {clean.completed
@@ -400,67 +425,67 @@ const Schedule1 = (props) => {
                                     <span className="schedule-text407">
                                       {clean.bathroom}X Bathroom
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.kitchen !== "0" && (
                                     <span className="schedule-text408">
                                       {clean.kitchen}X Kitchen
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.rooms !== "0" && (
                                     <span className="schedule-text409">
                                       {clean.rooms}X Rooms
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.microwave !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.microwave}X Microwave
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.blinds !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.blinds}X Blinds
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.cabinets !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.cabinets}X Cabinets
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.dishwasher !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.dishwasher}X Dishwasher
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.fridge !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.fridge}X Fridge
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.garage !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.garage}X Garage
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.laundry !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.laundry}X Laundry
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.stove !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.stove}X Stove
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.tiles !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.tiles}X Tiles
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.walls !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.walls}X Walls
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.windows !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.windows}X Windows
@@ -476,6 +501,10 @@ const Schedule1 = (props) => {
                         </div>
                         <div className="schedule1-container317">
                           <div
+                            onClick={() => {
+                              setEditClean(true);
+                              setEditId(clean._id);
+                            }}
                             className="schedule1-container318"
                             onMouseEnter={(e) =>
                               handleMouseEnter(e.currentTarget)
@@ -494,7 +523,10 @@ const Schedule1 = (props) => {
                             onMouseLeave={(e) =>
                               handleMouseLeave(e.currentTarget)
                             }
-                            onClick={CancelScreen}
+                            onClick={() => {
+                              setCancelScreenX(true);
+                              setEditId(clean._id);
+                            }}
                           >
                             <span className="schedule1-text243">Cancel</span>
                           </div>
@@ -549,7 +581,12 @@ const Schedule1 = (props) => {
                           <div className="schedule1-container312">
                             <div className="schedule1-container313">
                               <span className="schedule1-text236">
-                                Cleaning for {clean.typeOfClean}
+                                {clean.typeOfClean == 280 ? "Vacant" : null}
+                                {clean.typeOfClean == 135 ? "Deep" : null}
+                                {clean.typeOfClean == 45
+                                  ? "Regular"
+                                  : null}{" "}
+                                Clean{" "}
                               </span>
                               <span className="schedule1-text237">
                                 {clean.completed
@@ -638,6 +675,10 @@ const Schedule1 = (props) => {
                       <div className="schedule1-container317">
                         <div
                           className="schedule1-container318"
+                          onClick={() => {
+                            setEditClean(true);
+                            setEditId(clean._id);
+                          }}
                           onMouseEnter={(e) =>
                             handleMouseEnter(e.currentTarget)
                           }
@@ -655,7 +696,10 @@ const Schedule1 = (props) => {
                           onMouseLeave={(e) =>
                             handleMouseLeave(e.currentTarget)
                           }
-                          onClick={CancelScreen}
+                          onClick={() => {
+                            setCancelScreenX(true);
+                            setEditId(clean._id);
+                          }}
                         >
                           <span className="schedule1-text243">Cancel</span>
                         </div>
