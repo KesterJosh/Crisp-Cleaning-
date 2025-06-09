@@ -341,7 +341,7 @@ const Dashboard = (props) => {
       )}
       {showCancelPopup && upcomingClean && (
         <CancelBookingPopup
-          cleanId={upcomingClean._id}
+          cleanId={cancelCleanId}
           onClose={() => setShowCancelPopup(false)}
           onCancelSuccess={fetchCleans} // refetch cleans after deletion
         />

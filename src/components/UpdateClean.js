@@ -1415,7 +1415,7 @@ const BookingPopup = ({ onClose, cleanId }) => {
               onClick={handleSubmitClean}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Processing..." : "Book Now & Pay"}
+              {isSubmitting ? "Processing..." : "Update Clean"}
             </button>
 
             {submitError && (
