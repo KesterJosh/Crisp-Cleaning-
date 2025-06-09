@@ -224,7 +224,10 @@ const BookingPopup = ({ onClose, cleanId }) => {
     console.log(requestData);
 
     axios
-      .put(`https://api-crisp-cleaning.onrender.com/edit/clean/${cleanId}`, requestData)
+      .put(
+        `https://api-crisp-cleaning.onrender.com/edit/clean/${cleanId}`,
+        requestData
+      )
       .then((response) => {
         alert("Clean record updated successfully!");
         onClose(); // close the popup
@@ -1415,7 +1418,7 @@ const BookingPopup = ({ onClose, cleanId }) => {
               onClick={handleSubmitClean}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Processing..." : "Book Now & Pay"}
+              {isSubmitting ? "Processing..." : "Update"}
             </button>
 
             {submitError && (
