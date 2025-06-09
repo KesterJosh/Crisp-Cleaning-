@@ -30,8 +30,17 @@ import success from "./views/success";
 import cancel from "./views/cancel";
 import Settingsroom from "./views/settingsroom";
 import Ref from "./views/ref";
+import { useEffect } from "react";
+import PrivateRoute from "./components/PrivateRoute";
 
 const App = () => {
+  const userId = JSON.parse(localStorage.getItem("user"))?.userId;
+
+  useEffect(() => {
+    if (!userId) {
+      window.location.href = "/#/";
+    }
+  });
   return (
     <HashRouter>
       <Switch>
@@ -41,18 +50,18 @@ const App = () => {
         <Route component={Review} path="/review" />
         <Route component={FAQs} path="/faqs" />
         <Route component={Ref} path="/ref" />
-        <Route component={Settings} exact path="/settings" />
-        <Route component={Cleanerspass2} exact path="/cleanerspass2" />
-        <Route component={Dashboard} exact path="/dashboard" />
-        <Route component={Reward} exact path="/reward" />
-        <Route component={Settingsroom} path="/settingsroom" />
-        <Route component={Cleanerspass} exact path="/cleanerspass" />
-        <Route component={Referral} exact path="/referral" />
-        <Route component={Schedule1} exact path="/schedule" />
-        <Route component={Transaction} exact path="/transaction" />
         <Route component={success} exact path="/success" />
         <Route component={cancel} exact path="/cancel" />
         <Route component={Page} exact path="/page" />
+        <PrivateRoute component={Dashboard} exact path="/dashboard" />
+        <PrivateRoute component={Reward} exact path="/reward" />
+        <PrivateRoute component={Settings} exact path="/settings" />
+        <PrivateRoute component={Settingsroom} path="/settingsroom" />
+        <PrivateRoute component={Transaction} exact path="/transaction" />
+        <PrivateRoute component={Referral} exact path="/referral" />
+        <PrivateRoute component={Schedule1} exact path="/schedule" />
+        <PrivateRoute component={Cleanerspass} exact path="/cleanerspass" />
+        <PrivateRoute component={Cleanerspass2} exact path="/cleanerspass2" />
         <Route component={NotFound} path="**" />
         <Redirect to="**" />
       </Switch>

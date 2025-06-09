@@ -3,9 +3,11 @@ import axios from "axios";
 import "./swiper-styles.css";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import Login from "../views/login";
+import { Eye, EyeSlashIcon } from "@phosphor-icons/react";
 
 const CleaningSwiper = () => {
   const [login, setLogin] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [Quote, setQuote] = useState(0);
   const [type, setType] = useState(0);
@@ -642,7 +644,7 @@ const CleaningSwiper = () => {
       setIsSubmitting(true);
       setSubmitError("");
 
-      const response = await axios.post("http://localhost:4000/register", {
+      const response = await axios.post("https://api-crisp-cleaning.onrender.com/register", {
         first_name: firstName,
         last_name: lastName,
         email,
@@ -720,12 +722,11 @@ const CleaningSwiper = () => {
       console.log("Clean booking data:", requestData);
 
       const response = await axios.post(
-        "http://localhost:4000/clean",
+        "https://api-crisp-cleaning.onrender.com/clean",
         requestData
       );
 
       alert("Clean record created successfully! Redirecting to checkout");
-      console.log("Clean booking response:", response.data);
       return true;
     } catch (error) {
       alert("Error creating clean record.");
@@ -763,7 +764,7 @@ const CleaningSwiper = () => {
       };
 
       const response = await fetch(
-        "http://localhost:4000/create-checkout-session",
+        "https://api-crisp-cleaning.onrender.com/create-checkout-session",
         {
           method: "POST",
           headers: {
@@ -826,14 +827,18 @@ const CleaningSwiper = () => {
         taxId: referral,
       };
 
-      console.log("Commercial quote data:", commercialData);
-
-      // Here you would send to your commercial quotes endpoint
-      // const response = await axios.post("http://localhost:4000/commercial-quote", commercialData)
-
-      alert(
-        "Commercial quote request submitted successfully! We'll contact you within 24 hours."
+      const response = await axios.post(
+        "https://api-crisp-cleaning.onrender.com/commercial",
+        commercialData
       );
+
+      if (response.status === 200 || response.status === 201) {
+        alert(
+          "Commercial quote request submitted successfully! We'll contact you within 24 hours."
+        );
+      } else {
+        throw new Error("Unexpected response");
+      }
     } catch (error) {
       console.error("Commercial quote error:", error);
       setSubmitError("Failed to submit quote request. Please try again.");
@@ -1255,27 +1260,32 @@ const CleaningSwiper = () => {
         <div className="step-content">
           <div className="monthly-calendar-section">
             <div className="calendar-header">
-              <button
-                className="month-nav-btn"
-                onClick={() =>
-                  setCurrentMonthIndex(Math.max(0, currentMonthIndex - 1))
-                }
-                disabled={currentMonthIndex === 0}
-              >
-                &#8249;
-              </button>
               <h3>{monthlyCalendar[currentMonthIndex]?.name}</h3>
-              <button
-                className="month-nav-btn"
-                onClick={() =>
-                  setCurrentMonthIndex(
-                    Math.min(monthlyCalendar.length - 1, currentMonthIndex + 1)
-                  )
-                }
-                disabled={currentMonthIndex === monthlyCalendar.length - 1}
-              >
-                &#8250;
-              </button>
+              <span className="month-btn-group">
+                <button
+                  className="month-nav-btn"
+                  onClick={() =>
+                    setCurrentMonthIndex(Math.max(0, currentMonthIndex - 1))
+                  }
+                  disabled={currentMonthIndex === 0}
+                >
+                  &#8249;
+                </button>
+                <button
+                  className="month-nav-btn"
+                  onClick={() =>
+                    setCurrentMonthIndex(
+                      Math.min(
+                        monthlyCalendar.length - 1,
+                        currentMonthIndex + 1
+                      )
+                    )
+                  }
+                  disabled={currentMonthIndex === monthlyCalendar.length - 1}
+                >
+                  &#8250;
+                </button>
+              </span>
             </div>
 
             <div className="calendar-weekdays">
@@ -1312,7 +1322,6 @@ const CleaningSwiper = () => {
           </div>
 
           <div className="time-selection-section">
-            <h3>Select Time</h3>
             <div className="time-dropdown-container">
               <select
                 value={selectedTime}
@@ -1342,16 +1351,27 @@ const CleaningSwiper = () => {
 
           <div className="schedule-options">
             <div className="clean-type-toggle">
-              <button
-                className={`toggle-btn ${CleanType ? "active" : ""}`}
-                onClick={() => {
-                  setCleanType(true);
-                  setIntervalValue(15);
-                  updateScheduleValidation(selectedDate, selectedTime);
-                }}
-              >
-                Regular Clean
-              </button>
+              <div className="button-with-exclamation">
+                <span
+                  className={`exclamation ${CleanType ? "highlighted" : ""}`}
+                >
+                  !
+                </span>
+                <button
+                  className={`toggle-btn-one ${CleanType ? "active" : ""}`}
+                  onClick={() => {
+                    setCleanType(true);
+                    setIntervalValue(15);
+                    updateScheduleValidation(selectedDate, selectedTime);
+                  }}
+                >
+                  Regular Clean
+                  <span className="off">
+                    <small>Up to 25% OFF</small>
+                  </span>
+                </button>
+              </div>
+
               <button
                 className={`toggle-btn ${!CleanType ? "active" : ""}`}
                 onClick={() => {
@@ -1581,15 +1601,25 @@ const CleaningSwiper = () => {
 
             <div className="form-group">
               <label className="required-field">Password</label>
-              <input
-                type="password"
-                className="form-input"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  updateSignupValidation();
-                }}
-              />
+              <div className="password-input-wrapper">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className="form-input"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    updateSignupValidation();
+                  }}
+                />
+                <button
+                  type="button"
+                  className="toggle-password"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeSlashIcon /> : <Eye />}
+                </button>
+              </div>
             </div>
 
             <div className="form-group">
@@ -1807,7 +1837,7 @@ const CleaningSwiper = () => {
   const commercialSteps = [
     {
       id: "quote",
-      title: "Receive A Quote",
+      title: "Receive A FREE Quote",
       subtitle: "What type of project? Please provide what type of cleaning.",
       content: (
         <div className="step-content">

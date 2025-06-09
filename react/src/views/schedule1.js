@@ -24,7 +24,7 @@ const Schedule1 = (props) => {
 
   const handleLogout = () => {
     localStorage.clear();
-    window.location.href = "/";
+    window.location.href = "/#/";
   };
 
   const changeCalender = () => {
@@ -153,7 +153,7 @@ const Schedule1 = (props) => {
     if (!userId) return;
     try {
       const response = await axios.get(
-        `http://localhost:4000/user-clean/${userId}`
+        `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`
       );
       if (response.data && response.data.cleanRecords) {
         setCleans(response.data.cleanRecords);
@@ -425,67 +425,67 @@ const Schedule1 = (props) => {
                                     <span className="schedule-text407">
                                       {clean.bathroom}X Bathroom
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.kitchen !== "0" && (
                                     <span className="schedule-text408">
                                       {clean.kitchen}X Kitchen
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.rooms !== "0" && (
                                     <span className="schedule-text409">
                                       {clean.rooms}X Rooms
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.microwave !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.microwave}X Microwave
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.blinds !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.blinds}X Blinds
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.cabinets !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.cabinets}X Cabinets
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.dishwasher !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.dishwasher}X Dishwasher
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.fridge !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.fridge}X Fridge
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.garage !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.garage}X Garage
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.laundry !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.laundry}X Laundry
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.stove !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.stove}X Stove
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.tiles !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.tiles}X Tiles
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.walls !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.walls}X Walls
                                     </span>
-                                  )}
+                                  )}{" "}
                                   {clean.windows !== "0" && (
                                     <span className="schedule-text410">
                                       {clean.windows}X Windows

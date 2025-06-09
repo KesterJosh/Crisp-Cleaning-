@@ -9,6 +9,23 @@
   z-index: 2000;
   padding: 1rem;
 }
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #999;
+}
 
 /* Modal */
 .login-modal {

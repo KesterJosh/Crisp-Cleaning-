@@ -224,7 +224,7 @@ const BookingPopup = ({ onClose, cleanId }) => {
     console.log(requestData);
 
     axios
-      .put(`http://localhost:4000/edit/clean/${cleanId}`, requestData)
+      .put(`https://api-crisp-cleaning.onrender.com/edit/clean/${cleanId}`, requestData)
       .then((response) => {
         alert("Clean record updated successfully!");
         onClose(); // close the popup
@@ -235,7 +235,6 @@ const BookingPopup = ({ onClose, cleanId }) => {
         console.error(error);
       });
   };
-
 
   // Get available time slots for a specific date
   const getAvailableTimeSlots = (selectedDate) => {
@@ -622,7 +621,7 @@ const BookingPopup = ({ onClose, cleanId }) => {
       console.log("Commercial quote data:", commercialData);
 
       // Here you would send to your commercial quotes endpoint
-      // const response = await axios.post("http://localhost:4000/commercial-quote", commercialData)
+      // const response = await axios.post("https://api-crisp-cleaning.onrender.com/commercial-quote", commercialData)
 
       alert(
         "Commercial quote request submitted successfully! We'll contact you within 24 hours."
@@ -743,20 +742,20 @@ const BookingPopup = ({ onClose, cleanId }) => {
   const residentialSteps = [
     {
       id: "quote",
-      title: "Receive A Quote",
+      title: "Receive A FREE Quote",
       subtitle: "What type of project? Please provide what type of cleaning.",
       content: (
         <div className="step-content">
           <div
-            className={`quote-options-2 ${
+            className={`quote-option-2 ${
               showValidationMessage ? "validation-active" : ""
             }`}
           >
             <div
-              className={`quote-option-2 ${Quote === 1 ? "selected" : ""}`}
+              className={`quote-option ${Quote === 1 ? "selected" : ""}`}
               onClick={() => handleQuoteSelection(1)}
             >
-              <div className="quote-icon-2">
+              <div className="quote-icon">
                 <img
                   src={
                     require("../views/img/house_60156731-200h.png") ||
@@ -764,7 +763,7 @@ const BookingPopup = ({ onClose, cleanId }) => {
                   }
                   alt="House"
                 />
-                {Quote === 1 && <div className="selection-indicator-2"></div>}
+                {Quote === 1 && <div className="selection-indicator"></div>}
               </div>
               <h3>Residential Cleaning</h3>
               <p>
@@ -1023,27 +1022,32 @@ const BookingPopup = ({ onClose, cleanId }) => {
         <div className="step-content">
           <div className="monthly-calendar-section">
             <div className="calendar-header">
-              <button
-                className="month-nav-btn"
-                onClick={() =>
-                  setCurrentMonthIndex(Math.max(0, currentMonthIndex - 1))
-                }
-                disabled={currentMonthIndex === 0}
-              >
-                &#8249;
-              </button>
               <h3>{monthlyCalendar[currentMonthIndex]?.name}</h3>
-              <button
-                className="month-nav-btn"
-                onClick={() =>
-                  setCurrentMonthIndex(
-                    Math.min(monthlyCalendar.length - 1, currentMonthIndex + 1)
-                  )
-                }
-                disabled={currentMonthIndex === monthlyCalendar.length - 1}
-              >
-                &#8250;
-              </button>
+              <span className="month-btn-group">
+                <button
+                  className="month-nav-btn"
+                  onClick={() =>
+                    setCurrentMonthIndex(Math.max(0, currentMonthIndex - 1))
+                  }
+                  disabled={currentMonthIndex === 0}
+                >
+                  &#8249;
+                </button>
+                <button
+                  className="month-nav-btn"
+                  onClick={() =>
+                    setCurrentMonthIndex(
+                      Math.min(
+                        monthlyCalendar.length - 1,
+                        currentMonthIndex + 1
+                      )
+                    )
+                  }
+                  disabled={currentMonthIndex === monthlyCalendar.length - 1}
+                >
+                  &#8250;
+                </button>
+              </span>
             </div>
 
             <div className="calendar-weekdays">
@@ -1080,7 +1084,6 @@ const BookingPopup = ({ onClose, cleanId }) => {
           </div>
 
           <div className="time-selection-section">
-            <h3>Select Time</h3>
             <div className="time-dropdown-container">
               <select
                 value={selectedTime}
@@ -1110,16 +1113,27 @@ const BookingPopup = ({ onClose, cleanId }) => {
 
           <div className="schedule-options">
             <div className="clean-type-toggle">
-              <button
-                className={`toggle-btn ${CleanType ? "active" : ""}`}
-                onClick={() => {
-                  setCleanType(true);
-                  setIntervalValue(15);
-                  updateScheduleValidation(selectedDate, selectedTime);
-                }}
-              >
-                Regular Clean
-              </button>
+              <div className="button-with-exclamation">
+                <span
+                  className={`exclamation ${CleanType ? "highlighted" : ""}`}
+                >
+                  !
+                </span>
+                <button
+                  className={`toggle-btn-one ${CleanType ? "active" : ""}`}
+                  onClick={() => {
+                    setCleanType(true);
+                    setIntervalValue(15);
+                    updateScheduleValidation(selectedDate, selectedTime);
+                  }}
+                >
+                  Regular Clean
+                  <span className="off">
+                    <small>Up to 25% OFF</small>
+                  </span>
+                </button>
+              </div>
+
               <button
                 className={`toggle-btn ${!CleanType ? "active" : ""}`}
                 onClick={() => {

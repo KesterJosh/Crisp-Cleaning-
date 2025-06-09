@@ -150,7 +150,26 @@ app.post("/data", (req, res) => {
 //     from: "MS_acmUf3@trial-7dnvo4dxzd9g5r86.mlsender.net",
 //     to: "adeemole@gmail.com",
 //     subject: "Commercial Cleaning Initiated",
-//     html: `<p>Here is a sent email of the commercial clean sent from ${BusinessName}</p><p>Business Name: ${BusinessName}</p><p>Business Size: ${BusinessSize}</p><p>Business Environment: ${BusinessEnvironment}</p><p>Type of cleaning: ${BusinessTypeOfClean}</p><p>Amount of Rooms: ${BusinessRoomAmount}</p><p>Specified Info: ${BusinessDetail}</p><p>Frequency: ${BusinessTimeFrame}</p><p>Business Name: ${BusinessHours}</p><p>Extra Comments: ${BusinessComments}</p><p>Email of sender: ${email}</p>`,
+//     html: `const emailMessage = `<p>A commercial cleaning request has been submitted by <strong>${contactPerson}</strong>.</p>
+  // <p><strong>Business Name:</strong> ${businessName}</p>
+  // <p><strong>Contact Person:</strong> ${contactPerson}</p>
+  // <p><strong>Email:</strong> ${email}</p>
+  // <p><strong>Phone:</strong> ${phone}</p>
+  // <p><strong>Address:</strong> ${address}</p>
+  // <p><strong>Business Type:</strong> ${businessType}</p>
+  // <p><strong>Business Size:</strong> ${businessSize}</p>
+  // <p><strong>Cleaning Frequency:</strong> ${cleaningFrequency}</p>
+  // <p><strong>Special Requirements:</strong> ${specialRequirements}</p>
+  // <p><strong>Preferred Start Date:</strong> ${startDate}</p>
+  // <p><strong>Business Hours:</strong> ${businessHours}</p>
+  // <p><strong>Access Instructions:</strong> ${accessInstructions}</p>
+  // <p><strong>Emergency Contact:</strong> ${emergencyContact}</p>
+  // <p><strong>Budget Range:</strong> ${budgetRange}</p>
+  // <p><strong>Contract Length:</strong> ${contractLength}</p>
+  // <p><strong>Insurance Required:</strong> ${insuranceRequired}</p>
+  // <p><strong>Additional Notes:</strong> ${additionalNotes}</p>
+  // <p><strong>Tax ID:</strong> ${taxId}</p>
+// `;,
 //   };
 
 //   transporter
@@ -256,30 +275,46 @@ app.post("/register", (req, res) => {
 
 app.post("/commercial", (req, res) => {
   const {
-    BusinessName,
-    BusinessSize,
-    BusinessEnvironment,
-    BusinessTypeOfClean,
-    BusinessRoomAmount,
-    BusinessDetail,
-    BusinessTimeFrame,
-    BusinessHours,
-    BusinessComments,
+    businessName,
+    contactPerson,
     email,
+    phone,
+    address,
+    businessType,
+    businessSize,
+    cleaningFrequency,
+    specialRequirements,
+    startDate,
+    businessHours,
+    accessInstructions,
+    emergencyContact,
+    budgetRange,
+    contractLength,
+    insuranceRequired,
+    additionalNotes,
+    taxId,
   } = req.body;
 
   commercialModel
     .create({
-      BusinessName,
-      BusinessSize,
-      BusinessEnvironment,
-      BusinessTypeOfClean,
-      BusinessRoomAmount,
-      BusinessDetail,
-      BusinessTimeFrame,
-      BusinessHours,
-      BusinessComments,
+      businessName,
+      contactPerson,
       email,
+      phone,
+      address,
+      businessType,
+      businessSize,
+      cleaningFrequency,
+      specialRequirements,
+      startDate,
+      businessHours,
+      accessInstructions,
+      emergencyContact,
+      budgetRange,
+      contractLength,
+      insuranceRequired,
+      additionalNotes,
+      taxId,
     })
     .then((commercials) => {
       res.json({

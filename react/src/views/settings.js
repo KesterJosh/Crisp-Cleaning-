@@ -41,7 +41,7 @@ const Settings = (props) => {
 
   const handleLogout = () => {
     localStorage.clear();
-    window.location.href = "/";
+    window.location.href = "/#/";
   };
 
   useEffect(() => {
@@ -632,7 +632,7 @@ const Settings = (props) => {
     setId(userId);
 
     axios
-      .post("http://localhost:4000/data", { userId })
+      .post("https://api-crisp-cleaning.onrender.com/data", { userId })
       .then((result) => {
         console.log("User Data:", result.data);
         const user = result.data;
@@ -671,7 +671,7 @@ const Settings = (props) => {
     }
 
     axios
-      .put("http://localhost:4000/update", {
+      .put("https://api-crisp-cleaning.onrender.com/update", {
         id: id,
         first_name: firstName,
         last_name: lastName,

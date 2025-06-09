@@ -123,3 +123,12 @@
 .btn.cancel:hover {
   background-color: #ccc;
 }
+.pass {
+  display: flex;
+  align-items: center;
+}
+.pass-field {
+  width: 100%;
+  border: none;
+  outline: none;
+}

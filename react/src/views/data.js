@@ -70,3 +70,22 @@ export const testimonials = [
     time: "4:22 AM - Nov 29,2023",
   },
 ];
+
+export const reward_data = [
+  {
+    id: 1,
+    name: "Refer a friend",
+  },
+    {
+    id: 2,
+    name: "Refer 5 friends",
+  },
+    {
+    id: 3,
+    name: "Refer 10 friends",
+  },
+    {
+    id: 4,
+    name: "Refer 15 friends",
+  },
+]

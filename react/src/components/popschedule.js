@@ -9,7 +9,7 @@ const Popschedule = ({ CloseCancelScreen, cleanId }) => {
   const handleCancelBooking = async () => {
     console.log(cleanId);
     try {
-      await axios.delete(`http://localhost:4000/clean/${cleanId}`);
+      await axios.delete(`https://api-crisp-cleaning.onrender.com/clean/${cleanId}`);
       alert("Booking cancelled successfully.");
       CloseCancelScreen();
       window.location.reload();

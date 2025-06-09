@@ -32,14 +32,14 @@ const Transaction = (props) => {
 
   const handleLogout = () => {
     localStorage.clear();
-    window.location.href = "/";
+    window.location.href = "/#/";
   };
 
   const fetchCleans = useCallback(async () => {
     if (!userId) return;
     try {
       const response = await axios.get(
-        `http://localhost:4000/user-clean/${userId}`
+        `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`
       );
       if (response.data && response.data.cleanRecords) {
         setCleans(response.data.cleanRecords);
@@ -221,7 +221,7 @@ const Transaction = (props) => {
     }
 
     try {
-      const res = await fetch("http://localhost:4000/api/reviews", {
+      const res = await fetch("https://api-crisp-cleaning.onrender.com/api/reviews", {
         method: "POST",
         body: formData,
       });

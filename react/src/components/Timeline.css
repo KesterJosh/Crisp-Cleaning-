@@ -1,0 +1,158 @@
+.timeline-wrapper {
+  width: 90%;
+  max-width: 900px;
+  margin: 20px auto;
+  position: relative;
+  user-select: none;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.timeline {
+  position: relative;
+  height: 220px; /* More height for text bubbles */
+  margin: 40px 0;
+}
+
+/* Main timeline line background */
+.timeline-line-bg {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background-color: #ddd;
+  border-radius: 3px;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+/* Progress fill */
+.timeline-line-fill {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 6px;
+  background: #ff914d;
+  border-radius: 3px;
+  transform: translateY(-50%);
+  transition: width 0.5s ease;
+  z-index: 2;
+}
+
+/* Each stop container */
+.timeline-stop {
+  position: absolute;
+  top: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 3;
+  white-space: nowrap;
+}
+
+/* Connector line: vertical line crossing the main horizontal line */
+.timeline-connector {
+  position: absolute;
+  width: 4px;
+  background-color: #ccc;
+  border-radius: 2px;
+  z-index: 2;
+}
+
+/* Connector for little wins – down from center */
+.timeline-connector.little {
+  top: 50%;
+  margin-top: -8px;
+  height: 15px;
+  transform: translateX(-50%);
+}
+
+/* Connector for big wins – up from center */
+.timeline-connector.big {
+  bottom: 50%;
+  margin-bottom: -9px;
+  height: 16px;
+  transform: translateX(-50%);
+}
+
+/* Completed connector */
+.timeline-connector.active {
+  background-color: #ff914d;
+}
+
+/* Stop circle */
+.stop-circle {
+  width: auto;
+  border-radius: 50px;
+  background-color: #bbb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  color: white;
+  padding: 0 10px;
+  transition: background-color 0.4s, border-color 0.4s;
+  position: relative;
+  z-index: 4;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+/* Completed stops highlight */
+.timeline-stop.completed .stop-circle {
+  background-color: #ff914d;
+}
+
+/* Text bubble above big wins */
+.text-bubble {
+  position: absolute;
+  bottom: 100%;
+  width: 130px;
+  text-align: center;
+  white-space: wrap;
+  margin-bottom: 16px;
+  background-color: #ff914d;
+  color: white;
+  padding: 8px;
+  border-radius: 8px;
+  font-weight: 700;
+  /* font-size: 0.9rem; */
+  z-index: 5;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Chat bubble tail */
+.text-bubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-width: 6px;
+  border-style: solid;
+  border-color: #ff914d transparent transparent transparent;
+}
+
+.incomplete-bubble {
+  background-color: #bbb;
+  color: white;
+}
+
+.incomplete-bubble::after {
+  border-color: #bbb transparent transparent transparent;
+}
+
+/* Adjust positions for big and little stops */
+.timeline-stop.big-win {
+  top: 50%;
+  margin-top: -20px; /* Raise a bit for bubble spacing */
+}
+
+.timeline-stop.little-win {
+  top: 47%;
+  margin-top: 20px; /* Lower a bit for little wins */
+}

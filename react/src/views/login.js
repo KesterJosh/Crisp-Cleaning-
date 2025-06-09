@@ -1,11 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import gsap from "gsap";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import "./login.css";
+import { Eye, EyeSlashIcon } from "@phosphor-icons/react";
 
 const Login = ({ CloseLogin, navigateS }) => {
+  const [showPassword, setShowPassword] = useState(false);
+
   useEffect(() => {
     gsap.fromTo(
       ".login-modal",
@@ -27,7 +30,7 @@ const Login = ({ CloseLogin, navigateS }) => {
     }),
     onSubmit: (values) => {
       axios
-        .post("http://localhost:4000/login", values)
+        .post("https://api-crisp-cleaning.onrender.com/login", values)
         .then((res) => {
           if (res.data.status === "Success") {
             sessionStorage.setItem("userId", res.data.userId);
@@ -67,16 +70,28 @@ const Login = ({ CloseLogin, navigateS }) => {
             )}
           </div>
 
-          <div className="form-group">
+          <div className="form-group password-group">
             <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              {...formik.getFieldProps("password")}
-              className={`form-input ${
-                formik.touched.password && formik.errors.password ? "error" : ""
-              }`}
-            />
+            <div className="password-input-wrapper">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                {...formik.getFieldProps("password")}
+                className={`form-input ${
+                  formik.touched.password && formik.errors.password
+                    ? "error"
+                    : ""
+                }`}
+              />
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={() => setShowPassword((prev) => !prev)}
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeSlashIcon size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
             {formik.touched.password && formik.errors.password && (
               <p className="form-error">{formik.errors.password}</p>
             )}

@@ -227,7 +227,7 @@ const BookingPopup = ({ onClose }) => {
       console.log("Clean booking data:", requestData);
 
       const response = await axios.post(
-        "http://localhost:4000/clean",
+        "https://api-crisp-cleaning.onrender.com/clean",
         requestData
       );
 
@@ -263,7 +263,7 @@ const BookingPopup = ({ onClose }) => {
       };
 
       const response = await fetch(
-        "http://localhost:4000/create-checkout-session",
+        "https://api-crisp-cleaning.onrender.com/create-checkout-session",
         {
           method: "POST",
           headers: {
@@ -682,14 +682,18 @@ const BookingPopup = ({ onClose }) => {
         taxId: referral,
       };
 
-      console.log("Commercial quote data:", commercialData);
-
-      // Here you would send to your commercial quotes endpoint
-      // const response = await axios.post("http://localhost:4000/commercial-quote", commercialData)
-
-      alert(
-        "Commercial quote request submitted successfully! We'll contact you within 24 hours."
+      const response = await axios.post(
+        "https://api-crisp-cleaning.onrender.com/commercial",
+        commercialData
       );
+
+      if (response.status === 200 || response.status === 201) {
+        alert(
+          "Commercial quote request submitted successfully! We'll contact you within 24 hours."
+        );
+      } else {
+        throw new Error("Unexpected response");
+      }
     } catch (error) {
       console.error("Commercial quote error:", error);
       setSubmitError("Failed to submit quote request. Please try again.");
@@ -806,7 +810,7 @@ const BookingPopup = ({ onClose }) => {
   const residentialSteps = [
     {
       id: "quote",
-      title: "Receive A Quote",
+      title: "Receive A FREE Quote",
       subtitle: "What type of project? Please provide what type of cleaning.",
       content: (
         <div className="step-content">
@@ -1107,27 +1111,32 @@ const BookingPopup = ({ onClose }) => {
         <div className="step-content">
           <div className="monthly-calendar-section">
             <div className="calendar-header">
-              <button
-                className="month-nav-btn"
-                onClick={() =>
-                  setCurrentMonthIndex(Math.max(0, currentMonthIndex - 1))
-                }
-                disabled={currentMonthIndex === 0}
-              >
-                &#8249;
-              </button>
               <h3>{monthlyCalendar[currentMonthIndex]?.name}</h3>
-              <button
-                className="month-nav-btn"
-                onClick={() =>
-                  setCurrentMonthIndex(
-                    Math.min(monthlyCalendar.length - 1, currentMonthIndex + 1)
-                  )
-                }
-                disabled={currentMonthIndex === monthlyCalendar.length - 1}
-              >
-                &#8250;
-              </button>
+              <span className="month-btn-group">
+                <button
+                  className="month-nav-btn"
+                  onClick={() =>
+                    setCurrentMonthIndex(Math.max(0, currentMonthIndex - 1))
+                  }
+                  disabled={currentMonthIndex === 0}
+                >
+                  &#8249;
+                </button>
+                <button
+                  className="month-nav-btn"
+                  onClick={() =>
+                    setCurrentMonthIndex(
+                      Math.min(
+                        monthlyCalendar.length - 1,
+                        currentMonthIndex + 1
+                      )
+                    )
+                  }
+                  disabled={currentMonthIndex === monthlyCalendar.length - 1}
+                >
+                  &#8250;
+                </button>
+              </span>
             </div>
 
             <div className="calendar-weekdays">
@@ -1164,7 +1173,6 @@ const BookingPopup = ({ onClose }) => {
           </div>
 
           <div className="time-selection-section">
-            <h3>Select Time</h3>
             <div className="time-dropdown-container">
               <select
                 value={selectedTime}
@@ -1194,16 +1202,27 @@ const BookingPopup = ({ onClose }) => {
 
           <div className="schedule-options">
             <div className="clean-type-toggle">
-              <button
-                className={`toggle-btn ${CleanType ? "active" : ""}`}
-                onClick={() => {
-                  setCleanType(true);
-                  setIntervalValue(15);
-                  updateScheduleValidation(selectedDate, selectedTime);
-                }}
-              >
-                Regular Clean
-              </button>
+              <div className="button-with-exclamation">
+                <span
+                  className={`exclamation ${CleanType ? "highlighted" : ""}`}
+                >
+                  !
+                </span>
+                <button
+                  className={`toggle-btn-one ${CleanType ? "active" : ""}`}
+                  onClick={() => {
+                    setCleanType(true);
+                    setIntervalValue(15);
+                    updateScheduleValidation(selectedDate, selectedTime);
+                  }}
+                >
+                  Regular Clean
+                  <span className="off">
+                    <small>Up to 25% OFF</small>
+                  </span>
+                </button>
+              </div>
+
               <button
                 className={`toggle-btn ${!CleanType ? "active" : ""}`}
                 onClick={() => {

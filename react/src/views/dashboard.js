@@ -26,7 +26,7 @@ const Dashboard = (props) => {
 
   const handleLogout = () => {
     localStorage.clear();
-    window.location.href = "/";
+    window.location.href = "/#/";
   };
 
   // Fetch userId from sessionStorage
@@ -47,7 +47,6 @@ const Dashboard = (props) => {
       const parsedDate = new Date(c.date);
       return { ...c, parsedDate };
     })
-    .filter((c) => isAfter(c.parsedDate, today))
     .sort((a, b) => a.parsedDate - b.parsedDate)[0];
 
   const cleanType = (code) => {
@@ -63,7 +62,7 @@ const Dashboard = (props) => {
     try {
       const response = await axios({
         method: "get",
-        url: `http://localhost:4000/user-clean/${userId}`,
+        url: `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -113,7 +112,7 @@ const Dashboard = (props) => {
     try {
       const response = await axios({
         method: "get",
-        url: `http://localhost:4000/cleans`,
+        url: `https://api-crisp-cleaning.onrender.com/cleans`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -326,10 +325,7 @@ const Dashboard = (props) => {
     return dateA - dateB; // ascending
   });
 
-  const upcomingClean = sortedCleans.find((clean) => {
-    const cleanDate = moment(clean.date).toDate();
-    return cleanDate >= new Date();
-  });
+  const upcomingClean = sortedCleans[0];
 
   const [showCancelPopup, setShowCancelPopup] = useState(false);
   const [cancelCleanId, setCancelCleanId] = useState(null);
@@ -614,7 +610,9 @@ const Dashboard = (props) => {
                           </div>
                           <div className="dashboard-container129">
                             <span className="dashboard-text120">
-                              {clean.completed ? "Completed" : "In Progress..."}
+                              {clean.completed
+                                ? "Completed!"
+                                : "In Progress..."}
                             </span>
                             <span className="dashboard-text121">
                               <span>
@@ -625,10 +623,78 @@ const Dashboard = (props) => {
                                   : null}{" "}
                                 clean
                               </span>
-                              <br></br>
-                              <span>
-                                {clean.bathroom}X Bathroom, {clean.kitchen}X
-                                Kitchen, {clean.rooms}X Bedroom,...
+                              <br />
+                              <span className="book-details">
+                                {clean.bathroom !== "0" && (
+                                  <span>
+                                    {clean.bathroom}X Bathroom
+                                  </span>
+                                )}{" "}
+                                {clean.kitchen !== "0" && (
+                                  <span>
+                                    {clean.kitchen}X Kitchen
+                                  </span>
+                                )}{" "}
+                                {clean.rooms !== "0" && (
+                                  <span>
+                                    {clean.rooms}X Rooms
+                                  </span>
+                                )}{" "}
+                                {clean.microwave !== "0" && (
+                                  <span>
+                                    {clean.microwave}X Microwave
+                                  </span>
+                                )}{" "}
+                                {clean.blinds !== "0" && (
+                                  <span>
+                                    {clean.blinds}X Blinds
+                                  </span>
+                                )}{" "}
+                                {clean.cabinets !== "0" && (
+                                  <span>
+                                    {clean.cabinets}X Cabinets
+                                  </span>
+                                )}{" "}
+                                {clean.dishwasher !== "0" && (
+                                  <span>
+                                    {clean.dishwasher}X Dishwasher
+                                  </span>
+                                )}{" "}
+                                {clean.fridge !== "0" && (
+                                  <span>
+                                    {clean.fridge}X Fridge
+                                  </span>
+                                )}{" "}
+                                {clean.garage !== "0" && (
+                                  <span>
+                                    {clean.garage}X Garage
+                                  </span>
+                                )}{" "}
+                                {clean.laundry !== "0" && (
+                                  <span>
+                                    {clean.laundry}X Laundry
+                                  </span>
+                                )}{" "}
+                                {clean.stove !== "0" && (
+                                  <span>
+                                    {clean.stove}X Stove
+                                  </span>
+                                )}{" "}
+                                {clean.tiles !== "0" && (
+                                  <span>
+                                    {clean.tiles}X Tiles
+                                  </span>
+                                )}{" "}
+                                {clean.walls !== "0" && (
+                                  <span>
+                                    {clean.walls}X Walls
+                                  </span>
+                                )}{" "}
+                                {clean.windows !== "0" && (
+                                  <span>
+                                    {clean.windows}X Windows
+                                  </span>
+                                )}
                               </span>
                             </span>
                           </div>

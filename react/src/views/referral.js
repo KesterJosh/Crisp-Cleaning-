@@ -9,6 +9,7 @@ import "./referral.css";
 import Menu from "./menu";
 import BookingPopup from "../components/BookingPopup";
 import GlobalSearch from "../components/GlobalSearch";
+import { reward_data } from "./data";
 
 const Referral = (props) => {
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
@@ -16,8 +17,9 @@ const Referral = (props) => {
 
   const handleLogout = () => {
     localStorage.clear();
-    window.location.href = "/";
+    window.location.href = "/#/";
   };
+
   const handleMouseEnterFade = (button) => {
     gsap.to(button, {
       scale: 1.1,
@@ -148,7 +150,7 @@ const Referral = (props) => {
       return;
     }
     setRef(userId);
-    setRefLink("http://localhost:3000/#/ref?ref=" + userId);
+    setRefLink("https://crisp-frontend.onrender.com/#/ref?ref=" + userId);
   };
 
   const fetchUserReferrals = () => {
@@ -591,151 +593,41 @@ const Referral = (props) => {
                   <div className="referral-container44">
                     <div className="referral-container45">
                       <span className="referral-text46">
-                        <span>People you have reffered</span>
+                        <span>Rewards</span>
                         <br></br>
                       </span>
                     </div>
                     <div className="referral-container46">
-                      <span className="referral-text49">Date they joined</span>
+                      {/* <span className="referral-text49">Date they joined</span> */}
                     </div>
                     <div className="referral-container47">
-                      <span className="referral-text50">Membership</span>
+                      {/* <span className="referral-text50">Membership</span> */}
                     </div>
                   </div>
-                  {referrals.map((referral, index) => (
-                    <div
-                      key={referral._id} // Use referral._id or another unique value
-                      className="referral-container48"
-                      onMouseEnter={(e) =>
-                        handleMouseEnterFadex(e.currentTarget)
-                      }
-                      onMouseLeave={(e) =>
-                        handleMouseLeaveFadex(e.currentTarget)
-                      }
-                    >
-                      <div className="referral-container49">
-                        <img
-                          alt="image"
-                          src="https://raw.githubusercontent.com/KesterJosh/Website-SampleX/main/unknown.jpg"
-                          className="referral-image31"
-                        />
-                        <span className="referral-text51">
-                          {referral.first_name} {referral.last_name}
-                        </span>
-                      </div>
-                      <div className="referral-container50">
-                        <span className="referral-text52">
-                          {referral.date_joined}
-                        </span>
-                      </div>
-                      <div className="referral-container51">
-                        <span className="referral-text53">Cleaners Pass</span>{" "}
-                        {/* Adjust this text as needed */}
-                      </div>
+                  {reward_data.map((item, index) => (
+                    <div key={index} className="reward-in-ref">
+                      <h5>{item.name}</h5>
+                      {item.id == 1 ? (
+                        <button className="two">
+                          <img src="/img/lock.png" />
+                        </button>
+                      ) : (
+                        <button className="two">
+                          <img src="/img/lock.png" />
+                        </button>
+                      )}
                     </div>
                   ))}
-                  {/* <div className="referral-container52" onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
-                onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}>
-                    <div className="referral-container53">
+                  <Link to="/reward" className="ref-rewards-container">
+                    <div className="ref-rewards">
+                      <span>View all rewards</span>
                       <img
                         alt="image"
-                        src={require("./img/fullperson-200w.png")}
-                        className="referral-image32"
+                        src={require("./img/arrow-200w.png")}
+                        className="dashboard-image31"
                       />
-                      <span className="referral-text54">Alex Johnson</span>
                     </div>
-                    <div className="referral-container54">
-                      <span className="referral-text55">121/01/2024</span>
-                    </div>
-                    <div className="referral-container55">
-                      <span className="referral-text56">Cleaners Pass</span>
-                    </div>
-                  </div> */}
-                  {/* <div className="referral-container56" onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
-                onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}>
-                    <div className="referral-container57">
-                      <img
-                        alt="image"
-                        src={require("./img/fullperson-200w.png")}
-                        className="referral-image33"
-                      />
-                      <span className="referral-text57">Alex Johnson</span>
-                    </div>
-                    <div className="referral-container58">
-                      <span className="referral-text58">121/01/2024</span>
-                    </div>
-                    <div className="referral-container59">
-                      <span className="referral-text59">Cleaners Pass</span>
-                    </div>
-                  </div>
-                  <div className="referral-container60" onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
-                onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}>
-                    <div className="referral-container61">
-                      <img
-                        alt="image"
-                        src={require("./img/fullperson-200w.png")}
-                        className="referral-image34"
-                      />
-                      <span className="referral-text60">Alex Johnson</span>
-                    </div>
-                    <div className="referral-container62">
-                      <span className="referral-text61">121/01/2024</span>
-                    </div>
-                    <div className="referral-container63">
-                      <span className="referral-text62">Cleaners Pass</span>
-                    </div>
-                  </div>
-                  <div className="referral-container64" onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
-                onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}>
-                    <div className="referral-container65">
-                      <img
-                        alt="image"
-                        src={require("./img/fullperson-200w.png")}
-                        className="referral-image35"
-                      />
-                      <span className="referral-text63">Alex Johnson</span>
-                    </div>
-                    <div className="referral-container66">
-                      <span className="referral-text64">121/01/2024</span>
-                    </div>
-                    <div className="referral-container67">
-                      <span className="referral-text65">Cleaners Pass</span>
-                    </div>
-                  </div>
-                  <div className="referral-container68" onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
-                onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}>
-                    <div className="referral-container69">
-                      <img
-                        alt="image"
-                        src={require("./img/fullperson-200w.png")}
-                        className="referral-image36"
-                      />
-                      <span className="referral-text66">Alex Johnson</span>
-                    </div>
-                    <div className="referral-container70">
-                      <span className="referral-text67">121/01/2024</span>
-                    </div>
-                    <div className="referral-container71">
-                      <span className="referral-text68">Cleaners Pass</span>
-                    </div>
-                  </div>
-                  <div className="referral-container72" onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
-                onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}>
-                    <div className="referral-container73">
-                      <img
-                        alt="image"
-                        src={require("./img/fullperson-200w.png")}
-                        className="referral-image37"
-                      />
-                      <span className="referral-text69">Alex Johnson</span>
-                    </div>
-                    <div className="referral-container74">
-                      <span className="referral-text70">121/01/2024</span>
-                    </div>
-                    <div className="referral-container75">
-                      <span className="referral-text71">Cleaners Pass</span>
-                    </div>
-                  </div> */}
+                  </Link>
                 </div>
               </div>
               <div className="referral-container76">

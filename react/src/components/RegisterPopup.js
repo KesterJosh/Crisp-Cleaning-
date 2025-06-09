@@ -3,6 +3,8 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import "./RegisterPopup.css";
+import { useState } from "react";
+import { Eye, EyeSlash } from "@phosphor-icons/react";
 
 const RegisterSchema = Yup.object().shape({
   first_name: Yup.string().required("First name is required"),
@@ -24,9 +26,10 @@ const RegisterPopup = ({
   setSum,
   layer,
 }) => {
+  const [showPassword, setShowPassword] = useState(false);
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const res = await axios.post("http://localhost:4000/register", {
+      const res = await axios.post("https://api-crisp-cleaning.onrender.com/register", {
         first_name: values.first_name,
         last_name: values.last_name,
         email: values.email,
@@ -126,13 +129,26 @@ const RegisterPopup = ({
 
               <div className="form-group">
                 <label>Password</label>
-                <Field name="password" type="password" className="form-input" />
-                <ErrorMessage
-                  name="password"
-                  component="div"
-                  className="error"
-                />
+
+                <span className="pass form-input">
+                  <Field
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    className="pass-field"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="pass-btn"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <Eye /> : <EyeSlash size={18} />}
+                  </button>
+                </span>
               </div>
+
+              <ErrorMessage name="password" component="div" className="error" />
 
               <div className="form-group">
                 <label>Address</label>

@@ -20,8 +20,9 @@ const Cleanerspass = (props) => {
 
   const handleLogout = () => {
     localStorage.clear();
-    window.location.href = "/";
+    window.location.href = "/#/";
   };
+  
   const handleSliderChange = (value) => {
     setSliderValue(value);
     setTotalSliders(value + sliderValueO + sliderValueOX + sliderValueK);

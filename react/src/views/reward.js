@@ -13,6 +13,7 @@ import axios from "axios";
 import { useRef } from "react";
 import BookingPopup from "../components/BookingPopup";
 import GlobalSearch from "../components/GlobalSearch";
+import TimelineContainer from "../components/TimelineContainer";
 
 const Reward = (props) => {
   const [showPopup, setShowPopup] = useState(false);
@@ -26,7 +27,7 @@ const Reward = (props) => {
 
   const handleLogout = () => {
     localStorage.clear();
-    window.location.href = "/";
+    window.location.href = "/#/";
   };
 
   useEffect(() => {
@@ -80,7 +81,7 @@ const Reward = (props) => {
     }
 
     try {
-      const res = await fetch("http://localhost:4000/reviews", {
+      const res = await fetch("https://api-crisp-cleaning.onrender.com/reviews", {
         method: "POST",
         body: formData,
       });
@@ -271,7 +272,7 @@ const Reward = (props) => {
     if (!userId) return;
     try {
       const response = await axios.get(
-        `http://localhost:4000/user-clean/${userId}`
+        `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`
       );
       if (response.data && response.data.cleanRecords) {
         setCleans(response.data.cleanRecords); // Save cleans to state
@@ -294,7 +295,7 @@ const Reward = (props) => {
   useEffect(() => {
     if (!userId) return;
 
-    fetch(`http://localhost:4000/rewards/${userId}`)
+    fetch(`https://api-crisp-cleaning.onrender.com/api/rewards/${userId}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error(`API error: ${res.status}`);
@@ -306,7 +307,7 @@ const Reward = (props) => {
   }, []);
 
   const claimReward = (rewardId) => {
-    fetch(`/api/rewards/claim/${rewardId}`, {
+    fetch(`https://api-crisp-cleaning.onrender.com/api/rewards/claim/${rewardId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     })
@@ -607,50 +608,7 @@ const Reward = (props) => {
                     View challenges
                   </span>
                 </div>
-                <div className="reward-container34">
-                  <div
-                    className="reward-container35"
-                    onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)}
-                    onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}
-                  >
-                    <img
-                      alt="image"
-                      src={require("./img/arrowleft-200h.png")}
-                      className="reward-image23"
-                    />
-                  </div>
-                  <div className="reward-container36">
-                    <div className="reward-container37">
-                      <div className="reward-container38"></div>
-                    </div>
-                    <div className="reward-container39">
-                      <span className="reward-text29">1</span>
-                    </div>
-                    <div className="reward-container40">
-                      <p className="reward-text30">
-                        <span>2</span>
-                        <br></br>
-                      </p>
-                    </div>
-                    <div className="reward-container41">
-                      <p className="reward-text33">3</p>
-                    </div>
-                    <div className="reward-container42">
-                      <span className="reward-text34">4</span>
-                    </div>
-                  </div>
-                  <div
-                    className="reward-container43"
-                    onMouseEnter={(e) => handleMouseEnterFade(e.currentTarget)}
-                    onMouseLeave={(e) => handleMouseLeaveFade(e.currentTarget)}
-                  >
-                    <img
-                      alt="image"
-                      src={require("./img/arrowright-200h.png")}
-                      className="reward-image24"
-                    />
-                  </div>
-                </div>
+                <TimelineContainer />
               </div>
             </div>
             <div className="reward-container44">
@@ -749,16 +707,16 @@ const Reward = (props) => {
                   </span>
                 </div>
               </div>
-              <div className="reward-container62">
-                <img
-                  alt="image"
-                  src={require("./img/reward-200w.png")}
-                  className="reward-image28"
-                />
-                <span className="reward-text45">Rewards</span>
-              </div>
               <div className="reward-container63">
                 <div className="reward-container65">
+                  <div className="reward-container602">
+                    <img
+                      alt="image"
+                      src={require("./img/reward-200w.png")}
+                      className="reward-image28"
+                    />
+                    <span className="reward-text45">Rewards</span>
+                  </div>
                   {rewards.length > 0 ? (
                     rewards.map((reward) => (
                       <div key={reward._id} className="reward-container67">
@@ -771,25 +729,41 @@ const Reward = (props) => {
                           </span>
                         </div>
 
-                        {!reward.claimed &&
-                        reward.completed >= reward.required ? (
-                          <div
-                            className="reward-container71"
-                            onClick={() => claimReward(reward._id)}
-                            onMouseEnter={(e) =>
-                              handleMouseEnterFade(e.currentTarget)
-                            }
-                            onMouseLeave={(e) =>
-                              handleMouseLeaveFade(e.currentTarget)
-                            }
-                          >
-                            <span className="reward-text52">Claim reward</span>
-                          </div>
-                        ) : reward.claimed ? (
-                          <div className="reward-container71 claimed">
-                            <span className="reward-text52">Claimed</span>
-                          </div>
-                        ) : null}
+                        {/* Modified section for the claim button */}
+                        <div
+                          className={`reward-container71 ${
+                            reward.claimed
+                              ? "claimed"
+                              : reward.completed < reward.required
+                              ? "disabled"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            !reward.claimed &&
+                            reward.completed >= reward.required &&
+                            claimReward(reward._id)
+                          }
+                          onMouseEnter={(e) =>
+                            !reward.claimed &&
+                            reward.completed >= reward.required &&
+                            handleMouseEnterFade(e.currentTarget)
+                          }
+                          onMouseLeave={(e) =>
+                            !reward.claimed &&
+                            reward.completed >= reward.required &&
+                            handleMouseLeaveFade(e.currentTarget)
+                          }
+                        >
+                          <span className="reward-text52">
+                            {reward.claimed ? (
+                              "Claimed"
+                            ) : reward.completed >= reward.required ? (
+                              "Claim reward"
+                            ) : (
+                              <img src="/img/lock.png" className="not-ready" />
+                            )}
+                          </span>
+                        </div>
                       </div>
                     ))
                   ) : (

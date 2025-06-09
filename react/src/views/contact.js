@@ -424,9 +424,9 @@ const Contact = (props) => {
           </div>
         </div> */}
       </div>
-      <div className="contact-container16"></div>
       <div className="contact-container17">
         <div className="contact-container18">
+
           <div className="contact-container19">
             <div className="contact-container20">
               <div className="contact-container21">
@@ -486,6 +486,7 @@ const Contact = (props) => {
               </div>
             </div>
           </div>
+
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <div className="contact-container30">
               <div className="contact-container31">

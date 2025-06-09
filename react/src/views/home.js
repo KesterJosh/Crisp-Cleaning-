@@ -1252,7 +1252,7 @@ const Home = (props) => {
       values;
 
     axios
-      .post("http://localhost:4000/register", {
+      .post("https://api-crisp-cleaning.onrender.com/register", {
         first_name,
         last_name,
         email,
@@ -1313,7 +1313,7 @@ const Home = (props) => {
     // e.preventDefault();
 
     axios
-      .post("http://localhost:4000/commercial", {
+      .post("https://api-crisp-cleaning.onrender.com/commercial", {
         BusinessName,
         BusinessSize,
         BusinessEnvironment,
@@ -1384,7 +1384,7 @@ const Home = (props) => {
     };
     console.log(requestData);
     axios
-      .post("http://localhost:4000/clean", requestData) // Replace with your server endpoint
+      .post("https://api-crisp-cleaning.onrender.com/clean", requestData) // Replace with your server endpoint
       .then((response) => {
         alert("Clean record created successfully!");
         OpenLogin();
@@ -1411,7 +1411,7 @@ const Home = (props) => {
     };
 
     const response = await fetch(
-      "http://localhost:4000/create-checkout-session",
+      "https://api-crisp-cleaning.onrender.com/create-checkout-session",
       {
         method: "POST",
         headers: {
@@ -1572,6 +1572,7 @@ const Home = (props) => {
           of a pristine space today.
         </h5>
       </div>
+      <CleaningSwiper />
       <div className="home-container019">
         {/* Menu  */}
         <div className="Mobilegeneral">
@@ -1598,7 +1599,6 @@ const Home = (props) => {
             <h2>Contact</h2>
           </Link>
         </div>
-        <CleaningSwiper />
       </div>
       <div className="home-container228">
         <div className="home-container229">

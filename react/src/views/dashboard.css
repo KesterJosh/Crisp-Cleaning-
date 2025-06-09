@@ -341,6 +341,9 @@
   font-style: normal;
   font-weight: 500;
 }
+.book-details {
+  color: gray;
+}
 .dashboard-image18 {
   width: 25px;
   object-fit: cover;
