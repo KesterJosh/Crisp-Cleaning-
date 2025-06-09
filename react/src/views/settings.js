@@ -13,11 +13,13 @@ import Menu from "./menu";
 import Popsave from "../components/popsave";
 import Popclearn from "../components/popclearn";
 import GlobalSearch from "../components/GlobalSearch";
+import { useCallback } from "react";
 let defValue = 1;
 let direction = 1;
 
 const Settings = (props) => {
   const [originalData, setOriginalData] = useState({});
+  const [cleans, setCleans] = useState([]);
 
   const [Heart, setHeart] = useState(false);
   const [Heart1, setHeart1] = useState(false);
@@ -649,8 +651,55 @@ const Settings = (props) => {
       });
   };
 
+  const fetchCleans = async () => {
+    const userId = JSON.parse(localStorage.getItem("user"))?.userId;
+
+    if (!userId) return;
+    console.log("fetching");
+    try {
+      const response = await axios.get(
+        `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`
+      );
+      if (response.data && response.data.cleanRecords) {
+        const cleanList = response.data.cleanRecords;
+        const firstClean = cleanList[0];
+        setCleans(cleanList);
+        console.log("fetched", cleanList[0]);
+
+        if (firstClean) {
+          setSliderValue(firstClean.bathroom || 0);
+          setSliderValueK(firstClean.kitchen || 0);
+          setSliderValueO(firstClean.others || 0);
+          setSliderValueOX(firstClean.rooms || 0);
+
+          const total =
+            (firstClean.bathroom || 0) +
+            (firstClean.kitchen || 0) +
+            (firstClean.others || 0) +
+            (firstClean.rooms || 0);
+
+          setTotalSliders(total);
+          sumUp(total);
+
+          if (firstClean.clean_date) {
+            setMyDate(firstClean.clean_date);
+          }
+          if (firstClean.time_frame) {
+            settimeFrame(firstClean.time_frame);
+          }
+        }
+      } else {
+        throw new Error("No clean records found.");
+      }
+    } catch (error) {
+      console.error("Error fetching cleans:", error);
+      setCleans([]);
+    }
+  };
+
   useEffect(() => {
     fetchUserData();
+    fetchCleans();
   }, []);
 
   const Update = () => {
