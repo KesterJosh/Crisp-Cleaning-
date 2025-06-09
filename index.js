@@ -102,128 +102,137 @@ app.post("/data", (req, res) => {
 });
 
 // nodemailer stuff
-// console.log("Email:", process.env.AUTH_EMAIL);
-// console.log(
-//   "Password:",
-//   process.env.AUTH_PASSWORD ? "Password is set" : "Password is missing"
-// );
-// let transporter = nodemailer.createTransport({
-//   host: "smtp.mailersend.net", // SMTP server
-//   port: 587, // Port for STARTTLS
-//   secure: false, // Use STARTTLS (false for port 587)
-//   auth: {
-//     user: "MS_acmUf3@trial-7dnvo4dxzd9g5r86.mlsender.net", // Your username
-//     pass: "zYyeUUqykO3MTgxt", // Your password
-//   },
-// });
+console.log("Email:", process.env.AUTH_EMAIL);
+console.log(
+  "Password:",
+  process.env.AUTH_PASSWORD ? "Password is set" : "Password is missing"
+);
+let transporter = nodemailer.createTransport({
+  host: "smtp.mailersend.net", // SMTP server
+  port: 587, // Port for STARTTLS
+  secure: false, // Use STARTTLS (false for port 587)
+  auth: {
+    user: "MS_acmUf3@trial-7dnvo4dxzd9g5r86.mlsender.net", // Your username
+    pass: "zYyeUUqykO3MTgxt", // Your password
+  },
+});
 
 // Test transporter
-// transporter.verify((error, success) => {
-//   if (error) {
-//     console.log("Error:", error);
-//   } else {
-//     console.log("SMTP Server is ready to take messages:", success);
-//   }
-// });
+transporter.verify((error, success) => {
+  if (error) {
+    console.log("Error:", error);
+  } else {
+    console.log("SMTP Server is ready to take messages:", success);
+  }
+});
 
 // Send email
 
-// const SendMail = (
-//   {
-//     BusinessName,
-//     BusinessSize,
-//     BusinessEnvironment,
-//     BusinessTypeOfClean,
-//     BusinessRoomAmount,
-//     BusinessDetail,
-//     BusinessTimeFrame,
-//     BusinessHours,
-//     BusinessComments,
-//     email,
-//   },
-//   res
-// ) => {
-//   // url of the email
-//   const currentUrl = "http://localhost:4000";
+const SendMail = (
+  {
+    businessName,
+    contactPerson,
+    email,
+    phone,
+    address,
+    businessType,
+    businessSize,
+    cleaningFrequency,
+    specialRequirements,
+    startDate,
+    businessHours,
+    accessInstructions,
+    emergencyContact,
+    budgetRange,
+    contractLength,
+    insuranceRequired,
+    additionalNotes,
+    taxId,
+  },
+  res
+) => {
+  // url of the email
+  const currentUrl = "http://localhost:4000";
 
-//   const mailOption = {
-//     from: "MS_acmUf3@trial-7dnvo4dxzd9g5r86.mlsender.net",
-//     to: "adeemole@gmail.com",
-//     subject: "Commercial Cleaning Initiated",
-//     html: `const emailMessage = `<p>A commercial cleaning request has been submitted by <strong>${contactPerson}</strong>.</p>
-  // <p><strong>Business Name:</strong> ${businessName}</p>
-  // <p><strong>Contact Person:</strong> ${contactPerson}</p>
-  // <p><strong>Email:</strong> ${email}</p>
-  // <p><strong>Phone:</strong> ${phone}</p>
-  // <p><strong>Address:</strong> ${address}</p>
-  // <p><strong>Business Type:</strong> ${businessType}</p>
-  // <p><strong>Business Size:</strong> ${businessSize}</p>
-  // <p><strong>Cleaning Frequency:</strong> ${cleaningFrequency}</p>
-  // <p><strong>Special Requirements:</strong> ${specialRequirements}</p>
-  // <p><strong>Preferred Start Date:</strong> ${startDate}</p>
-  // <p><strong>Business Hours:</strong> ${businessHours}</p>
-  // <p><strong>Access Instructions:</strong> ${accessInstructions}</p>
-  // <p><strong>Emergency Contact:</strong> ${emergencyContact}</p>
-  // <p><strong>Budget Range:</strong> ${budgetRange}</p>
-  // <p><strong>Contract Length:</strong> ${contractLength}</p>
-  // <p><strong>Insurance Required:</strong> ${insuranceRequired}</p>
-  // <p><strong>Additional Notes:</strong> ${additionalNotes}</p>
-  // <p><strong>Tax ID:</strong> ${taxId}</p>
-// `;,
-//   };
+  const mailOption = {
+    from: "MS_acmUf3@trial-7dnvo4dxzd9g5r86.mlsender.net",
+    to: "adeemole@gmail.com",
+    subject: "Commercial Cleaning Initiated",
+    html: `
+    <p>A commercial cleaning request has been submitted by <strong>${contactPerson}</strong>.</p>
+    <p><strong>Business Name:</strong> ${businessName}</p>
+    <p><strong>Contact Person:</strong> ${contactPerson}</p>
+    <p><strong>Email:</strong> ${email}</p>
+    <p><strong>Phone:</strong> ${phone}</p>
+    <p><strong>Address:</strong> ${address}</p>
+    <p><strong>Business Type:</strong> ${businessType}</p>
+    <p><strong>Business Size:</strong> ${businessSize}</p>
+    <p><strong>Cleaning Frequency:</strong> ${cleaningFrequency}</p>
+    <p><strong>Special Requirements:</strong> ${specialRequirements}</p>
+    <p><strong>Preferred Start Date:</strong> ${startDate}</p>
+    <p><strong>Business Hours:</strong> ${businessHours}</p>
+    <p><strong>Access Instructions:</strong> ${accessInstructions}</p>
+    <p><strong>Emergency Contact:</strong> ${emergencyContact}</p>
+    <p><strong>Budget Range:</strong> ${budgetRange}</p>
+    <p><strong>Contract Length:</strong> ${contractLength}</p>
+    <p><strong>Insurance Required:</strong> ${insuranceRequired}</p>
+    <p><strong>Additional Notes:</strong> ${additionalNotes}</p>
+    <p><strong>Tax ID:</strong> ${taxId}</p>
+  `,
+  };
 
-//   transporter
-//     .sendMail(mailOption)
-//     .then(() => {
-//       console.log("Email sent successfully");
-//       // res.json({
-//       //     status:"Pending",
-//       //     message:"Email sent successfully"
-//       // })
-//     })
-//     .catch((error) => {
-//       console.log(error);
-//       // res.json({
-//       //     status:"Failed",
-//       //     message:"Email sending failed"
-//       // })
-//     });
-// };
-// const response = [];
+  transporter
+    .sendMail(mailOption)
+    .then(() => {
+      console.log("Email sent successfully");
+      res.json({
+        status: "Pending",
+        message: "Email sent successfully",
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+      res.json({
+        status: "Failed",
+        message: "Email sending failed",
+      });
+    });
+};
+const response = [];
 
-// // Send email
+// Send email
 
-// const SendContactMail = (
-//   { first_name, last_name, email, phone, message },
-//   res
-// ) => {
-//   // url of the email
-//   const currentUrl = "http://localhost:4000";
+const SendContactMail = (
+  { first_name, last_name, email, phone, message },
+  res
+) => {
+  // url of the email
+  const currentUrl = "http://localhost:4000";
 
-//   const mailOption = {
-//     from: "MS_acmUf3@trial-7dnvo4dxzd9g5r86.mlsender.net",
-//     to: "adeemole@gmail.com",
-//     subject: "Contact From Customer",
-//     html: `<p>This message came from ${first_name} ${last_name}</p><p>With Email: ${email}</p><p>Phone Number: ${phone}</p><p>Here is the message:<br/> <b>${message}</b></p>`,
-//   };
+  const mailOption = {
+    from: "MS_acmUf3@trial-7dnvo4dxzd9g5r86.mlsender.net",
+    to: "adeemole@gmail.com",
+    subject: "Contact From Customer",
+    html: `<p>This message came from ${first_name} ${last_name}</p><p>With Email: ${email}</p><p>Phone Number: ${phone}</p><p>Here is the message:<br/> <b>${message}</b></p>`,
+  };
 
-//   transporter
-//     .sendMail(mailOption)
-//     .then(() => {
-//       console.log("Email sent successfully");
-//       // res.json({
-//       //     status:"Pending",
-//       //     message:"Email sent successfully"
-//       // })
-//     })
-//     .catch((error) => {
-//       console.log(error);
-//       // res.json({
-//       //     status:"Failed",
-//       //     message:"Email sending failed"
-//       // })
-//     });
-// };
+  transporter
+    .sendMail(mailOption)
+    .then(() => {
+      console.log("Email sent successfully");
+      res.json({
+        status: "Pending",
+        message: "Email sent successfully",
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+      res.json({
+        status: "Failed",
+        message: "Email sending failed",
+      });
+    });
+};
 
 app.post("/register", (req, res) => {
   const { first_name, last_name, email, phone, password, address, referral } =
