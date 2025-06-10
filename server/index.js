@@ -16,8 +16,11 @@ const reviewRoutes = require("./routes/review");
 const stripe = require("stripe")(process.env.MY_STRIPE_KEY);
 const webhookRoutes = require("./routes/stripeWebhook.js");
 const Payment = require("./models/Payment.js");
+const { OAuth2Client } = require("google-auth-library");
+const GoogleUser = require("./models/GoogleUser.js");
 
 require("dotenv").config;
+const client = new OAuth2Client("843731983758-n6vohdsfnrssb9ss35s02tq5nnit5j91.apps.googleusercontent.com");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const { v4: uuidv4 } = require("uuid");
@@ -678,6 +681,61 @@ app.delete("/clean/:id", async (req, res) => {
   } catch (error) {
     console.error("Error deleting booking:", error);
     res.status(500).json({ message: "Server error while cancelling booking." });
+  }
+});
+
+app.post("/google-auth", async (req, res) => {
+  const { credential, clientId } = req.body;
+
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: clientId,
+    });
+
+    const payload = ticket.getPayload();
+    const { email, given_name, family_name } = payload;
+
+    let user = await GoogleUser.findOne({ Email: email });
+    if (!user) {
+      user = await GoogleUser.create({
+        Email: email,
+        LastName: family_name,
+        FirstName: given_name,
+        authSource: "google",
+      });
+    }
+    const userId = user._id;
+    const token = jwt.sign({ userId: user._id }, process.env.JWTSECRET, {
+      expiresIn: "1h",
+    });
+
+    res
+      .status(200)
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+      })
+      .json({
+        success: true,
+        redirectUrl: "/user/option",
+        payload,
+        userId,
+        token,
+        user: {
+          email: user.Email,
+          firstName: user.FirstName,
+          lastName: user.LastName,
+        },
+      });
+  } catch (err) {
+    console.error("Error during Google authentication:", err);
+    res.status(400).json({
+      success: false,
+      message: "Authentication failed",
+      error: err.message,
+    });
   }
 });
 

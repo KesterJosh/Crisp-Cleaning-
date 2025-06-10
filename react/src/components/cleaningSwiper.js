@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import "./swiper-styles.css";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import Login from "../views/login";
 import { Eye, EyeSlashIcon } from "@phosphor-icons/react";
+import GoogleAuth from "./GoogleAuth";
 
 const CleaningSwiper = () => {
   const [login, setLogin] = useState(false);
@@ -36,6 +37,78 @@ const CleaningSwiper = () => {
   const [supports, setSupports] = useState(false);
   const [showValidationMessage, setShowValidationMessage] = useState(false);
   const [isCommercial, setIsCommercial] = useState(false);
+
+  useEffect(() => {
+    const initializeGoogleSignIn = () => {
+      if (
+        window.google &&
+        window.google.accounts &&
+        window.google.accounts.id
+      ) {
+        window.google.accounts.id.initialize({
+          client_id:
+            "843731983758-n6vohdsfnrssb9ss35s02tq5nnit5j91.apps.googleusercontent.com",
+          callback: handleCredentialResponse,
+        });
+
+        window.google.accounts.id.renderButton(
+          document.getElementById("googleSignInButton"),
+          { theme: "outline", size: "large" }
+        );
+      } else {
+        console.error("Google Identity Services not ready");
+      }
+    };
+
+    // Wait until the script is actually loaded
+    const interval = setInterval(() => {
+      if (
+        window.google &&
+        window.google.accounts &&
+        window.google.accounts.id
+      ) {
+        clearInterval(interval);
+        initializeGoogleSignIn();
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleCredentialResponse = (response) => {
+    const credential = response.credential;
+
+    axios
+      .post(`http://localhost:4000/google-auth`, {
+        credential,
+        clientId:
+          "843731983758-n6vohdsfnrssb9ss35s02tq5nnit5j91.apps.googleusercontent.com",
+      })
+      .then((response) => {
+        if (response.data.success) {
+          const { email, firstName, lastName } = response.data.user;
+          localStorage.setItem("user", JSON.stringify(response.data));
+        } else {
+          alert(response.data.message || "Authentication failed");
+        }
+        setIsSubmitting(false);
+      })
+      .catch((error) => {
+        console.error("Error during Google authentication:", error);
+        if (error.response) {
+          alert(
+            error.response.data.message ||
+              "An error occurred during authentication"
+          );
+        } else {
+          alert("Network error or server is down");
+        }
+        setTimeout(() => {
+          alert(null);
+        }, 3000);
+        setIsSubmitting(false);
+      });
+  };
 
   // Calendar and scheduling states
   const [selectedDate, setSelectedDate] = useState("");
@@ -644,15 +717,18 @@ const CleaningSwiper = () => {
       setIsSubmitting(true);
       setSubmitError("");
 
-      const response = await axios.post("https://api-crisp-cleaning.onrender.com/register", {
-        first_name: firstName,
-        last_name: lastName,
-        email,
-        phone,
-        password,
-        address,
-        referral,
-      });
+      const response = await axios.post(
+        "https://api-crisp-cleaning.onrender.com/register",
+        {
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          phone,
+          password,
+          address,
+          referral,
+        }
+      );
 
       console.log("Registration response:", response);
 
@@ -1538,10 +1614,7 @@ const CleaningSwiper = () => {
       content: (
         <div className="step-content">
           <div className="google-signup">
-            <button className="google-btn">
-              <img src={require("../views/img/google-200h.png")} alt="Google" />
-              Continue With Google
-            </button>
+            <div id="googleSignInButton"></div>
           </div>
 
           <div className="signup-form">
