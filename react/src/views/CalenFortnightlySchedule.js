@@ -237,7 +237,7 @@ const CalenFortnightlySchedule = ({
           return (
             <>
               <div key={i} className={`scheduled-clean ${typeClass}`}>
-                {clean.typeOfClean == 280 && "Vacant"}
+                {clean.typeOfClean == 280 && "Vacate"}
                 {clean.typeOfClean == 135 && "Deep"}
                 {clean.typeOfClean == 45 && "Regular"} Clean
                 <span className="clean-circle"></span>

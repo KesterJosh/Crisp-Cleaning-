@@ -244,7 +244,7 @@ const CalenSchedule = ({
 
             if (clean.typeOfClean === "280") {
               typeClass = "vacant";
-              typeLabel = "Vacant";
+              typeLabel = "Vacate";
             } else if (clean.typeOfClean === "135") {
               typeClass = "deep";
               typeLabel = "Deep";

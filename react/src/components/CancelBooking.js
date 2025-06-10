@@ -5,7 +5,7 @@ import "./cancelBooking.css";
 const CancelBookingPopup = ({ cleanId, onClose, onCancelSuccess }) => {
   const handleCancelBooking = async () => {
     try {
-      await axios.delete(`http://localhost:4000/clean/${cleanId}`);
+      await axios.delete(`https://api-crisp-cleaning.onrender.com/clean/${cleanId}`);
       alert("Booking cancelled successfully.");
       onCancelSuccess(); // Trigger a refresh or state update in Dashboard
       onClose();
