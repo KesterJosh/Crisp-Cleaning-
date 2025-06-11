@@ -20,7 +20,9 @@ const { OAuth2Client } = require("google-auth-library");
 const GoogleUser = require("./models/GoogleUser.js");
 
 require("dotenv").config;
-const client = new OAuth2Client("843731983758-n6vohdsfnrssb9ss35s02tq5nnit5j91.apps.googleusercontent.com");
+const client = new OAuth2Client(
+  "617840144228-0fa899q99cktsq7a8culf9cacamvr0kf.apps.googleusercontent.com"
+);
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const { v4: uuidv4 } = require("uuid");
@@ -154,24 +156,24 @@ app.post("/data", (req, res) => {
 //     to: "adeemole@gmail.com",
 //     subject: "Commercial Cleaning Initiated",
 //     html: `const emailMessage = `<p>A commercial cleaning request has been submitted by <strong>${contactPerson}</strong>.</p>
-  // <p><strong>Business Name:</strong> ${businessName}</p>
-  // <p><strong>Contact Person:</strong> ${contactPerson}</p>
-  // <p><strong>Email:</strong> ${email}</p>
-  // <p><strong>Phone:</strong> ${phone}</p>
-  // <p><strong>Address:</strong> ${address}</p>
-  // <p><strong>Business Type:</strong> ${businessType}</p>
-  // <p><strong>Business Size:</strong> ${businessSize}</p>
-  // <p><strong>Cleaning Frequency:</strong> ${cleaningFrequency}</p>
-  // <p><strong>Special Requirements:</strong> ${specialRequirements}</p>
-  // <p><strong>Preferred Start Date:</strong> ${startDate}</p>
-  // <p><strong>Business Hours:</strong> ${businessHours}</p>
-  // <p><strong>Access Instructions:</strong> ${accessInstructions}</p>
-  // <p><strong>Emergency Contact:</strong> ${emergencyContact}</p>
-  // <p><strong>Budget Range:</strong> ${budgetRange}</p>
-  // <p><strong>Contract Length:</strong> ${contractLength}</p>
-  // <p><strong>Insurance Required:</strong> ${insuranceRequired}</p>
-  // <p><strong>Additional Notes:</strong> ${additionalNotes}</p>
-  // <p><strong>Tax ID:</strong> ${taxId}</p>
+// <p><strong>Business Name:</strong> ${businessName}</p>
+// <p><strong>Contact Person:</strong> ${contactPerson}</p>
+// <p><strong>Email:</strong> ${email}</p>
+// <p><strong>Phone:</strong> ${phone}</p>
+// <p><strong>Address:</strong> ${address}</p>
+// <p><strong>Business Type:</strong> ${businessType}</p>
+// <p><strong>Business Size:</strong> ${businessSize}</p>
+// <p><strong>Cleaning Frequency:</strong> ${cleaningFrequency}</p>
+// <p><strong>Special Requirements:</strong> ${specialRequirements}</p>
+// <p><strong>Preferred Start Date:</strong> ${startDate}</p>
+// <p><strong>Business Hours:</strong> ${businessHours}</p>
+// <p><strong>Access Instructions:</strong> ${accessInstructions}</p>
+// <p><strong>Emergency Contact:</strong> ${emergencyContact}</p>
+// <p><strong>Budget Range:</strong> ${budgetRange}</p>
+// <p><strong>Contract Length:</strong> ${contractLength}</p>
+// <p><strong>Insurance Required:</strong> ${insuranceRequired}</p>
+// <p><strong>Additional Notes:</strong> ${additionalNotes}</p>
+// <p><strong>Tax ID:</strong> ${taxId}</p>
 // `;,
 //   };
 
@@ -706,29 +708,18 @@ app.post("/google-auth", async (req, res) => {
       });
     }
     const userId = user._id;
-    const token = jwt.sign({ userId: user._id }, process.env.JWTSECRET, {
-      expiresIn: "1h",
-    });
 
-    res
-      .status(200)
-      .cookie("token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-      })
-      .json({
-        success: true,
-        redirectUrl: "/user/option",
-        payload,
-        userId,
-        token,
-        user: {
-          email: user.Email,
-          firstName: user.FirstName,
-          lastName: user.LastName,
-        },
-      });
+    res.status(200).json({
+      success: true,
+      redirectUrl: "/dashboard",
+      payload,
+      userId,
+      user: {
+        email: user.Email,
+        firstName: user.FirstName,
+        lastName: user.LastName,
+      },
+    });
   } catch (err) {
     console.error("Error during Google authentication:", err);
     res.status(400).json({

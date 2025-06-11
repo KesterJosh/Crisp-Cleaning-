@@ -47,7 +47,7 @@ const CleaningSwiper = () => {
       ) {
         window.google.accounts.id.initialize({
           client_id:
-            "843731983758-n6vohdsfnrssb9ss35s02tq5nnit5j91.apps.googleusercontent.com",
+            "617840144228-0fa899q99cktsq7a8culf9cacamvr0kf.apps.googleusercontent.com",
           callback: handleCredentialResponse,
         });
 
@@ -82,7 +82,7 @@ const CleaningSwiper = () => {
       .post(`http://localhost:4000/google-auth`, {
         credential,
         clientId:
-          "843731983758-n6vohdsfnrssb9ss35s02tq5nnit5j91.apps.googleusercontent.com",
+          "617840144228-0fa899q99cktsq7a8culf9cacamvr0kf.apps.googleusercontent.com",
       })
       .then((response) => {
         if (response.data.success) {
