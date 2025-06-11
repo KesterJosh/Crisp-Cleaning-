@@ -8,6 +8,7 @@
     "@img-comparison-slider/react": "^8.0.2",
     "@lottiefiles/react-lottie-player": "3.4.7",
     "@phosphor-icons/react": "^2.1.10",
+    "@react-oauth/google": "^0.12.2",
     "@stripe/react-stripe-js": "^3.7.0",
     "@stripe/stripe-js": "^7.3.0",
     "@tailwindcss/cli": "^4.1.8",
