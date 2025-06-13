@@ -278,7 +278,7 @@ const BookingPopup = ({ onClose }) => {
       // Redirect to Stripe checkout
       if (typeof window !== "undefined" && window.Stripe) {
         const stripe = await window.Stripe(
-          "pk_test_51ROhYnH9E7pqq95xLp67muP87yzw3XmN9BdV5ZbF2ZoAQuFJPBDYN0HgbnPfaYiN0Z9scDimOVICuZ7iD5kvBaq900M6capXFd"
+          "pk_live_51Mlo58BQeeo3mqOtmcqikviKCa8UaoFVRQOoN9MPxoBCHpOnH5PZdUR31kqd9amFDz0mDU2jdhwrTvED8YmHNsCD007BqjAfW3"
         );
         const result = await stripe.redirectToCheckout({
           sessionId: session.id,
