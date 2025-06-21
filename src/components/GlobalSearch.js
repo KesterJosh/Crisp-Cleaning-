@@ -59,9 +59,6 @@ const GlobalSearch = () => {
 
   return (
     <div className="parent">
-      <Link to="/contact" target="_blank">
-        <img className="question" src="/img/question.png" />
-      </Link>
       <div className="global-search-container">
         <div
           className="my-search"

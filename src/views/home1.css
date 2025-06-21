@@ -1038,6 +1038,7 @@
   justify-content: center;
 }
 .home1-button {
+  color: #ff914d;
   font-size: 21px;
   font-style: normal;
   font-family: "Inter";
@@ -1052,6 +1053,7 @@
   padding-bottom: 20px;
 }
 .home1-button1 {
+    color: #ff914d;
   font-size: 21px;
   font-style: normal;
   font-family: "Inter";
@@ -1088,6 +1090,10 @@
   .home1-container29{
     height: 705px;
   }
+}
+.containX{
+  border-bottom-right-radius: 200px;
+  height: 100%;
 }
 @media(max-width: 1200px) {
   .home1-text01 {

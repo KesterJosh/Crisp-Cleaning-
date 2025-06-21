@@ -154,7 +154,7 @@
 }
 
 .calendar-day.today .day-number {
-  background: #ff5050;
+  background: #ff914d;
   color: white;
   font-weight: bold;
 }
@@ -168,7 +168,7 @@
 }
 
 .scheduled-clean.vacant {
-  background-color: #ffc9c9;
+  background-color: #FFC9C9;
   color: #333;
   padding: 2px 4px;
   border-radius: 4px;
@@ -188,7 +188,7 @@
 }
 
 .scheduled-clean.vacant .clean-circle {
-  background-color: #b30000;
+  background-color: #FF5050;
 }
 
 .scheduled-clean.deep .clean-circle {

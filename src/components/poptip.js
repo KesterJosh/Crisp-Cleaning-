@@ -7,31 +7,31 @@ const Poptip = ({ CloseTip }) => {
   const [customAmount, setCustomAmount] = useState("");
 
   const getTipAmount = () => {
-    const builtInAmounts = [500, 2000, 5000, 10000]; // cents
+    const builtInAmounts = [500, 2000, 5000, 10000]; // in cents
+
     if (selectedOption === 4) {
-      return Math.round(parseFloat(customAmount || "0") * 100);
+      const custom = parseFloat(customAmount);
+      return isNaN(custom) ? 0 : Math.round(custom * 100);
     }
+
     return builtInAmounts[selectedOption] || 0;
   };
 
   const handleTip = async () => {
     const amount = getTipAmount();
-    if (!amount || amount < 100) {
-      alert("Please select a valid amount.");
+    const rawComment = document.querySelector(".poptip-textarea").value;
+    const comment = rawComment?.trim() || "tip"; // 👈 fallback to "tip" if empty
+
+    if (!amount || isNaN(amount) || amount < 100) {
+      alert("Please enter a valid tip (minimum $1).");
       return;
     }
 
-    const response = await fetch(
-      "https://api-crisp-cleaning.onrender.com/create-tip-session",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount,
-          comment: document.querySelector(".poptip-textarea").value,
-        }),
-      }
-    );
+    const response = await fetch("https://api-crisp-cleaning.onrender.com/create-tip-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount, comment }),
+    });
 
     const session = await response.json();
 
@@ -39,7 +39,8 @@ const Poptip = ({ CloseTip }) => {
       "pk_test_51ROhYnH9E7pqq95xLp67muP87yzw3XmN9BdV5ZbF2ZoAQuFJPBDYN0HgbnPfaYiN0Z9scDimOVICuZ7iD5kvBaq900M6capXFd"
     );
     await stripe.redirectToCheckout({ sessionId: session.id });
-    CloseTip;
+
+    CloseTip(); // make sure it's a function call
   };
 
   // Handle click on an option
@@ -106,9 +107,11 @@ const Poptip = ({ CloseTip }) => {
             {/* Show input only when the last option (index 4) is selected */}
             {selectedOption === 4 && (
               <input
-                type="text"
-                placeholder="Custom Amount"
+                type="number"
+                placeholder="Enter custom amount"
                 className="poptip-textinput input"
+                value={customAmount}
+                onChange={(e) => setCustomAmount(e.target.value)}
               />
             )}
           </div>

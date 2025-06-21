@@ -10,6 +10,7 @@ import Popclearn from "../components/popclearn";
 import BookingPopup from "../components/BookingPopup";
 import UpdateClean from "../components/UpdateClean";
 import GlobalSearch from "../components/GlobalSearch";
+import CleanersPass from "../components/CleanersPass";
 
 const Cleanerspass = (props) => {
   // Sliders
@@ -22,7 +23,7 @@ const Cleanerspass = (props) => {
     localStorage.clear();
     window.location.href = "/#/";
   };
-  
+
   const handleSliderChange = (value) => {
     setSliderValue(value);
     setTotalSliders(value + sliderValueO + sliderValueOX + sliderValueK);
@@ -81,9 +82,20 @@ const Cleanerspass = (props) => {
 
   const options = [
     { left: "Week", right: "15% OFF" },
-    { left: "Forthnight", right: "10% OFF" },
+    { left: "Fortnight", right: "10% OFF" },
     { left: "Month", right: "5% OFF" },
   ];
+
+  const handleUpgrade = () => {
+    setShowBooking(true);
+    localStorage.setItem("upgraded", true);
+  };
+
+  useEffect(() => {
+    if (localStorage.getItem("upgraded") === "true") {
+      setcleanerPass(false);
+    }
+  }, []);
 
   const handleMouseEnterFade = (button) => {
     gsap.to(button, {
@@ -320,6 +332,11 @@ const Cleanerspass = (props) => {
   const inputTextRef = useRef(null);
   const [discountNew, setDiscountNew] = useState(discount);
 
+  const handleCancel = () => {
+    setcleanerPass(true);
+    localStorage.removeItem("upgraded");
+  };
+
   const handleApplyClick = () => {
     // Get the value from the text input
     const inputValue = inputTextRef.current.value.toUpperCase(); // Using ref to access the input value// Convert to uppercase for case-insensitivity
@@ -470,7 +487,10 @@ const Cleanerspass = (props) => {
         />
       </Helmet>
       {cancelScreen ? (
-        <Popclearn CloseCancelScreen={CloseCancelScreen} />
+        <Popclearn
+          CloseCancelScreen={CloseCancelScreen}
+          handleCancel={handleCancel}
+        />
       ) : null}
       <div className="cleanerspass-container11">
         <Link to="/">
@@ -667,22 +687,32 @@ const Cleanerspass = (props) => {
                     onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
                     onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
                   >
-                    <span className="cleanerspass-text29">Upgrade</span>
-                  </div>
-                </span>
-              ) : (
-                <span onClick={changeClean} className="cleanerspass2-navlink18">
-                  <div
-                    className="cleanerspass2-container35"
-                    onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
-                    onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
-                  >
-                    <span className="cleanerspass2-text29">
-                      <span>View</span>
-                      <br></br>
+                    <span
+                      className="cleanerspass-text29"
+                      onClick={handleUpgrade}
+                    >
+                      Upgrade
                     </span>
                   </div>
                 </span>
+              ) : (
+                <Link to="/settings">
+                  <span
+                    onClick={changeClean}
+                    className="cleanerspass2-navlink18"
+                  >
+                    <div
+                      className="cleanerspass2-container35"
+                      onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
+                      onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
+                    >
+                      <span className="cleanerspass2-text29">
+                        <span>View</span>
+                        <br></br>
+                      </span>
+                    </div>
+                  </span>
+                </Link>
               )}
             </div>
             <div className="cleanerspass-container36">
@@ -748,718 +778,10 @@ const Cleanerspass = (props) => {
                     </div>
                   </div>
 
-                  {cleanerPass ? (
-                    <div className="cleanerspass-container51">
-                      <div className="cleanerspass-container52">
-                        <div className="cleanerspass-container53">
-                          <div className="cleanerspass-container54">
-                            <span className="cleanerspass-text51">
-                              Inactive
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="cleanerspass-container55">
-                        <div className="cleanerspass-container56">
-                          <span className="cleanerspass-text52">Every:</span>
-                          {/* <select className="cleanerspass-select1">
-                      <option value="Week">Week</option>
-                      <option value="Fortnight">Fortnight</option>
-                      <option value="Month">Month</option>
-                    </select> */}
-                          <div
-                            className="cleanerspass2-select1x"
-                            onMouseEnter={(e) =>
-                              handleMouseEnterZ(e.currentTarget)
-                            }
-                            onMouseLeave={(e) =>
-                              handleMouseLeaveZ(e.currentTarget)
-                            }
-                          >
-                            <button
-                              onClick={toggleDropdown}
-                              className="dropdown-toggle"
-                            >
-                              <span className="dropdown-left">
-                                {selectedOption.left}
-                              </span>
-                              <span className="dropdown-right">
-                                <span>{selectedOption.right}</span>
-                                <span
-                                  className="dropdown-arrow"
-                                  style={{ marginLeft: "10px" }}
-                                >
-                                  {/* ▼ */}
-                                  <img
-                                    alt="drop"
-                                    src={require("./img/down-chevron.png")}
-                                    style={{ width: "10px" }}
-                                  />
-                                  {/* down-chevron.png */}
-                                </span>
-                              </span>
-                            </button>
-                            {isOpen && (
-                              <ul className="dropdown-menu">
-                                {options.map((option, index) => (
-                                  <li
-                                    key={index}
-                                    onClick={() => selectOption(option)}
-                                    className="dropdown-item"
-                                  >
-                                    <span className="dropdown-left">
-                                      {option.left}
-                                    </span>
-                                    <span className="dropdown-right">
-                                      {option.right}
-                                    </span>
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="cleanerspass-container57">
-                          <span className="cleanerspass-text53">On:</span>
-                          <select
-                            className="cleanerspass-select2"
-                            onMouseEnter={(e) =>
-                              handleMouseEnterZ(e.currentTarget)
-                            }
-                            onMouseLeave={(e) =>
-                              handleMouseLeaveZ(e.currentTarget)
-                            }
-                          >
-                            <option value="Monday">Monday</option>
-                            <option value="Tuesday">Tuesday</option>
-                            <option value="Wednesday">Wednesday</option>
-                            <option value="Thursday">Thursday</option>
-                            <option value="Friday">Friday</option>
-                            <option value="Saturday">Saturday</option>
-                            <option value="Sunday">Sunday</option>
-                          </select>
-                        </div>
-                        <button
-                          onClick={() => setShowBooking(true)}
-                          type="button"
-                          className="cleanerspass-button button"
-                          onMouseEnter={(e) =>
-                            handleMouseEnter(e.currentTarget)
-                          }
-                          onMouseLeave={(e) =>
-                            handleMouseLeave(e.currentTarget)
-                          }
-                        >
-                          Schedule
-                        </button>
-                      </div>
-                      {/* <div className="cleanerspass-container58">
-                  <div className="cleanerspass-container59">
-                    <div className="cleanerspass-container60">
-                      <span className="cleanerspass-text54">
-                        Cleaning Summary
-                      </span>
-                      <img
-                        alt="image"
-                        src={require("./img/down arrow-200h.png")}
-                        className="cleanerspass-image24"
-                      />
-                    </div>
-                    <span className="cleanerspass-text55">
-                      Have a discount code?
-                    </span>
-                  </div>
-                  <span className="cleanerspass-text56">
-                    <span>
-                      Total
-                      <span
-                        dangerouslySetInnerHTML={{
-                          __html: ' ',
-                        }}
-                      />
-                    </span>
-                    <span className="cleanerspass-text58">$172.99</span>
-                  </span>
-                </div> */}
-                      <div className="home-container209Set" ref={SummaryRef}>
-                        <div className="home-container210x">
-                          <div
-                            className="home-container211"
-                            // onClick={() => setSum(true)}
-                            style={{ cursor: "pointer", userSelect: "none" }}
-                          >
-                            <span className="home-text132Set">
-                              Cleaning Summary{" "}
-                              <img
-                                src="/img/UPARROW.png"
-                                style={{
-                                  width: "12px",
-                                  height: "7px",
-                                  marginLeft: "10px",
-                                }}
-                              />
-                            </span>
-                            <span className="home-text133Set">
-                              Have a Discount Code?
-                            </span>
-                          </div>
-                          <div className="home-text134Set">
-                            <span className="home-text135">Total </span>
-                            <span>
-                              {" "}
-                              $0.00
-                              {intervalValue > 0 ? (
-                                <span>
-                                  {"(-"}
-                                  {intervalValue}%{")"}
-                                </span>
-                              ) : null}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="home-container212">
-                          <div
-                            className="home-container213"
-                            onClick={() => setSum(false)}
-                            style={{ cursor: "pointer", userSelect: "none" }}
-                          >
-                            <span className="home-text137Set">
-                              Booking Summary{" "}
-                              <img
-                                src="/img/downArrow.png"
-                                style={{
-                                  width: "12px",
-                                  height: "7px",
-                                  marginLeft: "10px",
-                                }}
-                              />
-                            </span>
-                            <span className="home-text138">
-                              Have a Discount Code?
-                            </span>
-                          </div>
-                          <span className="home-text139">
-                            <span className="home-text140">Total </span>
-                            <span> $134.98</span>
-                          </span>
-                        </div>
-                        <div className="home-container214Set">
-                          <img
-                            src="/img/home-icon.png"
-                            style={{
-                              width: "35px",
-                              height: "25px",
-                              marginRight: "4px",
-                            }}
-                          />
-                          <div className="home-container215">
-                            <li className="home-liSet list-item">
-                              <span className="home-text142">
-                                {sliderValueO} Bedroom
-                              </span>
-                              <span className="home-text143">
-                                ${(sliderValue * 20).toFixed(2)}
-                              </span>
-                            </li>
-                            <li className="home-liSet list-item">
-                              <span>{sliderValue} Bathroom</span>
-                              <span className="home-text145">
-                                ${(sliderValue * 30).toFixed(2)}
-                              </span>
-                            </li>
-                            <li className="home-liSet list-item">
-                              <span>{sliderValueK} Kitchen</span>
-                              <span className="home-text147">
-                                ${(sliderValueK * 45).toFixed(2)}
-                              </span>
-                            </li>
-                          </div>
-                        </div>
-                        <div className="home-container216Clean">
-                          <img
-                            src="/img/calendar.png"
-                            style={{ width: "25px", marginRight: "8px" }}
-                          />
-                          <div className="home-container217">
-                            <span className="home-text148Set">{MyDate}</span>
-                            <span className="home-text149Set">
-                              {timeFrame == 8 ? "8:00 AM - 10:00 AM" : null}
-                              {timeFrame == 10 ? "10:00 AM - 12:00 PM" : null}
-                              {timeFrame == 12 ? "12:00 PM - 2:00 PM" : null}
-                              {timeFrame == 14 ? "2:00 PM - 4:00 PM" : null}
-                              {timeFrame == 16 ? "4:00 PM - 6:00 PM" : null}
-                              {timeFrame == 18 ? "6:00 PM - 8:00 PM" : null}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="home-container218Clean">
-                          <img
-                            src="/img/refresh.png"
-                            style={{ width: "25px", marginRight: "8px" }}
-                          />
-                          <div className="home-container219">
-                            <span className="home-text150Set">
-                              {CleanType ? "Repeated" : "One Time"}
-                            </span>
-                          </div>
-                        </div>
-                        {/* <div className="home-container218">
-                <img src='/img/extra.png' style={{width:'25px', marginRight:'8px'}}/>
-                  <div className="home-container219">
-                    <div className="home-text150Set">{(windows)?"Windows":null}</div>
-                    <div className="home-text150Set">{(walls)?"Walls":null}</div>
-                    <div className="home-text150Set">{(Cabinets)?"Cabinets":null}</div>
-                    <div className="home-text150Set">{(organization)?"Organization":null}</div>
-                    <div className="home-text150Set">{(blind)?"Blinds":null}</div>
-                    <div className="home-text150Set">{(stovetop)?"Stovetop/oven":null}</div>
-                    <div className="home-text150Set">{(fridge)?"Fridge":null}</div>
-                    <div className="home-text150Set">{(Dishwasher)?"Dishwasher":null}</div>
-                    <div className="home-text150Set">{(garage)?"Garage":null}</div>
-                    <div className="home-text150Set">{(microwave)?"Microwave":null}</div>
-                    <div className="home-text150Set">{(Laundry)?"Laundry":null}</div>
-                    <div className="home-text150Set">{(tiles)?"Tiles/Flooring":null}</div>
-                  </div>
-                </div> */}
-                        <div className="home-container220Set">
-                          <div className="home-container221">
-                            <span className="home-text151Set">
-                              Discount Code
-                            </span>
-                            <span className="home-text152Set">(optional)</span>
-                          </div>
-                          <div className="buttonHost">
-                            <input
-                              type="text"
-                              className="home-textinput06Set input"
-                              ref={inputTextRef}
-                              onMouseEnter={(e) =>
-                                handleMouseEnterAXY(e.currentTarget)
-                              }
-                              onMouseLeave={(e) =>
-                                handleMouseLeaveAXY(e.currentTarget)
-                              }
-                            />
-                            <input
-                              type="button"
-                              className="home-textinput06xSet input"
-                              value="Apply"
-                              onClick={handleApplyClick}
-                              onMouseEnter={(e) =>
-                                handleMouseEnterAX(e.currentTarget)
-                              }
-                              onMouseLeave={(e) =>
-                                handleMouseLeaveAX(e.currentTarget)
-                              }
-                            />
-                          </div>
-                        </div>
-                        <div className="home-container222">
-                          <div className="home-container223">
-                            <span className="home-text153Set">Sub-Total</span>
-                            <span className="home-text154Set">${Total}</span>
-                          </div>
-                          {/* <div className="home-container224">
-                    <span className="home-text155">Sales - Tax(5%)</span>
-                    <span className="home-text156">${(5/100)*Total}</span>
-                  </div> */}
-                          <div className="home-container225Clean">
-                            <span className="home-text157Set">
-                              Discount Code
-                            </span>
-                            <span className="home-text158Set">
-                              -${disPerAmount}
-                            </span>
-                          </div>
-                          <div className="home-container226Clean">
-                            <span className="home-text159Set">Total</span>
-                            <span className="home-text160Set">
-                              ${discountNew}
-                            </span>
-                          </div>
-                        </div>
-                        <button
-                          onMouseEnter={(e) =>
-                            handleMouseEnterAX(e.currentTarget)
-                          }
-                          onMouseLeave={(e) =>
-                            handleMouseLeaveAX(e.currentTarget)
-                          }
-                          type="button"
-                          className="home-button13Clean button"
-                        >
-                          Book Now
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="cleanerspass2-container51">
-                      <div className="cleanerspass2-container52">
-                        <div className="cleanerspass2-container53">
-                          <div className="cleanerspass2-container54">
-                            <span className="cleanerspass2-text53">
-                              Cleaner’s Pass
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="cleanerspass2-container55">
-                        <div className="cleanerspass2-container56">
-                          <span className="cleanerspass2-text54">Every:</span>
-                          {/* <select className="cleanerspass2-select1">
-                  <option value="Week">Week</option>
-                  <option value="Fortnight">Fortnight</option>
-                  <option value="Month">Month</option>
-                </select> */}
-
-                          <div
-                            className="cleanerspass2-select1x"
-                            onMouseEnter={(e) =>
-                              handleMouseEnterZ(e.currentTarget)
-                            }
-                            onMouseLeave={(e) =>
-                              handleMouseLeaveZ(e.currentTarget)
-                            }
-                          >
-                            <button
-                              onClick={toggleDropdown}
-                              className="dropdown-toggle"
-                            >
-                              <span className="dropdown-left">
-                                {selectedOption.left}
-                              </span>
-                              <span className="dropdown-right">
-                                <span>{selectedOption.right}</span>
-                                <span
-                                  className="dropdown-arrow"
-                                  style={{ marginLeft: "10px" }}
-                                >
-                                  {/* ▼ */}
-                                  <img
-                                    alt="drop"
-                                    src={require("./img/down-chevron.png")}
-                                    style={{ width: "10px" }}
-                                  />
-                                  {/* down-chevron.png */}
-                                </span>
-                              </span>
-                            </button>
-                            {isOpen && (
-                              <ul
-                                className="dropdown-menu"
-                                onMouseEnter={(e) =>
-                                  handleMouseEnterZ(e.currentTarget)
-                                }
-                                onMouseLeave={(e) =>
-                                  handleMouseLeaveZ(e.currentTarget)
-                                }
-                              >
-                                {options.map((option, index) => (
-                                  <li
-                                    key={index}
-                                    onClick={() => selectOption(option)}
-                                    className="dropdown-item"
-                                  >
-                                    <span className="dropdown-left">
-                                      {option.left}
-                                    </span>
-                                    <span className="dropdown-right">
-                                      {option.right}
-                                    </span>
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </div>
-                        </div>
-                        <div className="cleanerspass2-container57">
-                          <span className="cleanerspass2-text55">On:</span>
-                          <select
-                            className="cleanerspass2-select2"
-                            onMouseEnter={(e) =>
-                              handleMouseEnterZ(e.currentTarget)
-                            }
-                            onMouseLeave={(e) =>
-                              handleMouseLeaveZ(e.currentTarget)
-                            }
-                          >
-                            <option value="Monday">Monday</option>
-                            <option value="Tuesday">Tuesday</option>
-                            <option value="Wednesday">Wednesday</option>
-                            <option value="Thursday">Thursday</option>
-                            <option value="Friday">Friday</option>
-                            <option value="Saturday">Saturday</option>
-                            <option value="Sunday">Sunday</option>
-                          </select>
-                        </div>
-                        <button
-                          type="button"
-                          className="cleanerspass2-button1 button"
-                          onMouseEnter={(e) =>
-                            handleMouseEnter(e.currentTarget)
-                          }
-                          onMouseLeave={(e) =>
-                            handleMouseLeave(e.currentTarget)
-                          }
-                          // onClick={() => setShowUpdate(true)}
-                        >
-                          Reschedule
-                        </button>
-                        <button
-                          onClick={() => {
-                            CancelScreen();
-                          }}
-                          type="button"
-                          className="cleanerspass2-button2 button"
-                          onMouseEnter={(e) =>
-                            handleMouseEnter(e.currentTarget)
-                          }
-                          onMouseLeave={(e) =>
-                            handleMouseLeave(e.currentTarget)
-                          }
-                        >
-                          Cancel Membership
-                        </button>
-                      </div>
-                      {/* <div className="cleanerspass2-container58">
-              <div className="cleanerspass2-container59">
-                <div className="cleanerspass2-container60">
-                  <span className="cleanerspass2-text56">
-                    Cleaning Summary
-                  </span>
-                  <img
-                    alt="image"
-                    src={require("./img/down arrow-200h.png")}
-                    className="cleanerspass2-image24"
+                  <CleanersPass
+                    cleanerPass={cleanerPass}
+                    setcleanerPass={setcleanerPass}
                   />
-                </div>
-                <span className="cleanerspass2-text57">
-                  Have a discount code?
-                </span>
-              </div>
-              <span className="cleanerspass2-text58">
-                <span>
-                  Total
-                  <span
-                    dangerouslySetInnerHTML={{
-                      __html: ' ',
-                    }}
-                  />
-                </span>
-                <span className="cleanerspass2-text60">$172.99</span>
-              </span>
-            </div> */}
-                      <div className="home-container209Set" ref={SummaryRef}>
-                        <div className="home-container210x">
-                          <div
-                            className="home-container211"
-                            // onClick={() => setSum(true)}
-                            style={{ cursor: "pointer", userSelect: "none" }}
-                          >
-                            <span className="home-text132Set">
-                              Cleaning Summary{" "}
-                              <img
-                                src="/img/UPARROW.png"
-                                style={{
-                                  width: "12px",
-                                  height: "7px",
-                                  marginLeft: "10px",
-                                }}
-                              />
-                            </span>
-                            <span className="home-text133Set">
-                              Have a Discount Code?
-                            </span>
-                          </div>
-                          <div className="home-text134Set">
-                            <span className="home-text135">Total </span>
-                            <span>
-                              {" "}
-                              ${Total}
-                              {intervalValue > 0 ? (
-                                <span>
-                                  {"(-"}
-                                  {intervalValue}%{")"}
-                                </span>
-                              ) : null}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="home-container212">
-                          <div
-                            className="home-container213"
-                            onClick={() => setSum(false)}
-                            style={{ cursor: "pointer", userSelect: "none" }}
-                          >
-                            <span className="home-text137Set">
-                              Booking Summary{" "}
-                              <img
-                                src="/img/downArrow.png"
-                                style={{
-                                  width: "12px",
-                                  height: "7px",
-                                  marginLeft: "10px",
-                                }}
-                              />
-                            </span>
-                            <span className="home-text138">
-                              Have a Discount Code?
-                            </span>
-                          </div>
-                          <span className="home-text139">
-                            <span className="home-text140">Total </span>
-                            <span> $134.98</span>
-                          </span>
-                        </div>
-                        <div className="home-container214Set">
-                          <img
-                            src="/img/home-icon.png"
-                            style={{
-                              width: "35px",
-                              height: "25px",
-                              marginRight: "4px",
-                            }}
-                          />
-                          <div className="home-container215">
-                            <li className="home-liSet list-item">
-                              <span className="home-text142">
-                                {sliderValueO} Bedroom
-                              </span>
-                              <span className="home-text143">
-                                ${(sliderValue * 20).toFixed(2)}
-                              </span>
-                            </li>
-                            <li className="home-liSet list-item">
-                              <span>{sliderValue} Bathroom</span>
-                              <span className="home-text145">
-                                ${(sliderValue * 30).toFixed(2)}
-                              </span>
-                            </li>
-                            <li className="home-liSet list-item">
-                              <span>{sliderValueK} Kitchen</span>
-                              <span className="home-text147">
-                                ${(sliderValueK * 45).toFixed(2)}
-                              </span>
-                            </li>
-                          </div>
-                        </div>
-                        <div className="home-container216Clean">
-                          <img
-                            src="/img/calendar.png"
-                            style={{ width: "25px", marginRight: "8px" }}
-                          />
-                          <div className="home-container217">
-                            <span className="home-text148Set">{MyDate}</span>
-                            <span className="home-text149Set">
-                              {timeFrame == 8 ? "8:00 AM - 10:00 AM" : null}
-                              {timeFrame == 10 ? "10:00 AM - 12:00 PM" : null}
-                              {timeFrame == 12 ? "12:00 PM - 2:00 PM" : null}
-                              {timeFrame == 14 ? "2:00 PM - 4:00 PM" : null}
-                              {timeFrame == 16 ? "4:00 PM - 6:00 PM" : null}
-                              {timeFrame == 18 ? "6:00 PM - 8:00 PM" : null}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="home-container218Clean">
-                          <img
-                            src="/img/refresh.png"
-                            style={{ width: "25px", marginRight: "8px" }}
-                          />
-                          <div className="home-container219">
-                            <span className="home-text150Set">
-                              {CleanType ? "Repeated" : "One Time"}
-                            </span>
-                          </div>
-                        </div>
-                        {/* <div className="home-container218">
-                <img src='/img/extra.png' style={{width:'25px', marginRight:'8px'}}/>
-                  <div className="home-container219">
-                    <div className="home-text150Set">{(windows)?"Windows":null}</div>
-                    <div className="home-text150Set">{(walls)?"Walls":null}</div>
-                    <div className="home-text150Set">{(Cabinets)?"Cabinets":null}</div>
-                    <div className="home-text150Set">{(organization)?"Organization":null}</div>
-                    <div className="home-text150Set">{(blind)?"Blinds":null}</div>
-                    <div className="home-text150Set">{(stovetop)?"Stovetop/oven":null}</div>
-                    <div className="home-text150Set">{(fridge)?"Fridge":null}</div>
-                    <div className="home-text150Set">{(Dishwasher)?"Dishwasher":null}</div>
-                    <div className="home-text150Set">{(garage)?"Garage":null}</div>
-                    <div className="home-text150Set">{(microwave)?"Microwave":null}</div>
-                    <div className="home-text150Set">{(Laundry)?"Laundry":null}</div>
-                    <div className="home-text150Set">{(tiles)?"Tiles/Flooring":null}</div>
-                  </div>
-                </div> */}
-                        <div className="home-container220Set">
-                          <div className="home-container221">
-                            <span className="home-text151Set">
-                              Discount Code
-                            </span>
-                            <span className="home-text152Set">(optional)</span>
-                          </div>
-                          <div className="buttonHost">
-                            <input
-                              type="text"
-                              className="home-textinput06Set input"
-                              ref={inputTextRef}
-                              onMouseEnter={(e) =>
-                                handleMouseEnterAXY(e.currentTarget)
-                              }
-                              onMouseLeave={(e) =>
-                                handleMouseLeaveAXY(e.currentTarget)
-                              }
-                            />
-                            <input
-                              type="button"
-                              className="home-textinput06xSet input"
-                              value="Apply"
-                              onClick={handleApplyClick}
-                              onMouseEnter={(e) =>
-                                handleMouseEnterAX(e.currentTarget)
-                              }
-                              onMouseLeave={(e) =>
-                                handleMouseLeaveAX(e.currentTarget)
-                              }
-                            />
-                          </div>
-                        </div>
-                        <div className="home-container222">
-                          <div className="home-container223">
-                            <span className="home-text153Set">Sub-Total</span>
-                            <span className="home-text154Set">${Total}</span>
-                          </div>
-                          {/* <div className="home-container224">
-                    <span className="home-text155">Sales - Tax(5%)</span>
-                    <span className="home-text156">${(5/100)*Total}</span>
-                  </div> */}
-                          <div className="home-container225Clean">
-                            <span className="home-text157Set">
-                              Discount Code
-                            </span>
-                            <span className="home-text158Set">-$0</span>
-                          </div>
-                          <div className="home-container226Clean">
-                            <span className="home-text159Set">Total</span>
-                            <span className="home-text160Set">
-                              ${discountNew}
-                            </span>
-                          </div>
-                        </div>
-                        <button
-                          onMouseEnter={(e) =>
-                            handleMouseEnterAX(e.currentTarget)
-                          }
-                          onMouseLeave={(e) =>
-                            handleMouseLeaveAX(e.currentTarget)
-                          }
-                          type="button"
-                          className="home-button13Clean button"
-                        >
-                          Book Now
-                        </button>
-                      </div>
-                    </div>
-                  )}
                   <div className="cleanerspass-container46">
                     <div className="cleanerspass-container47">
                       <div className="cleanerspass-container48"></div>

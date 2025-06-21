@@ -14,6 +14,8 @@ import Popsave from "../components/popsave";
 import Popclearn from "../components/popclearn";
 import GlobalSearch from "../components/GlobalSearch";
 import { useCallback } from "react";
+import CleanersPass from "../components/CleanersPass";
+import HouseAnimation from "../components/HouseAnimation";
 let defValue = 1;
 let direction = 1;
 
@@ -183,49 +185,17 @@ const Settings = (props) => {
   }, [AB, TotalSwitch]);
 
   // Sliders
+  const [sliderValueO, setSliderValueO] = useState(1);
   const [sliderValue, setSliderValue] = useState(0);
-
-  const handleSliderChange = (value) => {
-    setSliderValue(value);
-    setTotalSliders(value + sliderValueO + sliderValueOX + sliderValueK);
-    sumUp(value + sliderValueO + sliderValueOX + sliderValueK);
-  };
-
   const [sliderValueK, setSliderValueK] = useState(0);
-
-  const handleSliderChangeK = (value) => {
-    setSliderValueK(value);
-    setTotalSliders(value + sliderValueO + sliderValueOX + sliderValue);
-    sumUp(value + sliderValueO + sliderValueOX + sliderValue);
-  };
-
-  const [sliderValueO, setSliderValueO] = useState(0);
-
-  const handleSliderChangeO = (value) => {
-    setSliderValueO(value);
-    setTotalSliders(value + sliderValueK + sliderValueOX + sliderValue);
-    sumUp(value + sliderValueK + sliderValueOX + sliderValue);
-  };
-
-  const [sliderValueOX, setSliderValueOX] = useState(1);
-  const [totalSliders, setTotalSliders] = useState(0);
-
-  const handleSliderChangeOX = (value) => {
-    setSliderValueOX(value);
-    setTotalSliders(value + sliderValueK + sliderValueO + sliderValue);
-    sumUp(value + sliderValueK + sliderValueO + sliderValue);
-  };
-
-  const sumUp = (value) => {
-    setTotalSwitch(value);
-    defValue = value;
-  };
-
+  const [sliderValueOX, setSliderValueOX] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState({
     left: "Week",
     right: "15% OFF",
   });
+
+  const [totalSliders, setTotalSliders] = useState(0); // Add this state
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -377,10 +347,6 @@ const Settings = (props) => {
 
   const Save = () => {
     Update();
-  };
-
-  const handleBlur = () => {
-    setSaveScreen(true);
   };
 
   const CancelScreen = () => {
@@ -542,10 +508,23 @@ const Settings = (props) => {
 
   const [sum, setSum] = useState(false);
 
+  const sumUp = (value) => {
+    setTotalSwitch(value);
+    defValue = value;
+  };
+
+  const sumAllSliders = useCallback(() => {
+    const sum =
+      Number(sliderValue) +
+      Number(sliderValueK) +
+      Number(sliderValueO) +
+      Number(sliderValueOX);
+    setTotalSliders(sum);
+    sumUp(sum);
+  }, [sliderValue, sliderValueK, sliderValueO, sliderValueOX]);
+
   useEffect(() => {
-    if (sum == true) {
-      // SummaryRef.current.style.display = "block";
-      // SummaryRef.current.style.bottom = "-0%";
+    if (sum === true) {
       gsap.to(".home-container209Set", {
         display: "block",
         bottom: "8%",
@@ -559,14 +538,6 @@ const Settings = (props) => {
         duration: 1,
       });
     } else {
-      // SummaryRef.current.style.display = "block";
-      // SummaryRef.current.style.bottom = "-0%";
-      // gsap.to(".home-container209Set",{
-      //   display:'block',
-      //   bottom:"0%",
-      //   borderWidth:0
-      // });
-      // home-container210
       gsap.to(".home-container209Set", {
         display: "block",
         bottom: "-81%",
@@ -579,13 +550,13 @@ const Settings = (props) => {
         duration: 1,
       });
     }
-  }, [[setSum, sum]]);
+  }, [sum]);
 
   useEffect(() => {
-    let bathrom = 30 * sliderValue;
-    let kitch = 45 * sliderValueK;
-    let oth = 20 * sliderValueO;
-    let rooms = 20 * sliderValueOX;
+    let bathrom = 30 * Number(sliderValue);
+    let kitch = 45 * Number(sliderValueK);
+    let oth = 20 * Number(sliderValueO);
+    let rooms = 20 * Number(sliderValueOX);
     let total = bathrom + kitch + oth + rooms;
     total = ((100 - intervalValue) / 100) * total;
     setDiscount(total);
@@ -603,12 +574,19 @@ const Settings = (props) => {
   ]);
 
   const [data, setData] = useState([]);
+  const [cleanerPass, setcleanerPass] = useState(true);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
   const [id, setId] = useState();
+
+  useEffect(() => {
+    if (localStorage.getItem("upgraded") === "true") {
+      setcleanerPass(false);
+    }
+  }, []);
 
   const resetFields = () => {
     if (!originalData) return;
@@ -663,20 +641,21 @@ const Settings = (props) => {
       if (response.data && response.data.cleanRecords) {
         const cleanList = response.data.cleanRecords;
         const firstClean = cleanList[0];
-        setCleans(cleanList);
+        setCleans(firstClean);
         console.log("fetched", cleanList[0]);
 
         if (firstClean) {
-          setSliderValue(firstClean.bathroom || 0);
-          setSliderValueK(firstClean.kitchen || 0);
-          setSliderValueO(firstClean.others || 0);
-          setSliderValueOX(firstClean.rooms || 0);
+          // Ensured numerical conversion from fetched data
+          setSliderValue(Number(firstClean.bathroom) || 0);
+          setSliderValueK(Number(firstClean.kitchen) || 0);
+          setSliderValueO(Number(firstClean.others) || 0);
+          setSliderValueOX(Number(firstClean.rooms) || 0);
 
           const total =
-            (firstClean.bathroom || 0) +
-            (firstClean.kitchen || 0) +
-            (firstClean.others || 0) +
-            (firstClean.rooms || 0);
+            (Number(firstClean.bathroom) || 0) +
+            (Number(firstClean.kitchen) || 0) +
+            (Number(firstClean.others) || 0) +
+            (Number(firstClean.rooms) || 0);
 
           setTotalSliders(total);
           sumUp(total);
@@ -697,10 +676,69 @@ const Settings = (props) => {
     }
   };
 
+  // Button handlers for room counts
+  const incrementRooms = () => {
+    if (sliderValueO < 8) {
+      setSliderValueO(sliderValueO + 1);
+    }
+  };
+
+  const decrementRooms = () => {
+    if (sliderValueO > 1) {
+      setSliderValueO(sliderValueO - 1);
+    }
+  };
+
+  const incrementBathrooms = () => {
+    if (sliderValue < 8) {
+      setSliderValue(sliderValue + 1);
+    }
+  };
+
+  const decrementBathrooms = () => {
+    if (sliderValue > 0) {
+      setSliderValue(sliderValue - 1);
+    }
+  };
+
+  const incrementKitchens = () => {
+    if (sliderValueK < 8) {
+      setSliderValueK(sliderValueK + 1);
+    }
+  };
+
+  const decrementKitchens = () => {
+    if (sliderValueK > 0) {
+      setSliderValueK(sliderValueK - 1);
+    }
+  };
+
+  const incrementOther = () => {
+    if (sliderValueOX < 8) {
+      setSliderValueOX(sliderValueOX + 1);
+    }
+  };
+
+  const decrementOther = () => {
+    if (sliderValueOX > 0) {
+      setSliderValueOX(sliderValueOX - 1);
+    }
+  };
+
+  // Handle slider changes with validation (these methods are now handled directly by increment/decrement)
+  // const handleSliderChangeO = (value) => setSliderValueO(value);
+  // const handleSliderChange = (value) => setSliderValue(value);
+  // const handleSliderChangeK = (value) => setSliderValueK(value);
+  // const handleSliderChangeOX = (value) => setSliderValueOX(value);
+
   useEffect(() => {
     fetchUserData();
     fetchCleans();
   }, []);
+
+  useEffect(() => {
+    sumAllSliders(); // Recalculate sum whenever any slider value changes
+  }, [sliderValue, sliderValueK, sliderValueO, sliderValueOX, sumAllSliders]);
 
   const Update = () => {
     let firstName;
@@ -713,7 +751,7 @@ const Settings = (props) => {
       lastName = fullName.slice(firstSpaceIndex + 1); // Extract the remaining part as last name
 
       // console.log("First Name:", firstName); // Output: "Alexander"
-      // console.log("Last Name:", lastName);   // Output: "Gabriel John"
+      // console.log("Last Name:", "Gabriel John");
     } else {
       // console.log("First Name:", fullName);  // If no spaces, entire name is the first name
       // console.log("Last Name:", "");         // No last name
@@ -737,6 +775,51 @@ const Settings = (props) => {
       });
 
     setSaveScreen(false);
+  };
+
+  const [errors, setErrors] = useState({});
+
+  const handleBlur = () => {
+    const newErrors = {};
+
+    // Full Name
+    if (!name.trim()) {
+      newErrors.name = "Full name is required";
+    }
+
+    // Email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!emailRegex.test(email)) {
+      newErrors.email = "Enter a valid email";
+    }
+
+    // Phone number
+    const phoneRegex = /^[0-9]{8,15}$/;
+    if (!phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else if (!phoneRegex.test(phone)) {
+      newErrors.phone = "Enter a valid phone number";
+    }
+
+    // Password
+    // if (!password.trim()) {
+    //   newErrors.password = "Password is required";
+    // } else if (password.length < 6) {
+    //   newErrors.password = "Minimum 6 characters";
+    // }
+
+    // Address
+    if (!address.trim()) {
+      newErrors.address = "Address is required";
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      setSaveScreen(true); // open popup
+    }
   };
 
   return (
@@ -936,6 +1019,7 @@ const Settings = (props) => {
                     onMouseEnter={(e) => handleMouseEnterZ(e.currentTarget)}
                     onMouseLeave={(e) => handleMouseLeaveZ(e.currentTarget)}
                   />
+                  {errors.name && <p className="form-error">{errors.name}</p>}
                 </div>
                 <div className="settings-container36">
                   <span className="settings-text30">Email Address</span>
@@ -949,6 +1033,7 @@ const Settings = (props) => {
                     onMouseEnter={(e) => handleMouseEnterZ(e.currentTarget)}
                     onMouseLeave={(e) => handleMouseLeaveZ(e.currentTarget)}
                   />
+                  {errors.email && <p className="form-error">{errors.email}</p>}
                 </div>
               </div>
               <div className="settings-container37">
@@ -964,6 +1049,7 @@ const Settings = (props) => {
                     onMouseEnter={(e) => handleMouseEnterZ(e.currentTarget)}
                     onMouseLeave={(e) => handleMouseLeaveZ(e.currentTarget)}
                   />
+                  {errors.phone && <p className="form-error">{errors.phone}</p>}
                 </div>
                 <div className="settings-container39">
                   <span className="settings-text32">Password</span>
@@ -977,6 +1063,9 @@ const Settings = (props) => {
                     onMouseEnter={(e) => handleMouseEnterZ(e.currentTarget)}
                     onMouseLeave={(e) => handleMouseLeaveZ(e.currentTarget)}
                   />
+                  {/* {errors.password && (
+                    <p className="form-error">{errors.password}</p>
+                  )} */}
                 </div>
               </div>
             </div>
@@ -993,523 +1082,23 @@ const Settings = (props) => {
                   onMouseEnter={(e) => handleMouseEnterZ(e.currentTarget)}
                   onMouseLeave={(e) => handleMouseLeaveZ(e.currentTarget)}
                 />
+                {errors.address && (
+                  <p className="form-error">{errors.address}</p>
+                )}
               </div>
               <div className="settings-container42">
                 <div className="settings-container43">
-                  <div className="bxn">
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        width: "90%",
-                      }}
-                    >
-                      <Slider
-                        min={1}
-                        max={8}
-                        step={1}
-                        className="slider"
-                        value={sliderValueOX}
-                        onChange={handleSliderChangeOX}
-                      />
-                    </div>
-                    <h2
-                      className="belowTxt"
-                      style={{ marginTop: "10px", marginBottom: "20px" }}
-                    >
-                      {sliderValueOX} Room{sliderValueOX > 1 ? "s" : null}
-                    </h2>
-
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        width: "90%",
-                      }}
-                    >
-                      <Slider
-                        min={0}
-                        max={8}
-                        step={1}
-                        className="slider"
-                        value={sliderValue}
-                        onChange={handleSliderChange}
-                      />
-                    </div>
-                    <h2
-                      className="belowTxt"
-                      style={{ marginTop: "10px", marginBottom: "20px" }}
-                    >
-                      {sliderValue} Bathroom{sliderValue > 1 ? "s" : null}
-                    </h2>
-                  </div>
-
-                  <div className="bxnHouse">
-                    {/* Sprite Location  */}
-                    <div className="box2x">
-                      <div
-                        style={{
-                          display: "flex",
-                          width: "100%",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <div className={H1 ? "visibX" : "invisib"}>
-                          <div
-                            className={
-                              Heart ? "is-active heart" : "isNot-active heart"
-                            }
-                          ></div>
-                        </div>
-                        <div className={H2 ? "visibX" : "invisib"}>
-                          <div
-                            className={
-                              Heart1
-                                ? "is-activex heartx"
-                                : "isNot-activex heartx"
-                            }
-                          ></div>
-                        </div>
-                        <div className={H3 ? "visibX" : "invisib"}>
-                          <div
-                            className={
-                              Heart2
-                                ? "is-activex2 heartx2"
-                                : "isNot-activex2 heartx2"
-                            }
-                          ></div>
-                        </div>
-                        <div className={H4 ? "visibX" : "invisib"}>
-                          <div
-                            className={
-                              Heart3
-                                ? "is-activex3 heartx3"
-                                : "isNot-activex3 heartx3"
-                            }
-                          ></div>
-                        </div>
-                        <div className={H5 ? "visibX" : "invisib"}>
-                          <div
-                            className={
-                              Heart4
-                                ? "is-activex4 heartx4"
-                                : "isNot-activex4 heartx4"
-                            }
-                          ></div>
-                        </div>
-                        <div className={H6 ? "visibX" : "invisib"}>
-                          <div
-                            className={
-                              Heart5
-                                ? "is-activex5 heartx5"
-                                : "isNot-activex5 heartx5"
-                            }
-                          ></div>
-                        </div>
-                        <div className={H7 ? "visibX" : "invisib"}>
-                          <div
-                            className={
-                              Heart6
-                                ? "is-activex6 heartx6"
-                                : "isNot-activex6 heartx6"
-                            }
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bxn">
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        width: "90%",
-                      }}
-                    >
-                      <Slider
-                        min={0}
-                        max={8}
-                        step={1}
-                        className="slider"
-                        value={sliderValueK}
-                        onChange={handleSliderChangeK}
-                      />
-                    </div>
-                    <h2
-                      className="belowTxt"
-                      style={{ marginTop: "10px", marginBottom: "20px" }}
-                    >
-                      {sliderValueK} Kitchen{sliderValueK > 1 ? "s" : null}
-                    </h2>
-
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        width: "90%",
-                      }}
-                    >
-                      <Slider
-                        min={0}
-                        max={8}
-                        step={1}
-                        className="slider"
-                        value={sliderValueO}
-                        onChange={handleSliderChangeO}
-                      />
-                    </div>
-                    <h2
-                      className="belowTxt"
-                      style={{ marginTop: "10px", marginBottom: "20px" }}
-                    >
-                      {sliderValueO} Other{sliderValueO > 1 ? "s" : null}
-                    </h2>
-                  </div>
+                  <HouseAnimation cleans={cleans} />
                 </div>
-                {/* <div className="settings-container44">
-                  <div className="settings-container45">
-                    <span className="settings-text34">Bathroom Amount</span>
-                    <div className="settings-container46">
-                      <span className="settings-text35">1</span>
-                    </div>
-                  </div>
-                  <div className="settings-container47">
-                    <span className="settings-text36">Kitchen Amount</span>
-                    <div className="settings-container48">
-                      <span className="settings-text37">1</span>
-                    </div>
-                  </div>
-                  <div className="settings-container49">
-                    <span className="settings-text38">Other Amount</span>
-                    <div className="settings-container50">
-                      <span className="settings-text39">1</span>
-                    </div>
-                  </div>
-                </div> */}
               </div>
             </div>
           </div>
           <div className="settings-container51Set">
             <span className="settings-text40">Membership Details</span>
-            <div className="settings-container52">
-              <div className="settings-container53">
-                <div className="settings-container54">
-                  <div className="settings-container55">
-                    <span className="settings-text41">Cleaner’s Pass</span>
-                  </div>
-                </div>
-              </div>
-              <div className="settings-container56">
-                <div className="settings-container57">
-                  <span className="settings-text42">Every:</span>
-                  {/* <select className="settings-select1">
-                    <option value="Week">Week</option>
-                    <option value="Fortnight">Fortnight</option>
-                    <option value="Month">Month</option>
-                  </select> */}
-                  <div
-                    className="cleanerspass2-select1x"
-                    onMouseEnter={(e) => handleMouseEnterZ(e.currentTarget)}
-                    onMouseLeave={(e) => handleMouseLeaveZ(e.currentTarget)}
-                  >
-                    <button
-                      onClick={toggleDropdown}
-                      className="dropdown-toggle"
-                    >
-                      <span className="dropdown-left">
-                        {selectedOption.left}
-                      </span>
-                      <span className="dropdown-right">
-                        <span>{selectedOption.right}</span>
-                        <span
-                          className="dropdown-arrow"
-                          style={{ marginLeft: "10px" }}
-                        >
-                          {/* ▼ */}
-                          <img
-                            alt="drop"
-                            src={require("./img/down-chevron.png")}
-                            style={{ width: "10px" }}
-                          />
-                          {/* down-chevron.png */}
-                        </span>
-                      </span>
-                    </button>
-                    {isOpen && (
-                      <ul className="dropdown-menu">
-                        {options.map((option, index) => (
-                          <li
-                            key={index}
-                            onClick={() => selectOption(option)}
-                            className="dropdown-item"
-                          >
-                            <span className="dropdown-left">{option.left}</span>
-                            <span className="dropdown-right">
-                              {option.right}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                </div>
-                <div className="settings-container58">
-                  <span className="settings-text43">on:</span>
-                  <select
-                    className="settings-select2"
-                    onMouseEnter={(e) => handleMouseEnterZ(e.currentTarget)}
-                    onMouseLeave={(e) => handleMouseLeaveZ(e.currentTarget)}
-                  >
-                    <option value="Monday">Monday</option>
-                    <option value="Tuesday">Tuesday</option>
-                    <option value="Wednesday">Wednesday</option>
-                    <option value="Thursday">Thursday</option>
-                    <option value="Friday">Friday</option>
-                    <option value="Saturday">Saturday</option>
-                    <option value="Sunday">Sunday</option>
-                  </select>
-                </div>
-                <button
-                  type="button"
-                  className="settings-button1 button"
-                  onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
-                  onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
-                >
-                  Reschedule
-                </button>
-                <button
-                  type="button"
-                  className="settings-button2 button"
-                  onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
-                  onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
-                  onClick={() => {
-                    CancelScreen();
-                  }}
-                >
-                  Cancel Membership
-                </button>
-              </div>
-              {/* <div className="settings-container59">
-                <div className="settings-container60">
-                  <div className="settings-container61">
-                    <span className="settings-text44">Cleaning Summary</span>
-                    <img
-                      alt="image"
-                      src={require("./img/down arrow-200h.png")}
-                      className="settings-image23"
-                    />
-                  </div>
-                  <span className="settings-text45">Have a discount code?</span>
-                </div>
-                <span className="settings-text46">
-                  <span>
-                    Total
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: ' ',
-                      }}
-                    />
-                  </span>
-                  <span className="settings-text48">$172.99</span>
-                </span>
-              </div> */}
-              <div className="home-container209Set" ref={SummaryRef}>
-                <div className="home-container210x">
-                  <div
-                    className="home-container211"
-                    onClick={() => setSum(true)}
-                    style={{ cursor: "pointer", userSelect: "none" }}
-                  >
-                    <span className="home-text132Set">
-                      Cleaning Summary{" "}
-                      <img
-                        src="/img/UPARROW.png"
-                        style={{
-                          width: "12px",
-                          height: "7px",
-                          marginLeft: "10px",
-                        }}
-                      />
-                    </span>
-                    <span className="home-text133Set">
-                      Have a Discount Code?
-                    </span>
-                  </div>
-                  <div className="home-text134Set">
-                    <span className="home-text135">Total </span>
-                    <span>
-                      {" "}
-                      ${Total}
-                      {intervalValue > 0 ? (
-                        <span>
-                          {"(-"}
-                          {intervalValue}%{")"}
-                        </span>
-                      ) : null}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="home-container212">
-                  <div
-                    className="home-container213"
-                    onClick={() => setSum(false)}
-                    style={{ cursor: "pointer", userSelect: "none" }}
-                  >
-                    <span className="home-text137Set">
-                      Booking Summary{" "}
-                      <img
-                        src="/img/downArrow.png"
-                        style={{
-                          width: "12px",
-                          height: "7px",
-                          marginLeft: "10px",
-                        }}
-                      />
-                    </span>
-                    <span className="home-text138">Have a Discount Code?</span>
-                  </div>
-                  <span className="home-text139">
-                    <span className="home-text140">Total </span>
-                    <span> $134.98</span>
-                  </span>
-                </div>
-                <div className="home-container214Set">
-                  <img
-                    src="/img/home-icon.png"
-                    style={{
-                      width: "35px",
-                      height: "25px",
-                      marginRight: "4px",
-                    }}
-                  />
-                  <div className="home-container215">
-                    <li className="home-liSet list-item">
-                      <span className="home-text142">
-                        {sliderValueO} Bedroom
-                      </span>
-                      <span className="home-text143">
-                        ${(sliderValue * 20).toFixed(2)}
-                      </span>
-                    </li>
-                    <li className="home-liSet list-item">
-                      <span>{sliderValue} Bathroom</span>
-                      <span className="home-text145">
-                        ${(sliderValue * 30).toFixed(2)}
-                      </span>
-                    </li>
-                    <li className="home-liSet list-item">
-                      <span>{sliderValueK} Kitchen</span>
-                      <span className="home-text147">
-                        ${(sliderValueK * 45).toFixed(2)}
-                      </span>
-                    </li>
-                  </div>
-                </div>
-                <div className="home-container216">
-                  <img
-                    src="/img/calendar.png"
-                    style={{ width: "25px", marginRight: "8px" }}
-                  />
-                  <div className="home-container217">
-                    <span className="home-text148Set">{MyDate}</span>
-                    <span className="home-text149Set">
-                      {timeFrame == 8 ? "8:00 AM - 10:00 AM" : null}
-                      {timeFrame == 10 ? "10:00 AM - 12:00 PM" : null}
-                      {timeFrame == 12 ? "12:00 PM - 2:00 PM" : null}
-                      {timeFrame == 14 ? "2:00 PM - 4:00 PM" : null}
-                      {timeFrame == 16 ? "4:00 PM - 6:00 PM" : null}
-                      {timeFrame == 18 ? "6:00 PM - 8:00 PM" : null}
-                    </span>
-                  </div>
-                </div>
-                <div className="home-container218">
-                  <img
-                    src="/img/refresh.png"
-                    style={{ width: "25px", marginRight: "8px" }}
-                  />
-                  <div className="home-container219">
-                    <span className="home-text150Set">
-                      {CleanType ? "Repeated" : "One Time"}
-                    </span>
-                  </div>
-                </div>
-                {/* <div className="home-container218">
-                <img src='/img/extra.png' style={{width:'25px', marginRight:'8px'}}/>
-                  <div className="home-container219">
-                    <div className="home-text150Set">{(windows)?"Windows":null}</div>
-                    <div className="home-text150Set">{(walls)?"Walls":null}</div>
-                    <div className="home-text150Set">{(Cabinets)?"Cabinets":null}</div>
-                    <div className="home-text150Set">{(organization)?"Organization":null}</div>
-                    <div className="home-text150Set">{(blind)?"Blinds":null}</div>
-                    <div className="home-text150Set">{(stovetop)?"Stovetop/oven":null}</div>
-                    <div className="home-text150Set">{(fridge)?"Fridge":null}</div>
-                    <div className="home-text150Set">{(Dishwasher)?"Dishwasher":null}</div>
-                    <div className="home-text150Set">{(garage)?"Garage":null}</div>
-                    <div className="home-text150Set">{(microwave)?"Microwave":null}</div>
-                    <div className="home-text150Set">{(Laundry)?"Laundry":null}</div>
-                    <div className="home-text150Set">{(tiles)?"Tiles/Flooring":null}</div>
-                  </div>
-                </div> */}
-                <div className="home-container220Set">
-                  <div className="home-container221">
-                    <span className="home-text151Set">Discount Code</span>
-                    <span className="home-text152Set">(optional)</span>
-                  </div>
-                  <div className="buttonHost">
-                    <input
-                      type="text"
-                      className="home-textinput06Set input"
-                      ref={inputTextRef}
-                      onMouseEnter={(e) => handleMouseEnterAXY(e.currentTarget)}
-                      onMouseLeave={(e) => handleMouseLeaveAXY(e.currentTarget)}
-                    />
-                    <input
-                      type="button"
-                      className="home-textinput06xSet input"
-                      value="Apply"
-                      onClick={handleApplyClick}
-                      onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}
-                      onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)}
-                    />
-                  </div>
-                </div>
-                <div className="home-container222">
-                  <div className="home-container223">
-                    <span className="home-text153Set">Sub-Total</span>
-                    <span className="home-text154Set">${Total}</span>
-                  </div>
-                  {/* <div className="home-container224">
-                    <span className="home-text155">Sales - Tax(5%)</span>
-                    <span className="home-text156">${(5/100)*Total}</span>
-                  </div> */}
-                  <div className="home-container225">
-                    <span className="home-text157Set">Discount Code</span>
-                    <span className="home-text158Set">-${disPerAmount}</span>
-                  </div>
-                  <div className="home-container226">
-                    <span className="home-text159Set">Total</span>
-                    <span className="home-text160Set">${discountNew}</span>
-                  </div>
-                </div>
-                <button
-                  onMouseEnter={(e) => handleMouseEnterAX(e.currentTarget)}
-                  onMouseLeave={(e) => handleMouseLeaveAX(e.currentTarget)}
-                  type="button"
-                  className="home-button13Set button"
-                >
-                  Book Now
-                </button>
-              </div>
-            </div>
+            <CleanersPass
+              cleanerPass={cleanerPass}
+              setcleanerPass={setcleanerPass}
+            />
           </div>
         </div>
       </div>

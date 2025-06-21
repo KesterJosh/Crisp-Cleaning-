@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import axios from "axios";
 import "./swiper-styles.css";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
@@ -6,8 +6,9 @@ import Login from "../views/login";
 import { Eye, EyeSlashIcon } from "@phosphor-icons/react";
 import GoogleAuth from "./GoogleAuth";
 
-const CleaningSwiper = () => {
+const CleaningSwiper = forwardRef((props, ref) => {
   const [login, setLogin] = useState(false);
+  const [activeStepSet, setActiveStepSet] = useState("residential"); // or "commercial"
   const [showPassword, setShowPassword] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [Quote, setQuote] = useState(0);
@@ -37,6 +38,7 @@ const CleaningSwiper = () => {
   const [supports, setSupports] = useState(false);
   const [showValidationMessage, setShowValidationMessage] = useState(false);
   const [isCommercial, setIsCommercial] = useState(false);
+  const [selectedReg, setSelectedReg] = useState(false);
 
   useEffect(() => {
     const initializeGoogleSignIn = () => {
@@ -79,7 +81,7 @@ const CleaningSwiper = () => {
     const credential = response.credential;
 
     axios
-      .post(`http://localhost:4000/google-auth`, {
+      .post(`https://api-crisp-cleaning.onrender.com/google-auth`, {
         credential,
         clientId:
           "617840144228-0fa899q99cktsq7a8culf9cacamvr0kf.apps.googleusercontent.com",
@@ -216,6 +218,39 @@ const CleaningSwiper = () => {
 
   const Total = calculateTotal();
 
+  const calculateEstimatedTime = () => {
+    let totalMinutes = 0;
+
+    totalMinutes += sliderValueO * 20; // 20 mins per bedroom
+    totalMinutes += sliderValue * 30; // 30 mins per bathroom
+    totalMinutes += sliderValueK * 25; // 25 mins per kitchen
+    totalMinutes += sliderValueOX * 15; // 15 mins per 'other' room
+
+    const extras = [
+      windows,
+      walls,
+      Cabinets,
+      organization,
+      blind,
+      stovetop,
+      fridge,
+      Dishwasher,
+      garage,
+      microwave,
+      Laundry,
+      tiles,
+    ];
+
+    // Add 10 minutes for each extra selected
+    extras.forEach((extra) => {
+      if (extra > 0) totalMinutes += 10;
+    });
+
+    return totalMinutes;
+  };
+
+  const estimatedTime = calculateEstimatedTime();
+
   // Generate monthly calendar data from current month to end of year
   const generateMonthlyCalendar = () => {
     const months = [];
@@ -264,6 +299,10 @@ const CleaningSwiper = () => {
 
     return months;
   };
+
+  const [discountCode, setDiscountCode] = useState("");
+  const [isDiscountApplied, setIsDiscountApplied] = useState(false);
+  const discountedTotal = isDiscountApplied ? Total * 0.75 : Total;
 
   // Get available time slots for a specific date
   const getAvailableTimeSlots = (selectedDate) => {
@@ -717,18 +756,15 @@ const CleaningSwiper = () => {
       setIsSubmitting(true);
       setSubmitError("");
 
-      const response = await axios.post(
-        "https://api-crisp-cleaning.onrender.com/register",
-        {
-          first_name: firstName,
-          last_name: lastName,
-          email,
-          phone,
-          password,
-          address,
-          referral,
-        }
-      );
+      const response = await axios.post("https://api-crisp-cleaning.onrender.com/register", {
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        phone,
+        password,
+        address,
+        referral,
+      });
 
       console.log("Registration response:", response);
 
@@ -855,7 +891,7 @@ const CleaningSwiper = () => {
       // Redirect to Stripe checkout
       if (typeof window !== "undefined" && window.Stripe) {
         const stripe = await window.Stripe(
-          "pk_live_51Mlo58BQeeo3mqOtmcqikviKCa8UaoFVRQOoN9MPxoBCHpOnH5PZdUR31kqd9amFDz0mDU2jdhwrTvED8YmHNsCD007BqjAfW3"
+          "pk_test_51ROhYnH9E7pqq95xLp67muP87yzw3XmN9BdV5ZbF2ZoAQuFJPBDYN0HgbnPfaYiN0Z9scDimOVICuZ7iD5kvBaq900M6capXFd"
         );
         const result = await stripe.redirectToCheckout({
           sessionId: session.id,
@@ -992,7 +1028,6 @@ const CleaningSwiper = () => {
     if (step <= currentStep) {
       setCurrentStep(step);
       setShowValidationMessage(false);
-      console.log("Jumping to step:", step);
     }
   };
 
@@ -1041,7 +1076,7 @@ const CleaningSwiper = () => {
   const residentialSteps = [
     {
       id: "quote",
-      title: "Receive A Quote",
+      title: "Receive a FREE Quote",
       subtitle: "What type of project? Please provide what type of cleaning.",
       content: (
         <div className="step-content">
@@ -1143,26 +1178,35 @@ const CleaningSwiper = () => {
             </div>
           </div>
 
-          <div className="room-visualization">
-            <div className="hearts-container">
-              {[H1, H2, H3, H4, H5, H6, H7].map((visible, index) => (
-                <div
-                  key={index}
-                  className={`heart-wrapper ${
-                    visible ? "visible" : "invisible"
-                  }`}
-                >
-                  <div
-                    className={`heart ${
-                      [Heart, Heart1, Heart2, Heart3, Heart4, Heart5, Heart6][
-                        index
-                      ]
-                        ? "active"
-                        : ""
-                    }`}
-                  ></div>
-                </div>
-              ))}
+          <div className="bxnHouse">
+            <div className="box2x">
+              {/* Added className="house-display-area" here for CSS targeting */}
+              <div className="house-display-area">
+                {/* Rooms */}
+                {[...Array(sliderValueO)].map((_, index) => (
+                  <div key={`r-${index}`} className="visibX">
+                    <div className="is-active heart"></div>
+                  </div>
+                ))}
+                {/* Bathrooms */}
+                {[...Array(sliderValue)].map((_, index) => (
+                  <div key={`b-${index}`} className="visibX">
+                    <div className="is-activex heartx"></div>
+                  </div>
+                ))}
+                {/* Kitchens */}
+                {[...Array(sliderValueK)].map((_, index) => (
+                  <div key={`k-${index}`} className="visibX">
+                    <div className="is-activex2 heartx2"></div>
+                  </div>
+                ))}
+                {/* Others */}
+                {[...Array(sliderValueOX)].map((_, index) => (
+                  <div key={`o-${index}`} className="visibX">
+                    <div className="is-activex3 heartx3"></div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -1437,11 +1481,12 @@ const CleaningSwiper = () => {
                   className={`toggle-btn-one ${CleanType ? "active" : ""}`}
                   onClick={() => {
                     setCleanType(true);
+                    setSelectedReg(true);
                     setIntervalValue(15);
                     updateScheduleValidation(selectedDate, selectedTime);
                   }}
                 >
-                  Regular Clean
+                  Regular Cleans
                   <span className="off">
                     <small>Up to 25% OFF</small>
                   </span>
@@ -1761,6 +1806,44 @@ const CleaningSwiper = () => {
         <div className="step-content">
           <div className="summary-content">
             <div className="summary-section">
+              <h3>Schedule</h3>
+              <div className="summary-item">
+                <span>Date</span>
+                <span>{MyDate || "Not selected"}</span>
+              </div>
+              <div className="summary-item">
+                <span>Time</span>
+                <span>{selectedTimeLabel || "Not selected"}</span>
+              </div>
+              <div className="summary-item">
+                <span>Service Type</span>
+                <span>{CleanType ? "Repeated" : "One Time"} Service</span>
+              </div>
+              <div className="summary-item">
+                <span>Address</span>
+                <span>{address}</span>
+              </div>
+            </div>
+
+            <div className="summary-section">
+              <h3>Customer Details</h3>
+              <div className="summary-item">
+                <span>Name</span>
+                <span>
+                  {firstName} {lastName}
+                </span>
+              </div>
+              <div className="summary-item">
+                <span>Email</span>
+                <span>{email}</span>
+              </div>
+              <div className="summary-item">
+                <span>Phone</span>
+                <span>{phone}</span>
+              </div>
+            </div>
+
+            <div className="summary-section">
               <h3>Service Details</h3>
               <div className="summary-item">
                 <span>{sliderValueO} Bedroom(s)</span>
@@ -1848,44 +1931,50 @@ const CleaningSwiper = () => {
               )}
             </div>
 
-            <div className="summary-section">
-              <h3>Schedule</h3>
-              <div className="summary-item">
-                <span>Date</span>
-                <span>{MyDate || "Not selected"}</span>
+            {selectedReg === true && (
+              <div className="discount-field" style={{ marginTop: "1rem" }}>
+                <label
+                  htmlFor="discount"
+                  style={{
+                    display: "block",
+                    marginBottom: "0.25rem",
+                    fontWeight: 500,
+                  }}
+                >
+                  Have a discount code?
+                </label>
+                <input
+                  id="discount"
+                  type="text"
+                  placeholder="Enter code"
+                  value={discountCode}
+                  onChange={(e) => {
+                    const code = e.target.value.toUpperCase();
+                    setDiscountCode(code);
+                    setIsDiscountApplied(code === "DIS");
+                  }}
+                  style={{
+                    padding: "0.5rem",
+                    width: "100%",
+                    border: "1px solid #ccc",
+                    borderRadius: "6px",
+                    fontSize: "14px",
+                  }}
+                />
               </div>
-              <div className="summary-item">
-                <span>Time</span>
-                <span>{selectedTimeLabel || "Not selected"}</span>
-              </div>
-              <div className="summary-item">
-                <span>Service Type</span>
-                <span>{CleanType ? "Repeated" : "One Time"} Service</span>
-              </div>
-            </div>
-
-            <div className="summary-section">
-              <h3>Customer Details</h3>
-              <div className="summary-item">
-                <span>Name</span>
-                <span>
-                  {firstName} {lastName}
-                </span>
-              </div>
-              <div className="summary-item">
-                <span>Email</span>
-                <span>{email}</span>
-              </div>
-              <div className="summary-item">
-                <span>Phone</span>
-                <span>{phone}</span>
-              </div>
-            </div>
+            )}
 
             <div className="summary-total">
               <div className="total-line">
                 <span>Total</span>
-                <span>${Total.toFixed(2)}</span>
+                <span className="total-number">
+                  ${discountedTotal.toFixed(2)}
+                  {isDiscountApplied && (
+                    <small style={{ marginLeft: "6px", color: "green" }}>
+                      (25% off)
+                    </small>
+                  )}
+                </span>
               </div>
             </div>
 
@@ -1910,7 +1999,7 @@ const CleaningSwiper = () => {
   const commercialSteps = [
     {
       id: "quote",
-      title: "Receive A FREE Quote",
+      title: "Receive a FREE Quote",
       subtitle: "What type of project? Please provide what type of cleaning.",
       content: (
         <div className="step-content">
@@ -2518,7 +2607,7 @@ const CleaningSwiper = () => {
       {login && (
         <Login CloseLogin={() => setLogin(false)} navigateS={navigateS} />
       )}
-      <div className="swiper-container">
+      <div ref={ref} className="swiper-container">
         <div className="swiper-wrapper">
           <div
             className="swiper-track"
@@ -2538,49 +2627,87 @@ const CleaningSwiper = () => {
                   </div>
                   {step.content}
 
-                  <div className="slide-footer">
-                    <Link to="/contact" target="_blank">
-                      <div className="support-section">
-                        <img
-                          src={require("../views/img/support.png")}
-                          alt="Support"
-                          className={supports ? "support-active" : ""}
-                        />
-                        <p
-                          onMouseEnter={handleMouseEnterSupport}
-                          onMouseLeave={handleMouseLeaveSupport}
-                        >
-                          Support
-                        </p>
-                      </div>
-                    </Link>
-
-                    <div className="navigation-buttons">
-                      {currentStep > 0 && (
-                        <button className="nav-btn prev-btn" onClick={prevStep}>
-                          Go back
-                        </button>
-                      )}
-                      {currentStep < totalSteps - 1 && (
-                        <button
-                          className={`nav-btn next-btn ${
-                            !validations[steps[currentStep].id]
-                              ? "disabled"
-                              : ""
-                          }`}
-                          onClick={nextStep}
-                          disabled={!validations[steps[currentStep].id]}
-                        >
-                          Proceed
-                        </button>
-                      )}
-                    </div>
+                  <div className="navigation-buttons">
+                    {currentStep > 0 && (
+                      <button className="nav-btn prev-btn" onClick={prevStep}>
+                        Go back
+                      </button>
+                    )}
+                    {currentStep < totalSteps - 1 && (
+                      <button
+                        className={`nav-btn next-btn ${
+                          !validations[steps[currentStep].id] ? "disabled" : ""
+                        }`}
+                        onClick={nextStep}
+                        disabled={!validations[steps[currentStep].id]}
+                      >
+                        Proceed
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
+
+        {!isCommercial && steps[currentStep]?.id === "details" && (
+          <>
+            <p className="check">
+              Already have an account?{" "}
+              <span className="link" onClick={() => setLogin(true)}>
+                Login
+              </span>
+            </p>
+            <div className="slide-footer">
+              <Link to="/contact" target="_blank">
+                <div className="support-section">
+                  <img
+                    src={require("../views/img/support.png")}
+                    alt="Support"
+                    className={supports ? "support-active" : ""}
+                  />
+                  <p
+                    onMouseEnter={handleMouseEnterSupport}
+                    onMouseLeave={handleMouseLeaveSupport}
+                  >
+                    Support
+                  </p>
+                </div>
+              </Link>
+
+              <div>
+                <h5 className="total-text">
+                  Total{" "}
+                  <span className="total-number">${Total.toFixed(2)}</span>
+                </h5>
+                <small>
+                  We estimate your cleaning to take:{" "}
+                  <span className="tim">{estimatedTime} minutes</span>
+                </small>
+              </div>
+
+              <div
+                className="sum-txt"
+                onClick={() => setCurrentStep(steps.length - 1)}
+              >
+                <span>
+                  <h5>Booking Summary</h5>
+                  <small>have a discount code?</small>
+                </span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="#000000"
+                  viewBox="0 0 256 256"
+                >
+                  <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
+                </svg>
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Navigation arrows */}
         <button
@@ -2622,19 +2749,9 @@ const CleaningSwiper = () => {
             />
           ))}
         </div>
-
-        {/* Blur overlay for non-active slides */}
-        <div
-          className="blur-overlay blur-overlay-left"
-          style={{ opacity: currentStep > 0 ? 1 : 0 }}
-        ></div>
-        <div
-          className="blur-overlay blur-overlay-right"
-          style={{ opacity: currentStep < totalSteps - 1 ? 1 : 0 }}
-        ></div>
       </div>
     </>
   );
-};
+});
 
 export default CleaningSwiper;

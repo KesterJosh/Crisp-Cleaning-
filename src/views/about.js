@@ -17,8 +17,9 @@ const About = (props) => {
   const [login, setLogin] = useState(false);
   const [register, setRegister] = useState(false);
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "auto" });
+  const handleClick = () => {
+    sessionStorage.setItem("scrollToRef", "about");
+    window.location.href = "/";
   };
   const handleMouseEnter = (event) => {
     const container = event.currentTarget;
@@ -1476,7 +1477,7 @@ const About = (props) => {
             <div className="home1-container51">
               <button
                 type="button"
-                onClick={scrollToTop}
+                onClick={handleClick}
                 className="home1-button button"
                 onMouseEnter={activateX}
                 onMouseLeave={offX}

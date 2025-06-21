@@ -20,8 +20,11 @@ import GlobalSearch from "../components/GlobalSearch";
 const Transaction = (props) => {
   const [cleans, setCleans] = useState([]);
   const location = useLocation();
-  const isSettingsActive = location.pathname == "/transaction";
+  const [lastPayment, setLastPayment] = useState(null);
+  const [nextPayment, setNextPayment] = useState(null);
   const [booking, setBooking] = useState(false);
+  const [cardInfo, setCardInfo] = useState(null);
+  const isActive = true;
 
   const [Total, setTotal] = useState(0);
 
@@ -41,12 +44,33 @@ const Transaction = (props) => {
       const response = await axios.get(
         `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`
       );
-      if (response.data && response.data.cleanRecords) {
-        setCleans(response.data.cleanRecords);
-        console.log(response.data); // Save cleans to state
-      } else {
-        throw new Error("No clean records found.");
+      const records = response.data?.cleanRecords || [];
+
+      if (records.length > 0) {
+        // Sort by date (ascending)
+        const sorted = [...records].sort(
+          (a, b) => new Date(a.date) - new Date(b.date)
+        );
+
+        const today = new Date();
+
+        // Filter past and future
+        const pastCleans = sorted.filter(
+          (clean) => new Date(clean.date) < today
+        );
+        const futureCleans = sorted.filter(
+          (clean) => new Date(clean.date) >= today
+        );
+
+        // Get latest from past and earliest from future
+        const last = pastCleans[pastCleans.length - 1];
+        const next = futureCleans[0];
+
+        setLastPayment(last ? last.date : null);
+        setNextPayment(next ? next.date : null);
       }
+
+      setCleans(records);
     } catch (error) {
       console.error("Error fetching cleans:", error);
       setCleans([]);
@@ -172,14 +196,23 @@ const Transaction = (props) => {
     }
   }, [showPopup]);
 
-  // useEffect(() => {
-  //   fetch(`localhost:4000/payments/${sessionId}`)
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       console.log("Payment data:", data);
-  //       setCardInfo(data.card);
-  //     });
-  // }, [sessionId]);
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    const sessionId = query.get("session_id");
+
+    if (!sessionId) {
+      console.warn("No session ID in URL");
+      return;
+    }
+
+    fetch(`https://api-crisp-cleaning.onrender.com/payments/${sessionId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Payment data:", data);
+        setCardInfo(data.card);
+      })
+      .catch((err) => console.error("Failed to fetch card info:", err));
+  }, []);
 
   const handleVideoChange = (e) => {
     const file = e.target.files[0];
@@ -282,6 +315,25 @@ const Transaction = (props) => {
 
   const setReview = () => {
     setpopReview(true);
+  };
+
+  const Colorit = (button) => {
+    gsap.to(button, {
+      // opacity: 0.8,
+      color: "#ff914d",
+      // borderRadius:'100%',
+      duration: 0.3,
+      ease: "power2.out",
+    });
+  };
+
+  const unColorit = (button) => {
+    gsap.to(button, {
+      color: "#1F3042",
+      opacity: 1,
+      duration: 0.3,
+      ease: "power2.out",
+    });
   };
 
   const ClosePayment = () => {
@@ -427,84 +479,92 @@ const Transaction = (props) => {
           src={require("./img/logo-200h.png")}
           className="transaction-image13"
         />
-        <div className="transaction-container16">
-          <span className="transaction-text13">OVERVIEW</span>
-          <Link to="/dashboard" className="transaction-navlink11">
-            <div className="transaction-container17">
+        <div className="settings-container12">
+          <span className="settings-text10">OVERVIEW</span>
+          <Link to="/dashboard" className="settings-navlink1">
+            <div className="settings-container13">
               <img
                 alt="image"
                 src={require("./img/homep-200h.png")}
-                className="transaction-image14"
+                className="settings-image11"
               />
-              <span className="transaction-text14">Dashboard</span>
-            </div>
-          </Link>
-          <Link to="/schedule" className="transaction-navlink12">
-            <div className="transaction-container18">
-              <img
-                alt="image"
-                src={require("./img/calenderx-200h.png")}
-                className="transaction-image15"
-              />
-              <span className="transaction-text15">Schedule</span>
-            </div>
-          </Link>
-          <Link to="/referral" className="transaction-navlink13">
-            <div className="transaction-container19">
-              <img
-                alt="image"
-                src={require("./img/link-200h.png")}
-                className="transaction-image16"
-              />
-              <span className="transaction-text16">Referrals</span>
-            </div>
-          </Link>
-          <Link to="/reward" className="transaction-navlink14">
-            <div className="transaction-container20">
-              <img
-                alt="image"
-                src={require("./img/lock1-200h.png")}
-                className="transaction-image17"
-              />
-              <span className="transaction-text17">Rewards</span>
-            </div>
-          </Link>
-          <Link to="/cleanerspass" className="transaction-navlink15">
-            <div className="transaction-container21">
-              <img
-                alt="image"
-                src={require("./img/key-200h.png")}
-                className="transaction-image18"
-              />
-              <span className="transaction-text18">Cleaner's Pass</span>
-            </div>
-          </Link>
-        </div>
-        <div className="transaction-container22">
-          <span className="transaction-text19">SETTINGS</span>
-          <Link to="/settings" className="transaction-navlink16">
-            <div className="transaction-container23">
-              <img
-                alt="image"
-                src={require("./img/settings_x-200h.png")}
-                className="transaction-image19"
-              />
-              <span className={` ${isSettingsActive ? "active-settings" : ""}`}>
-                Settings
+              <span
+                className="settings-text11"
+                onMouseEnter={(e) => Colorit(e.currentTarget)}
+                onMouseLeave={(e) => unColorit(e.currentTarget)}
+              >
+                Dashboard
               </span>
             </div>
           </Link>
-
+          <span className="settings-text12">SETTINGS</span>
+          <Link to="/settings">
+            <div className="settings-container14">
+              <img
+                alt="image"
+                src={require("./img/homep-200h.png")}
+                className="settings-image12"
+              />
+              <span className="settings-text200">Profile</span>
+            </div>
+          </Link>
+          <div className="settings-container15">
+            <img
+              alt="image"
+              src={require("./img/calenderx-200h.png")}
+              className="settings-image13"
+            />
+            <span className="settings-text133">Transactions</span>
+          </div>
+          <div className="settings-container16">
+            <img
+              alt="image"
+              src={require("./img/key-200h.png")}
+              className="settings-image14"
+            />
+            <div className="settings-container17">
+              <Link to="/contact" target="_blank">
+                <span
+                  className="settings-text15"
+                  onMouseEnter={(e) => Colorit(e.currentTarget)}
+                  onMouseLeave={(e) => unColorit(e.currentTarget)}
+                >
+                  Support
+                </span>
+              </Link>
+              <div className="settings-container18">
+                <Link to="/contact" target="_blank">
+                  <span className="settings-text16">Contact us</span>
+                </Link>
+                <Link to="/faqs" target="_blank">
+                  <span className="settings-text17">FAQs</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="settings-container19">
+          <span className="settings-text18">SETTINGS</span>
+          <Link to="/settings">
+            <div className="settings-container20">
+              <img
+                alt="image"
+                src={require("./img/settings_x-200h.png")}
+                className="settings-image15"
+              />
+              <span className="settings-text19">Settings</span>
+            </div>
+          </Link>
           <div
             onClick={() => setShowLogoutPopup(true)}
-            className="transaction-container24"
+            className="settings-container21"
           >
             <img
               alt="image"
               src={require("./img/exitx-200h.png")}
-              className="transaction-image20"
+              className="settings-image16"
             />
-            <span className="transaction-text21">Logout</span>
+            <span className="settings-text20">Logout</span>
           </div>
         </div>
       </div>
@@ -544,17 +604,93 @@ const Transaction = (props) => {
               </span>
             </span>
           </div>
-          <div className="transaction-container43">
-            {/* {cardInfo && (
-              <>
-                <img
-                  alt="image"
-                  src={require(`./img/${cardInfo.brand.toLowerCase()}-200h.png`)}
-                  className="transaction-image24"
-                />
-                <span className="transaction-text42">••••{cardInfo.last4}</span>
-              </>
-            )} */}
+          <div className="subscription-table-container">
+            <h3 className="subscription-heading">Subscription Overview</h3>
+            <table className="subscription-table">
+              <thead>
+                <tr>
+                  <th>Subscription</th>
+                  <th>Last Payment</th>
+                  <th>Next Payment</th>
+                  <th>Payment Method</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Cleaners Pass</td>
+                  <td>
+                    {lastPayment ? lastPayment : "N/A"}
+                  </td>
+                  <td>
+                    {nextPayment ? nextPayment : "N/A"}
+                  </td>
+                  <td className="card-info-cell">
+                    {cardInfo && cardInfo.brand && cardInfo.last4 ? (
+                      <>
+                        <div className="card-svg">
+                          <svg
+                            viewBox="0 0 48 30"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="card-svg-icon"
+                          >
+                            <rect
+                              width="48"
+                              height="30"
+                              rx="4"
+                              fill="#1A1F71"
+                            />
+                            <text
+                              x="24"
+                              y="20"
+                              textAnchor="middle"
+                              fill="#fff"
+                              fontSize="10"
+                              fontWeight="bold"
+                            >
+                              {cardInfo.brand.toUpperCase()}
+                            </text>
+                          </svg>
+                        </div>
+                        <span>••••{cardInfo.last4}</span>
+                      </>
+                    ) : (
+                      <>
+                        <div className="card-svg">
+                          <svg
+                            viewBox="0 0 48 30"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="card-svg-icon"
+                          >
+                            <rect width="48" height="30" rx="4" fill="#ccc" />
+                            <text
+                              x="24"
+                              y="20"
+                              textAnchor="middle"
+                              fill="#444"
+                              fontSize="10"
+                              fontWeight="bold"
+                            >
+                              VISA
+                            </text>
+                          </svg>
+                        </div>
+                        <span>••••1234</span>
+                      </>
+                    )}
+                  </td>
+                  <td>
+                    <span
+                      className={`status-badge ${
+                        isActive ? "active" : "inactive"
+                      }`}
+                    >
+                      {isActive ? "Active" : "Inactive"}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <span className="transaction-text45">Cleaning History</span>

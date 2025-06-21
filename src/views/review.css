@@ -842,41 +842,32 @@
   font-weight: 300;
 }
 .review-container51 {
-  width: 80%;
-  height: 55px;
+  width: 100%;
   display: flex;
   margin-top: var(--dl-space-space-fourunits);
   align-items: center;
-  flex-direction: row;
   justify-content: center;
+  gap: 10px;
 }
 .review-button {
   font-size: 21px;
+  color: #ff914d;
   font-style: normal;
   font-family: "Inter";
   font-weight: 500;
-  margin-left: var(--dl-space-space-threeunits);
-  padding-top: 20px;
+  padding: 20px 40px;
   border-width: 0px;
-  margin-right: var(--dl-space-space-threeunits);
-  padding-left: var(--dl-space-space-threeunits);
   border-radius: 30px;
-  padding-right: var(--dl-space-space-threeunits);
-  padding-bottom: 20px;
 }
 .review-button1 {
   font-size: 21px;
+  color: #ff914d;
   font-style: normal;
+  padding: 20px 40px;
   font-family: "Inter";
   font-weight: 500;
-  margin-left: var(--dl-space-space-halfunit);
-  padding-top: 20px;
   border-width: 0px;
-  margin-right: var(--dl-space-space-halfunit);
-  padding-left: var(--dl-space-space-threeunits);
   border-radius: 30px;
-  padding-right: var(--dl-space-space-threeunits);
-  padding-bottom: 20px;
 }
 .review-container52 {
   width: 100%;
@@ -1422,6 +1413,8 @@
     font-size: 11px;
   }
   .review-container51 {
+    flex-direction: column;
+    width: 100%;
     margin-top: var(--dl-space-space-twounits);
   }
   .review-button {

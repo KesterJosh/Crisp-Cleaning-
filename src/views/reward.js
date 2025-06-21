@@ -14,6 +14,7 @@ import { useRef } from "react";
 import BookingPopup from "../components/BookingPopup";
 import GlobalSearch from "../components/GlobalSearch";
 import TimelineContainer from "../components/TimelineContainer";
+import RewardSection from "../components/RewardSection";
 
 const Reward = (props) => {
   const [showPopup, setShowPopup] = useState(false);
@@ -24,6 +25,10 @@ const Reward = (props) => {
   const [videoURL, setVideoURL] = useState(null);
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
   const [booking, setBooking] = useState(false);
+  const [showAllRewards, setShowAllRewards] = useState(false);
+  const [rewards, setRewards] = useState([]);
+  const visibleRewards = rewards.slice(0, 3);
+  const hiddenRewards = rewards.slice(3);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -243,24 +248,38 @@ const Reward = (props) => {
     //
   }, []);
 
-  const [rewards, setRewards] = useState([]);
   const userId = JSON.parse(localStorage.getItem("user"))?.userId;
   const [referrals, setReferrals] = useState([]);
   const [misc, setMisc] = useState([]); // Only if you plan to track "misc" too
 
   const getRewardProgress = (type) => {
-    if (type === "referrals") return `${referrals.length} referrals`;
-    if (type === "cleans") return `${cleans.length} cleans`;
-    if (type === "misc") return `${misc.length || 0} tasks`; // Customize this
-    return "0";
+    const filtered = rewards.filter(
+      (reward) =>
+        reward.challengeType === type && reward.completed >= reward.required
+    );
+    const totalRequired = rewards
+      .filter((r) => r.challengeType === type)
+      .reduce((acc, r) => acc + r.required, 0);
+
+    const totalCompleted = filtered.reduce((acc, r) => acc + r.required, 0); // only count fully completed ones
+
+    return `${totalCompleted} of ${totalRequired} ${type}`;
   };
 
   const getRewardPercentage = (type) => {
-    if (type === "referrals")
-      return Math.min((referrals.length / 5) * 100, 100);
-    if (type === "cleans") return Math.min((cleans.length / 10) * 100, 100);
-    if (type === "misc") return Math.min((misc.length / 3) * 100, 100);
-    return 0;
+    const filtered = rewards.filter(
+      (reward) =>
+        reward.challengeType === type && reward.completed >= reward.required
+    );
+    const totalRequired = rewards
+      .filter((r) => r.challengeType === type)
+      .reduce((acc, r) => acc + r.required, 0);
+
+    const totalCompleted = filtered.reduce((acc, r) => acc + r.required, 0);
+
+    return totalRequired
+      ? Math.min((totalCompleted / totalRequired) * 100, 100)
+      : 0;
   };
 
   const [cleans, setCleans] = useState([]);
@@ -707,75 +726,12 @@ const Reward = (props) => {
                   </span>
                 </div>
               </div>
-              <div className="reward-container63">
-                <div className="reward-container65">
-                  <div className="reward-container602">
-                    <img
-                      alt="image"
-                      src={require("./img/reward-200w.png")}
-                      className="reward-image28"
-                    />
-                    <span className="reward-text45">Rewards</span>
-                  </div>
-                  {rewards.length > 0 ? (
-                    rewards.map((reward) => (
-                      <div key={reward._id} className="reward-container67">
-                        <div className="reward-container70">
-                          <span className="reward-text48">
-                            <strong>{reward.rewardDescription}</strong>
-                            <br />
-                            {reward.completed} of {reward.required}{" "}
-                            {reward.challengeType}
-                          </span>
-                        </div>
-
-                        {/* Modified section for the claim button */}
-                        <div
-                          className={`reward-container71 ${
-                            reward.claimed
-                              ? "claimed"
-                              : reward.completed < reward.required
-                              ? "disabled"
-                              : ""
-                          }`}
-                          onClick={() =>
-                            !reward.claimed &&
-                            reward.completed >= reward.required &&
-                            claimReward(reward._id)
-                          }
-                          onMouseEnter={(e) =>
-                            !reward.claimed &&
-                            reward.completed >= reward.required &&
-                            handleMouseEnterFade(e.currentTarget)
-                          }
-                          onMouseLeave={(e) =>
-                            !reward.claimed &&
-                            reward.completed >= reward.required &&
-                            handleMouseLeaveFade(e.currentTarget)
-                          }
-                        >
-                          <span className="reward-text52">
-                            {reward.claimed ? (
-                              "Claimed"
-                            ) : reward.completed >= reward.required ? (
-                              "Claim reward"
-                            ) : (
-                              <img src="/img/lock.png" className="not-ready" />
-                            )}
-                          </span>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="reward-no-reward-message">
-                      <p>
-                        No rewards available at the moment. Complete some
-                        challenges to earn rewards!
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
+              <RewardSection
+                rewards={rewards}
+                claimReward={claimReward}
+                handleMouseEnterFade={handleMouseEnterFade}
+                handleMouseLeaveFade={handleMouseLeaveFade}
+              />
             </div>
           </div>
         </div>

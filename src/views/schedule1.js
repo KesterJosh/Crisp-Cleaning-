@@ -408,7 +408,7 @@ const Schedule1 = (props) => {
                               <div className="schedule1-container313">
                                 <span className="schedule1-text236">
                                   Booked for{" "}
-                                  {clean.typeOfClean == 280 ? "Vacant" : null}
+                                  {clean.typeOfClean == 280 ? "Vacate" : null}
                                   {clean.typeOfClean == 135 ? "Deep" : null}
                                   {clean.typeOfClean == 45
                                     ? "Regular"
@@ -500,21 +500,37 @@ const Schedule1 = (props) => {
                           </div>
                         </div>
                         <div className="schedule1-container317">
-                          <div
-                            onClick={() => {
-                              setEditClean(true);
-                              setEditId(clean._id);
-                            }}
-                            className="schedule1-container318"
-                            onMouseEnter={(e) =>
-                              handleMouseEnter(e.currentTarget)
-                            }
-                            onMouseLeave={(e) =>
-                              handleMouseLeave(e.currentTarget)
-                            }
-                          >
-                            <span className="schedule1-text242">Amend</span>
-                          </div>
+                          {(() => {
+                            const cleanDate = new Date(clean.date);
+                            const hoursUntilClean =
+                              (cleanDate - new Date()) / (1000 * 60 * 60);
+                            const isLessThan48Hours = hoursUntilClean < 48;
+
+                            return (
+                              <div
+                                onClick={() => {
+                                  if (!isLessThan48Hours) {
+                                    setEditClean(true);
+                                    setEditId(clean._id);
+                                  }
+                                }}
+                                className={`schedule1-container318 ${
+                                  isLessThan48Hours ? "disabled-button" : ""
+                                }`}
+                                onMouseEnter={(e) => {
+                                  if (!isLessThan48Hours)
+                                    handleMouseEnter(e.currentTarget);
+                                }}
+                                onMouseLeave={(e) => {
+                                  if (!isLessThan48Hours)
+                                    handleMouseLeave(e.currentTarget);
+                                }}
+                              >
+                                <span className="schedule1-text242">Amend</span>
+                              </div>
+                            );
+                          })()}
+
                           <div
                             className="schedule1-container319"
                             onMouseEnter={(e) =>
@@ -581,7 +597,8 @@ const Schedule1 = (props) => {
                           <div className="schedule1-container312">
                             <div className="schedule1-container313">
                               <span className="schedule1-text236">
-                                {clean.typeOfClean == 280 ? "Vacant" : null}
+                                Booked for{" "}
+                                {clean.typeOfClean == 280 ? "Vacate" : null}
                                 {clean.typeOfClean == 135 ? "Deep" : null}
                                 {clean.typeOfClean == 45
                                   ? "Regular"
@@ -598,67 +615,67 @@ const Schedule1 = (props) => {
                                   <span className="schedule-text407">
                                     {clean.bathroom}X Bathroom
                                   </span>
-                                )}
+                                )}{" "}
                                 {clean.kitchen !== "0" && (
                                   <span className="schedule-text408">
                                     {clean.kitchen}X Kitchen
                                   </span>
-                                )}
+                                )}{" "}
                                 {clean.rooms !== "0" && (
                                   <span className="schedule-text409">
                                     {clean.rooms}X Rooms
                                   </span>
-                                )}
+                                )}{" "}
                                 {clean.microwave !== "0" && (
                                   <span className="schedule-text410">
                                     {clean.microwave}X Microwave
                                   </span>
-                                )}
+                                )}{" "}
                                 {clean.blinds !== "0" && (
                                   <span className="schedule-text410">
                                     {clean.blinds}X Blinds
                                   </span>
-                                )}
+                                )}{" "}
                                 {clean.cabinets !== "0" && (
                                   <span className="schedule-text410">
                                     {clean.cabinets}X Cabinets
                                   </span>
-                                )}
+                                )}{" "}
                                 {clean.dishwasher !== "0" && (
                                   <span className="schedule-text410">
                                     {clean.dishwasher}X Dishwasher
                                   </span>
-                                )}
+                                )}{" "}
                                 {clean.fridge !== "0" && (
                                   <span className="schedule-text410">
                                     {clean.fridge}X Fridge
                                   </span>
-                                )}
+                                )}{" "}
                                 {clean.garage !== "0" && (
                                   <span className="schedule-text410">
                                     {clean.garage}X Garage
                                   </span>
-                                )}
+                                )}{" "}
                                 {clean.laundry !== "0" && (
                                   <span className="schedule-text410">
                                     {clean.laundry}X Laundry
                                   </span>
-                                )}
+                                )}{" "}
                                 {clean.stove !== "0" && (
                                   <span className="schedule-text410">
                                     {clean.stove}X Stove
                                   </span>
-                                )}
+                                )}{" "}
                                 {clean.tiles !== "0" && (
                                   <span className="schedule-text410">
                                     {clean.tiles}X Tiles
                                   </span>
-                                )}
+                                )}{" "}
                                 {clean.walls !== "0" && (
                                   <span className="schedule-text410">
                                     {clean.walls}X Walls
                                   </span>
-                                )}
+                                )}{" "}
                                 {clean.windows !== "0" && (
                                   <span className="schedule-text410">
                                     {clean.windows}X Windows
@@ -673,21 +690,37 @@ const Schedule1 = (props) => {
                         </div>
                       </div>
                       <div className="schedule1-container317">
-                        <div
-                          className="schedule1-container318"
-                          onClick={() => {
-                            setEditClean(true);
-                            setEditId(clean._id);
-                          }}
-                          onMouseEnter={(e) =>
-                            handleMouseEnter(e.currentTarget)
-                          }
-                          onMouseLeave={(e) =>
-                            handleMouseLeave(e.currentTarget)
-                          }
-                        >
-                          <span className="schedule1-text242">Amend</span>
-                        </div>
+                        {(() => {
+                          const cleanDate = new Date(clean.date);
+                          const hoursUntilClean =
+                            (cleanDate - new Date()) / (1000 * 60 * 60);
+                          const isLessThan48Hours = hoursUntilClean < 48;
+
+                          return (
+                            <div
+                              onClick={() => {
+                                if (!isLessThan48Hours) {
+                                  setEditClean(true);
+                                  setEditId(clean._id);
+                                }
+                              }}
+                              className={`schedule1-container318 ${
+                                isLessThan48Hours ? "disabled-button" : ""
+                              }`}
+                              onMouseEnter={(e) => {
+                                if (!isLessThan48Hours)
+                                  handleMouseEnter(e.currentTarget);
+                              }}
+                              onMouseLeave={(e) => {
+                                if (!isLessThan48Hours)
+                                  handleMouseLeave(e.currentTarget);
+                              }}
+                            >
+                              <span className="schedule1-text242">Amend</span>
+                            </div>
+                          );
+                        })()}
+
                         <div
                           className="schedule1-container319"
                           onMouseEnter={(e) =>

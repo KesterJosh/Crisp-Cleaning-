@@ -332,7 +332,7 @@ const Dashboard = (props) => {
 
   return (
     <div className="dashboard-container100">
-      {booking && <BookingPopup onClose={() => setBooking(false)} />}
+      {booking && <BookingPopup onClose={() => setBooking(false)}/>}
       {editClean && upcomingClean && (
         <UpdateClean
           cleanId={upcomingClean._id}
@@ -516,11 +516,9 @@ const Dashboard = (props) => {
                 <span className="dashboard-text113">
                   <br />
                   <span>
-                    Scheduled for
                     {Next && (
                       <span>
-                        {" "}
-                        "
+                        Scheduled for:{" "}
                         {Next.typeOfClean == 280
                           ? "Vacant"
                           : Next.typeOfClean == 135
@@ -528,7 +526,7 @@ const Dashboard = (props) => {
                           : Next.typeOfClean == 45
                           ? "Regular"
                           : "Unknown"}{" "}
-                        Clean"
+                        Clean
                       </span>
                     )}
                   </span>
@@ -891,16 +889,18 @@ const Dashboard = (props) => {
               Upcoming
             </div>
             <div className="dashboard-container160">
-              {Next ? (
+              {upcomingClean ? (
                 <div className="google-style-clean-card">
                   <div className="font-medium text-slate-600 text-md mb-1">
-                    {Next.date}
+                    {upcomingClean.date}
                   </div>
                   <div className="uc">
                     <div className="uc-border"></div>
-                    {cleanType(Next.typeOfClean)}
+                    {cleanType(upcomingClean.typeOfClean)}
                   </div>
-                  <small className="uc-date">{Next.date.split("/")[2]}</small>
+                  <small className="uc-date">
+                    {upcomingClean.date.split("/")[2]}
+                  </small>
                 </div>
               ) : (
                 <div className="google-style-clean-card">
