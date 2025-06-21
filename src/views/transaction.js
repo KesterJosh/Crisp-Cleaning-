@@ -186,17 +186,6 @@ const Transaction = (props) => {
   const [videoURL, setVideoURL] = useState(null);
 
   useEffect(() => {
-    if (showPopup) {
-      gsap.from(popupRef.current, {
-        duration: 0.4,
-        scale: 0.8,
-        opacity: 0,
-        ease: "power2.out",
-      });
-    }
-  }, [showPopup]);
-
-  useEffect(() => {
     const query = new URLSearchParams(window.location.search);
     const sessionId = query.get("session_id");
 
