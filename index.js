@@ -166,7 +166,6 @@ const SendMail = (
   transporter
     .sendMail(mailOption)
     .then(() => {
-      console.log("Commercial email sent");
       res.status(200).json({ success: true, message: "Email sent" });
     })
     .catch((error) => {
@@ -194,7 +193,6 @@ const SendContactMail = (
   transporter
     .sendMail(mailOption)
     .then(() => {
-      console.log("Contact email sent");
       res.status(200).json({ success: true, message: "Email sent" });
     })
     .catch((error) => {
@@ -607,8 +605,6 @@ app.get("/user-clean/:id", async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    // console.log(user)
-
     // Find cleaning records with the user's email
     const cleanRecords = await cleanModel
       .find({ email: user.email })
@@ -623,7 +619,6 @@ app.get("/user-clean/:id", async (req, res) => {
       },
       cleanRecords: cleanRecords,
     });
-    console.log(cleanRecords);
   } catch (error) {
     console.error("Error fetching user or cleaning records:", error);
     res.status(500).json({ message: "Server error", error: error.message });
