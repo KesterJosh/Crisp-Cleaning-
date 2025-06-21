@@ -13,6 +13,11 @@
     rgb(214, 214, 214) 100%
   );
 }
+.disabled-button {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+}
 .logout-popup {
   background: #fff;
   padding: 20px 30px;

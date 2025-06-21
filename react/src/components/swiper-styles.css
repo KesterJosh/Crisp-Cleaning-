@@ -2,12 +2,15 @@
 .swiper-container {
   position: relative;
   width: 100%;
-  height: 100vh;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background: white;
   font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont,
     sans-serif;
 }
+
 .password-input-wrapper {
   position: relative;
 }
@@ -28,6 +31,21 @@
   font-size: 1rem;
   color: #666;
 }
+.close-button {
+  position: absolute;
+  top: 15px; /* Adjust top padding as needed */
+  right: 15px; /* Adjust right padding as needed */
+  background: none;
+  border: none;
+  font-size: 24px; /* Makes the 'X' large enough */
+  font-weight: bold;
+  cursor: pointer;
+  color: #fff; /* A dark grey color, adjust to your theme */
+  z-index: 1000; /* Ensures the button is on top of other content */
+  padding: 5px;
+  line-height: 1; /* Helps with vertical alignment of the 'X' */
+  transition: color 0.2s ease-in-out; /* Smooth hover effect */
+}
 
 .close-btn2 {
   color: white;
@@ -44,8 +62,8 @@
   top: 0;
   right: 0;
   height: 100vh;
-  overflow: hidden;
-  background: rgba(0, 0, 0, 0.514);
+  overflow-y: scroll;
+  background: rgba(0, 0, 0, 0.725);
   z-index: 9999;
   font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont,
     sans-serif;
@@ -89,11 +107,10 @@
   padding: 40px;
   max-width: 900px;
   width: 100%;
-  max-height: 90vh;
+  max-height: 1400px;
   overflow-y: auto;
-  box-shadow: 0 32px 64px rgba(0, 0, 0, 0.12);
-  position: relative;
-  backdrop-filter: blur(20px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(10px);
 }
 
 /* Slide header */
@@ -265,77 +282,72 @@
   font-weight: 600;
 }
 
-/* Room visualization */
-.room-visualization {
-  margin: 32px 0;
-  text-align: center;
-}
-
-.hearts-container {
+.h {
   display: flex;
   justify-content: center;
-  gap: 12px;
-  margin-bottom: 24px;
+  align-items: center;
 }
 
-.heart-wrapper {
-  transition: all 0.3s ease;
+.box2x {
+  /* This element might contain other layout elements,
+       ensure it acts as a container for the stacked items */
+  width: 100%;
+  display: flex; /* Keep this flex to center the .house-display-area */
+  justify-content: center;
+  align-items: center;
 }
 
-.heart-wrapper.invisible {
-  opacity: 0.2;
-  transform: scale(0.8);
-}
-
-.heart-wrapper.visible {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.heart {
-  width: 32px;
-  height: 32px;
-  background: #e5e7eb;
-  border-radius: 50%;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+/* --- IMPORTANT: Styles for Stacking Images --- */
+.house-display-area {
   position: relative;
+  width: 30%; /* Example: large enough to comfortably hold icons */
+  height: 100%; /* Example: large enough to comfortably hold icons */
 }
 
-.heart.active {
-  background: linear-gradient(135deg, #ff914d, #e8823d);
-  animation: heartbeat 2s ease-in-out infinite alternate;
-  box-shadow: 0 4px 16px rgba(255, 145, 77, 0.4);
+.visibX {
+  position: absolute; /* Take elements out of normal flow and position them on top of each other */
+  top: 50%; /* Center vertically within .house-display-area */
+  left: 50%; /* Center horizontally within .house-display-area */
+  transform: translate(
+    -50%,
+    -50%
+  ); /* Adjust to perfectly center the element itself */
+  width: 100%; /* Make visibX fill its parent .house-display-area */
+  height: 100%; /* Make visibX fill its parent .house-display-area */
+  display: flex; /* Use flex to center the actual icon (heart, heartx, etc.) within visibX */
+  justify-content: center;
+  align-items: center;
+  /* z-index is implicitly handled by DOM order for positioned elements:
+     The last element rendered in the HTML will naturally appear on top if they overlap. */
 }
 
-@keyframes heartbeat {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(1.1);
-  }
+/* Styling for the icons themselves (hearts, etc.) */
+.heart,
+.heartx,
+.heartx2,
+.heartx3 {
+  width: 100%; /* Example size for the icons */
+  height: 100px; /* Example size for the icons */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Counter controls */
 .counters-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 24px;
   margin: 32px 0;
 }
 
 .counter-group {
   text-align: center;
-  padding: 24px;
-  border: 2px solid #e5e7eb;
-  border-radius: 20px;
-  background: white;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .counter-group:hover {
   border-color: #ff914d;
-  box-shadow: 0 8px 24px rgba(255, 145, 77, 0.12);
   transform: translateY(-2px);
 }
 
@@ -348,9 +360,8 @@
 }
 
 .counter-btn {
-  width: 44px;
-  height: 44px;
-  border: 2px solid #ff914d;
+  width: 30px;
+  height: 30px;
   border-radius: 12px;
   background: white;
   color: #ff914d;
@@ -378,7 +389,7 @@
 }
 
 .counter-value {
-  font-size: 2rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #1a1a1a;
   min-width: 64px;
@@ -482,7 +493,6 @@
   gap: 4px;
   background: transparent;
   border-radius: 16px;
-  overflow: hidden;
   min-height: 280px;
 }
 
@@ -754,17 +764,20 @@
 .schedule-options {
   margin-top: 32px;
   border-radius: 20px;
-  padding: 28px;
 }
 
 .clean-type-toggle {
   display: flex;
   gap: 20px;
-  justify-content: center;
+  justify-content: space-between;
   margin-bottom: 32px;
   padding: 6px;
 }
-
+.hidden-btn {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 .toggle-btn {
   padding: 14px 28px;
   border: none;
@@ -1080,9 +1093,10 @@
 .slide-footer {
   display: flex;
   justify-content: space-between;
+  width: 90%;
   align-items: center;
-  margin-top: 48px;
-  padding-top: 32px;
+  margin: 48px;
+  padding: 32px;
   border-top: 1px solid #e5e7eb;
 }
 
@@ -1118,6 +1132,7 @@
 
 .navigation-buttons {
   display: flex;
+  justify-content: center;
   gap: 16px;
 }
 
@@ -1171,7 +1186,7 @@
 /* Navigation arrows */
 .swiper-nav {
   position: absolute;
-  top: 50%;
+  top: 40%;
   transform: translateY(-50%);
   width: 64px;
   height: 64px;
@@ -1194,19 +1209,16 @@
 }
 
 .swiper-nav-left {
-  left: 32px;
+  left: 10%;
 }
 
 .swiper-nav-right {
-  right: 32px;
+  right: 10%;
 }
 
 /* Pagination */
 .swiper-pagination {
-  position: absolute;
-  bottom: 32px;
-  left: 50%;
-  transform: translateX(-50%);
+  margin-top: 15px;
   display: flex;
   gap: 12px;
   z-index: 100;
@@ -1217,7 +1229,7 @@
   height: 12px;
   border-radius: 50%;
   border: none;
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(189, 186, 186, 0.4);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -1228,7 +1240,7 @@
 }
 
 .pagination-dot.active {
-  background: white;
+  background: #bbb;
   transform: scale(1.3);
   box-shadow: 0 4px 12px rgba(255, 255, 255, 0.4);
 }
@@ -1280,6 +1292,25 @@
   font-weight: 600;
 }
 
+.total-text {
+  font-weight: bolder;
+  font-size: 28px;
+}
+.total-number,
+.tim {
+  color: #ff914d;
+}
+.sum-txt {
+  text-align: end;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.sum-txt h5 {
+  font-size: 24px;
+  color: #ff914d;
+  font-weight: bolder;
+}
 /* Enhanced validation highlights */
 .validation-active .quote-option:not(.selected),
 .validation-active .cleaning-type:not(.selected),
@@ -1339,7 +1370,7 @@
 @media (max-width: 1024px) {
   .slide-content {
     padding: 32px;
-    max-width: 700px;
+    max-width: 400px;
   }
 
   .cleaning-types {

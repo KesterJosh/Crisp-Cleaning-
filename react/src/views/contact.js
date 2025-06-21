@@ -450,17 +450,6 @@ const Contact = (props) => {
                   support@crispcleaningcorp.com.au
                 </a>
               </div>
-              <div className="contact-container23">
-                <h1 className="contact-text22">Office</h1>
-                <span className="contact-text23">
-                  Come say hello at our office HQ.
-                </span>
-                <span className="contact-text24">
-                  <span>100 Smith Street</span>
-                  <br></br>
-                  <span>Collingwood VIC 3066 AU</span>
-                </span>
-              </div>
               <div className="contact-container24">
                 <h1 className="contact-text28">Phone</h1>
                 <span className="contact-text29">Mon-Fri from 8am to 5pm.</span>

@@ -9,6 +9,9 @@ const userSchema = new mongoose.Schema({
   address: { type: String, required: true },
   referral: { type: String },
   verified: { type: Boolean, require: true },
+  resetOtp: { type: String },
+  otpExpires: { type: Date },
+
   date_joined: { type: String, required: true }, // Add this field
 });
 

@@ -199,14 +199,47 @@ const CalenSchedule = ({
 
   const cleansByDate = React.useMemo(() => {
     const map = {};
-    cleans.forEach((clean) => {
-      const parsed = moment(clean.date); // parse natural language date
-      if (!parsed.isValid()) return;
 
-      const key = parsed.format("YYYY-MM-DD");
-      if (!map[key]) map[key] = [];
-      map[key].push(clean);
+    const currentYear = new Date().getFullYear();
+    const endOfYear = moment().endOf("year");
+
+    cleans.forEach((clean) => {
+      if (clean.regularOronetime) {
+        const start = moment(parseInt(clean.deltatime)).startOf("day");
+        const end = endOfYear;
+
+        // Loop from start date to end of year
+        let day = start.clone();
+        while (day.isSameOrBefore(end, "day")) {
+          const weekday = day.day(); // 0 (Sun) to 6 (Sat)
+          const isOnThisDay =
+            (weekday === 0 && clean.sun === "1") ||
+            (weekday === 1 && clean.mon === "1") ||
+            (weekday === 2 && clean.tue === "1") ||
+            (weekday === 3 && clean.wed === "1") ||
+            (weekday === 4 && clean.thu === "1") ||
+            (weekday === 5 && clean.fri === "1") ||
+            (weekday === 6 && clean.sat === "1");
+
+          if (isOnThisDay) {
+            const key = day.format("YYYY-MM-DD");
+            if (!map[key]) map[key] = [];
+            map[key].push(clean);
+          }
+
+          day.add(1, "day");
+        }
+      } else {
+        // One-time clean
+        const parsed = moment(clean.date);
+        if (!parsed.isValid()) return;
+
+        const key = parsed.format("YYYY-MM-DD");
+        if (!map[key]) map[key] = [];
+        map[key].push(clean);
+      }
     });
+
     return map;
   }, [cleans]);
 
@@ -261,11 +294,22 @@ const CalenSchedule = ({
             );
           })}
 
-        {dayCleans.length === 0 && !isPast && isCurrentMonth && isSelected && (
-          <button className="book-now-btn" onClick={() => setBooking(true)}>
-            Book Now
-          </button>
-        )}
+        {(() => {
+          const hoursUntilDay = moment(fullDate).diff(moment(), "hours");
+          const isMoreThan48HoursAway = hoursUntilDay >= 48;
+
+          return (
+            dayCleans.length === 0 &&
+            !isPast &&
+            isCurrentMonth &&
+            isSelected &&
+            isMoreThan48HoursAway && (
+              <button className="book-now-btn" onClick={() => setBooking(true)}>
+                Book Now
+              </button>
+            )
+          );
+        })()}
       </div>
     );
   };

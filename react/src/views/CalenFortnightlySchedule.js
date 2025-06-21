@@ -12,7 +12,7 @@ const CalenFortnightlySchedule = ({
 }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const calendarRef = useRef(null);
-  const [calendarMode, setCalendarMode] = useState("fortnightly"); // or "monthly"
+  const [calendarMode, setCalendarMode] = useState("fortnight"); // or "monthly"
   const [cleans, setCleans] = useState([]);
   const [currentStartDate, setCurrentStartDate] = useState(new Date());
   const [booking, setBooking] = useState(false);
@@ -207,9 +207,37 @@ const CalenFortnightlySchedule = ({
       dayMoment.month() === moment(currentStartDate).month();
     const isPastDate = dayMoment.isBefore(moment(), "day");
 
-    const matchingCleans = cleans.filter((clean) =>
-      moment(clean.date).isSame(dayMoment, "day")
-    );
+const matchingCleans = cleans.filter((clean) => {
+  const cleanDate = moment(dayMoment).startOf("day");
+
+  if (clean.regularOronetime) {
+    // For recurring cleans, show on selected weekdays
+    const start = moment(parseInt(clean.deltatime)).startOf("day");
+    const end = moment().endOf("year");
+
+    // Skip if before the start date or after the year ends
+    if (cleanDate.isBefore(start) || cleanDate.isAfter(end)) return false;
+
+    // Get weekday (0=Sunday, 6=Saturday)
+    const weekday = cleanDate.day(); // 0 - 6
+
+    const weekdayMap = {
+      0: clean.sun === "1",
+      1: clean.mon === "1",
+      2: clean.tue === "1",
+      3: clean.wed === "1",
+      4: clean.thu === "1",
+      5: clean.fri === "1",
+      6: clean.sat === "1",
+    };
+
+    return weekdayMap[weekday];
+  } else {
+    // For one-time cleans
+    return moment(clean.date).isSame(cleanDate, "day");
+  }
+});
+
 
     const handleClick = () => {
       if (!isPastDate) {
@@ -246,11 +274,20 @@ const CalenFortnightlySchedule = ({
           );
         })}
 
-        {!isPastDate && isSelected && (
-          <button onClick={() => setBooking(true)} className="book-now-btn">
-            Book Now
-          </button>
-        )}
+        {(() => {
+          const hoursUntilDay = dayMoment.diff(moment(), "hours");
+          const isMoreThan48HoursAway = hoursUntilDay >= 48;
+
+          return (
+            !isPastDate &&
+            isSelected &&
+            isMoreThan48HoursAway && (
+              <button onClick={() => setBooking(true)} className="book-now-btn">
+                Book Now
+              </button>
+            )
+          );
+        })()}
       </div>
     );
   };
@@ -266,7 +303,7 @@ const CalenFortnightlySchedule = ({
               onMouseEnter={(e) => handleMouseEnterFadex(e.currentTarget)}
               onMouseLeave={(e) => handleMouseLeaveFadex(e.currentTarget)}
             >
-              Fortnightly
+              Fortnight
             </span>
             <span
               onClick={changeCalend}

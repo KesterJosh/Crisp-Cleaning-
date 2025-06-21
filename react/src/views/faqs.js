@@ -14,6 +14,11 @@ import RegisterPopup from "../components/RegisterPopup";
 const FAQs = (props) => {
   const [login, setLogin] = useState(false);
   const [register, setRegister] = useState(false);
+
+  const handleClick = () => {
+    sessionStorage.setItem("scrollToRef", "about");
+    window.location.href = "/";
+  };
   const handleMouseEnter = (event) => {
     const container = event.currentTarget;
 
@@ -969,6 +974,7 @@ const FAQs = (props) => {
                 type="button"
                 className="review-button button"
                 onMouseEnter={activateX}
+                onClick={handleClick}
                 onMouseLeave={offX}
               >
                 Receive a Quote

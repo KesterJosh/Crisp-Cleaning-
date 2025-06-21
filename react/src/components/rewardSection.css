@@ -1,0 +1,26 @@
+.reward-pagination-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.reward_container_main {
+  width: 100%;
+}
+
+.reward-prev-btn,
+.reward-next-btn {
+  background: #ff914d;
+  border: 1px solid #ff914d;
+  padding: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 50px;
+}
+
+.reward-prev-btn:disabled,
+.reward-next-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

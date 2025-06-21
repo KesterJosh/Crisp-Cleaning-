@@ -4,10 +4,23 @@ import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import "./login.css";
-import { Eye, EyeSlashIcon } from "@phosphor-icons/react";
+import { Eye, EyeSlash } from "@phosphor-icons/react";
+import ResetPassword from "../components/ResetPassword";
 
 const Login = ({ CloseLogin, navigateS }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [resetPassword, setResetPassword] = useState(false);
+  const [loading, setLoading] = useState(false); // 🔹 Loading state
+
+  const handleClick = () => {
+    sessionStorage.setItem("scrollToRef", "about");
+    window.location.href = "/";
+    CloseLogin();
+  };
+
+  const openReset = () => {
+    setResetPassword(true);
+  };
 
   useEffect(() => {
     gsap.fromTo(
@@ -28,88 +41,107 @@ const Login = ({ CloseLogin, navigateS }) => {
         .min(6, "Minimum 6 characters")
         .required("Password is required"),
     }),
-    onSubmit: (values) => {
-      axios
-        .post("https://api-crisp-cleaning.onrender.com/login", values)
-        .then((res) => {
-          if (res.data.status === "Success") {
-            sessionStorage.setItem("userId", res.data.userId);
-            localStorage.setItem("user", JSON.stringify(res.data));
-            localStorage.setItem("userEmail", JSON.stringify(values.email));
-            navigateS();
-          } else {
-            alert(res.data.message || "Login failed");
-          }
-        })
-        .catch((err) => console.error(err));
+    onSubmit: async (values) => {
+      try {
+        setLoading(true); // 🔹 Start loading
+        const res = await axios.post("https://api-crisp-cleaning.onrender.com/login", values);
+
+        if (res.data.status === "Success") {
+          sessionStorage.setItem("userId", res.data.userId);
+          localStorage.setItem("user", JSON.stringify(res.data));
+          localStorage.setItem("userEmail", JSON.stringify(values.email));
+          navigateS();
+        } else {
+          alert(res.data.message || "Login failed");
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false); // 🔹 Stop loading
+      }
     },
   });
 
   return (
-    <div className="login-overlay">
-      <div className="login-modal">
-        <button className="login-close" onClick={CloseLogin}>
-          &times;
-        </button>
-        <h2 className="login-heading">Welcome Back</h2>
-        <p className="login-subheading">Please log in to your account</p>
+    <>
+      {resetPassword && (
+        <ResetPassword onClose={() => setResetPassword(false)} />
+      )}
+      <div className="login-overlay">
+        <div className="login-modal">
+          <button className="login-close" onClick={CloseLogin}>
+            &times;
+          </button>
+          <h2 className="login-heading">Welcome Back</h2>
+          <p className="login-subheading">Please log in to your account</p>
 
-        <form onSubmit={formik.handleSubmit} className="login-form">
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              {...formik.getFieldProps("email")}
-              className={`form-input ${
-                formik.touched.email && formik.errors.email ? "error" : ""
-              }`}
-            />
-            {formik.touched.email && formik.errors.email && (
-              <p className="form-error">{formik.errors.email}</p>
-            )}
-          </div>
-
-          <div className="form-group password-group">
-            <label htmlFor="password">Password</label>
-            <div className="password-input-wrapper">
+          <form onSubmit={formik.handleSubmit} className="login-form">
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
               <input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                {...formik.getFieldProps("password")}
+                id="email"
+                type="email"
+                {...formik.getFieldProps("email")}
                 className={`form-input ${
-                  formik.touched.password && formik.errors.password
-                    ? "error"
-                    : ""
+                  formik.touched.email && formik.errors.email ? "error" : ""
                 }`}
               />
-              <button
-                type="button"
-                className="toggle-password"
-                onClick={() => setShowPassword((prev) => !prev)}
-                tabIndex={-1}
-              >
-                {showPassword ? <EyeSlashIcon size={18} /> : <Eye size={18} />}
-              </button>
+              {formik.touched.email && formik.errors.email && (
+                <p className="form-error">{formik.errors.email}</p>
+              )}
             </div>
-            {formik.touched.password && formik.errors.password && (
-              <p className="form-error">{formik.errors.password}</p>
-            )}
-          </div>
 
-          <button type="submit" className="login-submit">
-            Login
-          </button>
-        </form>
+            <div className="form-group password-group">
+              <label htmlFor="password">Password</label>
+              <div className="password-input-wrapper">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  {...formik.getFieldProps("password")}
+                  className={`form-input ${
+                    formik.touched.password && formik.errors.password
+                      ? "error"
+                      : ""
+                  }`}
+                />
+                <button
+                  type="button"
+                  className="toggle-password"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeSlash size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+              {formik.touched.password && formik.errors.password && (
+                <p className="form-error">{formik.errors.password}</p>
+              )}
+            </div>
 
-        <p className="login-footer">
-          Don't have an account?{" "}
-          <span className="register-link" onClick={CloseLogin}>
-            Register
-          </span>
-        </p>
+            <button
+              type="submit"
+              className="login-submit"
+              disabled={loading} // 🔹 Prevent double submission
+            >
+              {loading ? "Logging in..." : "Login"} {/* 🔹 Change text */}
+            </button>
+          </form>
+
+          <p className="login-footer">
+            Don't have an account?{" "}
+            <span className="register-link" onClick={handleClick}>
+              Register
+            </span>
+          </p>
+
+          <p className="login-footer">
+            <span className="register-link" onClick={openReset}>
+              Forgot Password?
+            </span>
+          </p>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

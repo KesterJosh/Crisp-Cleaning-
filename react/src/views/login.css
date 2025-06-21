@@ -9,10 +9,44 @@
   z-index: 2000;
   padding: 1rem;
 }
+.login-overlay2 {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 30, 30, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 4000;
+  padding: 1rem;
+}
+.login-overlay3 {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 30, 30, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5000;
+  padding: 1rem;
+}
 .password-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
+}
+
+.password-input-wrapper input {
+  width: 100%;
+  padding-right: 2.5rem;
+}
+
+.toggle-password-btn {
+  position: absolute;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #888;
 }
 
 .toggle-password {

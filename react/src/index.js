@@ -32,6 +32,8 @@ import Settingsroom from "./views/settingsroom";
 import Ref from "./views/ref";
 import { useEffect } from "react";
 import PrivateRoute from "./components/PrivateRoute";
+import ScrollToTop from "./components/ScrollToTop";
+import RouteGuard from "./components/RouteGuard";
 
 const App = () => {
   const userId = JSON.parse(localStorage.getItem("user"))?.userId;
@@ -42,30 +44,34 @@ const App = () => {
     }
   });
   return (
-    <HashRouter>
-      <Switch>
-        <Route component={Home} exact path="/" />
-        <Route component={contact} exact path="/contact" />
-        <Route component={About} path="/about" />
-        <Route component={Review} path="/review" />
-        <Route component={FAQs} path="/faqs" />
-        <Route component={Ref} path="/ref" />
-        <Route component={success} exact path="/success" />
-        <Route component={cancel} exact path="/cancel" />
-        <Route component={Page} exact path="/page" />
-        <PrivateRoute component={Dashboard} exact path="/dashboard" />
-        <PrivateRoute component={Reward} exact path="/reward" />
-        <PrivateRoute component={Settings} exact path="/settings" />
-        <PrivateRoute component={Settingsroom} path="/settingsroom" />
-        <PrivateRoute component={Transaction} exact path="/transaction" />
-        <PrivateRoute component={Referral} exact path="/referral" />
-        <PrivateRoute component={Schedule1} exact path="/schedule" />
-        <PrivateRoute component={Cleanerspass} exact path="/cleanerspass" />
-        <PrivateRoute component={Cleanerspass2} exact path="/cleanerspass2" />
-        <Route component={NotFound} path="**" />
-        <Redirect to="**" />
-      </Switch>
-    </HashRouter>
+    <>
+      <HashRouter>
+        <ScrollToTop />
+        <RouteGuard />
+        <Switch>
+          <Route component={Home} exact path="/" />
+          <Route component={contact} exact path="/contact" />
+          <Route component={About} path="/about" />
+          <Route component={Review} path="/review" />
+          <Route component={FAQs} path="/faqs" />
+          <Route component={Ref} path="/ref" />
+          <Route component={success} exact path="/success" />
+          <Route component={cancel} exact path="/cancel" />
+          <Route component={Page} exact path="/page" />
+          <PrivateRoute component={Dashboard} exact path="/dashboard" />
+          <PrivateRoute component={Reward} exact path="/reward" />
+          <PrivateRoute component={Settings} exact path="/settings" />
+          <PrivateRoute component={Settingsroom} path="/settingsroom" />
+          <PrivateRoute component={Transaction} exact path="/transaction" />
+          <PrivateRoute component={Referral} exact path="/referral" />
+          <PrivateRoute component={Schedule1} exact path="/schedule" />
+          <PrivateRoute component={Cleanerspass} exact path="/cleanerspass" />
+          <PrivateRoute component={Cleanerspass2} exact path="/cleanerspass2" />
+          <Route component={NotFound} path="**" />
+          <Redirect to="**" />
+        </Switch>
+      </HashRouter>
+    </>
   );
 };
 

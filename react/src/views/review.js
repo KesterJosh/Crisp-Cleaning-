@@ -18,6 +18,11 @@ const Review = (props) => {
   const [login, setLogin] = useState(false);
   const [register, setRegister] = useState(false);
 
+  const handleClick = () => {
+    sessionStorage.setItem("scrollToRef", "about");
+    window.location.href = `${window.location.origin}/`;
+  };
+
   const handleLoadMore = () => {
     setLoading(true);
     setTimeout(() => {
@@ -2304,10 +2309,14 @@ const Review = (props) => {
               <br />
             </span>
             <div className="review-container51">
-              <Link to="/">
+              <Link
+                to="/"
+                onClick={() => sessionStorage.setItem("scrollToRef", "about")}
+              >
                 <button
                   type="button"
                   className="review-button button"
+                  onClick={handleClick}
                   onMouseEnter={activateX}
                   onMouseLeave={offX}
                   style={{ cursor: "pointer" }}

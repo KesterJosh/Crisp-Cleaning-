@@ -1,13 +1,10 @@
-import React,{useEffect, useState} from 'react'
-import gsap from 'gsap'
+import React, { useEffect, useState } from "react";
+import gsap from "gsap";
 
-import './popclearn.css' 
+import "./popclearn.css";
 
-const Popclearn = ({CloseCancelScreen}) => {
-
-  
+const Popclearn = ({ CloseCancelScreen, handleCancel }) => {
   useEffect(() => {
-
     gsap.fromTo(
       ".popclearn-container2",
       { y: 50 },
@@ -20,7 +17,7 @@ const Popclearn = ({CloseCancelScreen}) => {
       scale: 1.05,
       opacity: 0.9,
       duration: 0.3,
-      ease: 'power2.out',
+      ease: "power2.out",
     });
   };
 
@@ -29,8 +26,13 @@ const Popclearn = ({CloseCancelScreen}) => {
       scale: 1,
       opacity: 1,
       duration: 0.3,
-      ease: 'power2.out',
+      ease: "power2.out",
     });
+  };
+
+  const cancelUpgrade = () => {
+    handleCancel();
+    CloseCancelScreen();
   };
 
   return (
@@ -46,18 +48,28 @@ const Popclearn = ({CloseCancelScreen}) => {
           also lose any unclaimed rewards, and full access to the rewards system
         </span>
         <div className="popclearn-container3">
-          <button type="button" className="popclearn-button1 button" onClick={CloseCancelScreen} onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
-                  onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}>
+          <button
+            type="button"
+            className="popclearn-button1 button"
+            onClick={CloseCancelScreen}
+            onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
+            onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
+          >
             <span className="popclearn-text5">Go Back</span>
           </button>
-          <button type="button" className="popclearn-button2 button" onClick={CloseCancelScreen} onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
-                  onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}>
+          <button
+            type="button"
+            className="popclearn-button2 button"
+            onClick={cancelUpgrade}
+            onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
+            onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
+          >
             <span className="popclearn-text6">Proceed to cancel</span>
           </button>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Popclearn
+export default Popclearn;

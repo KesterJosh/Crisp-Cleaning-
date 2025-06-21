@@ -375,6 +375,14 @@ const Home = (props) => {
     }
   }, [isHoveredGG]);
 
+  const sectionRef = useRef(null);
+
+  const scrollToSection = () => {
+    const offset = 0; // pixels
+    const top = sectionRef.current.offsetTop - offset;
+    window.scrollTo({ top, behavior: "smooth" });
+  };
+
   // Toggle hover state on mouse enter/leave
   const handleMouseEnterGG = () => {
     setHoveredGG(true);
@@ -1432,6 +1440,19 @@ const Home = (props) => {
     }
   };
 
+  useEffect(() => {
+    const scrollTo = sessionStorage.getItem("scrollToRef");
+    if (scrollTo === "about" && sectionRef.current) {
+      // Clear the flag to prevent future unintended scrolls
+      sessionStorage.removeItem("scrollToRef");
+
+      // Scroll to the ref after render
+      setTimeout(() => {
+        sectionRef.current.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
+  }, []);
+
   return (
     <div className="home-container">
       {showPopup && <RegisterPopup onClose={() => setShowPopup(false)} />}
@@ -1556,9 +1577,9 @@ const Home = (props) => {
           </span>
           <span
             className="home-text011"
-            onClick={() => setShowPopup(true)}
             onMouseEnter={handleMouseEnterX}
             onMouseLeave={handleMouseLeaveX}
+            onClick={scrollToSection}
           >
             Get Started Now
           </span>
@@ -1566,13 +1587,20 @@ const Home = (props) => {
       </div>
       <Mobilex mobileM={mobileMenu} />
       <div className="hero">
-        <h1>Transforming Spaces, One clean at a Time</h1>
-        <h5>
-          Explore our range of cleaning solutions and experience the difference
-          of a pristine space today.
-        </h5>
+        <video className="background-video" autoPlay loop muted playsInline>
+          <source src="/img/Final.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+
+        <div className="hero-content">
+          <h1>Transforming Spaces, One clean at a Time</h1>
+          <h5>
+            Explore our range of cleaning solutions and experience the
+            difference of a pristine space today.
+          </h5>
+        </div>
       </div>
-      <CleaningSwiper />
+      <CleaningSwiper ref={sectionRef} />
       <div className="home-container019">
         {/* Menu  */}
         <div className="Mobilegeneral">
