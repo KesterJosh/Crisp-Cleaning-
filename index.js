@@ -18,6 +18,10 @@ const webhookRoutes = require("./routes/stripeWebhook.js");
 const Payment = require("./models/Payment.js");
 const { OAuth2Client } = require("google-auth-library");
 const GoogleUser = require("./models/GoogleUser.js");
+const authRoutes = require("./routes/resetPassword.js");
+const otpAuth = require("./routes/otpVerification.js");
+const updatePassword = require("./routes/updatePassword.js");
+const transporter = require("./utils/emailService");
 
 require("dotenv").config;
 const client = new OAuth2Client(
@@ -36,6 +40,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads"));
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/auth", otpAuth);
+app.use("/api/auth", updatePassword);
 
 app.get("/", async (req, res) => {
   const items = await itemModel.find();
@@ -105,38 +112,11 @@ app.post("/data", (req, res) => {
       res.status(500).json("An error occurred while retrieving the user data");
     });
 });
-
-// nodemailer stuff
-console.log("Email:", process.env.AUTH_EMAIL);
-console.log(
-  "Password:",
-  process.env.AUTH_PASSWORD ? "Password is set" : "Password is missing"
-);
-let transporter = nodemailer.createTransport({
-  host: "smtp.mailersend.net", // SMTP server
-  port: 587, // Port for STARTTLS
-  secure: false, // Use STARTTLS (false for port 587)
-  auth: {
-    user: "MS_acmUf3@trial-7dnvo4dxzd9g5r86.mlsender.net", // Your username
-    pass: "zYyeUUqykO3MTgxt", // Your password
-  },
-});
-
-// Test transporter
-transporter.verify((error, success) => {
-  if (error) {
-    console.log("Error:", error);
-  } else {
-    console.log("SMTP Server is ready to take messages:", success);
-  }
-});
-
-// Send email
-
+// 📦 Commercial Cleaning Mail
 const SendMail = (
   {
-    businessName,
     contactPerson,
+    businessName,
     email,
     phone,
     address,
@@ -156,86 +136,70 @@ const SendMail = (
   },
   res
 ) => {
-  // url of the email
-  const currentUrl = "http://localhost:4000";
-
   const mailOption = {
-    from: "MS_acmUf3@trial-7dnvo4dxzd9g5r86.mlsender.net",
-    to: "adeemole@gmail.com",
-    subject: "Commercial Cleaning Initiated",
+    from: `"Crisp Cleaning" <preciousopia7@gmail.com>`,
+    to: "adeemole@gmail.com", // or your company email
+    subject: "Commercial Cleaning Request",
     html: `
-    <p>A commercial cleaning request has been submitted by <strong>${contactPerson}</strong>.</p>
-    <p><strong>Business Name:</strong> ${businessName}</p>
-    <p><strong>Contact Person:</strong> ${contactPerson}</p>
-    <p><strong>Email:</strong> ${email}</p>
-    <p><strong>Phone:</strong> ${phone}</p>
-    <p><strong>Address:</strong> ${address}</p>
-    <p><strong>Business Type:</strong> ${businessType}</p>
-    <p><strong>Business Size:</strong> ${businessSize}</p>
-    <p><strong>Cleaning Frequency:</strong> ${cleaningFrequency}</p>
-    <p><strong>Special Requirements:</strong> ${specialRequirements}</p>
-    <p><strong>Preferred Start Date:</strong> ${startDate}</p>
-    <p><strong>Business Hours:</strong> ${businessHours}</p>
-    <p><strong>Access Instructions:</strong> ${accessInstructions}</p>
-    <p><strong>Emergency Contact:</strong> ${emergencyContact}</p>
-    <p><strong>Budget Range:</strong> ${budgetRange}</p>
-    <p><strong>Contract Length:</strong> ${contractLength}</p>
-    <p><strong>Insurance Required:</strong> ${insuranceRequired}</p>
-    <p><strong>Additional Notes:</strong> ${additionalNotes}</p>
-    <p><strong>Tax ID:</strong> ${taxId}</p>
-  `,
+      <p>A commercial cleaning request has been submitted by <strong>${contactPerson}</strong>.</p>
+      <p><strong>Business Name:</strong> ${businessName}</p>
+      <p><strong>Contact Person:</strong> ${contactPerson}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Phone:</strong> ${phone}</p>
+      <p><strong>Address:</strong> ${address}</p>
+      <p><strong>Business Type:</strong> ${businessType}</p>
+      <p><strong>Business Size:</strong> ${businessSize}</p>
+      <p><strong>Cleaning Frequency:</strong> ${cleaningFrequency}</p>
+      <p><strong>Special Requirements:</strong> ${specialRequirements}</p>
+      <p><strong>Preferred Start Date:</strong> ${startDate}</p>
+      <p><strong>Business Hours:</strong> ${businessHours}</p>
+      <p><strong>Access Instructions:</strong> ${accessInstructions}</p>
+      <p><strong>Emergency Contact:</strong> ${emergencyContact}</p>
+      <p><strong>Budget Range:</strong> ${budgetRange}</p>
+      <p><strong>Contract Length:</strong> ${contractLength}</p>
+      <p><strong>Insurance Required:</strong> ${insuranceRequired}</p>
+      <p><strong>Additional Notes:</strong> ${additionalNotes}</p>
+      <p><strong>Tax ID:</strong> ${taxId}</p>
+    `,
   };
 
   transporter
     .sendMail(mailOption)
     .then(() => {
-      console.log("Email sent successfully");
-      res.json({
-        status: "Pending",
-        message: "Email sent successfully",
-      });
+      console.log("Commercial email sent");
+      res.status(200).json({ success: true, message: "Email sent" });
     })
     .catch((error) => {
-      console.log(error);
-      res.json({
-        status: "Failed",
-        message: "Email sending failed",
-      });
+      console.error("Error sending email:", error);
+      res.status(500).json({ success: false, message: "Failed to send email" });
     });
 };
-const response = [];
-
-// Send email
 
 const SendContactMail = (
   { first_name, last_name, email, phone, message },
   res
 ) => {
-  // url of the email
-  const currentUrl = "http://localhost:4000";
-
   const mailOption = {
-    from: "MS_acmUf3@trial-7dnvo4dxzd9g5r86.mlsender.net",
+    from: `"Crisp Support" <preciousopia7@gmail.com>`,
     to: "adeemole@gmail.com",
-    subject: "Contact From Customer",
-    html: `<p>This message came from ${first_name} ${last_name}</p><p>With Email: ${email}</p><p>Phone Number: ${phone}</p><p>Here is the message:<br/> <b>${message}</b></p>`,
+    subject: "New Customer Contact Form",
+    html: `
+      <p>This message came from <strong>${first_name} ${last_name}</strong></p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Phone Number:</strong> ${phone}</p>
+      <p><strong>Message:</strong><br/> ${message}</p>
+    `,
   };
 
   transporter
     .sendMail(mailOption)
     .then(() => {
-      console.log("Email sent successfully");
-      res.json({
-        status: "Pending",
-        message: "Email sent successfully",
-      });
+      console.log("Contact email sent");
+      res.status(200).json({ success: true, message: "Email sent" });
     })
     .catch((error) => {
-      console.log(error);
-      res.json({
-        status: "Failed",
-        message: "Email sending failed",
-      });
+      console.error("Error sending email:", error);
+      res.status(500).json({ success: false, message: "Failed to send email" });
     });
 };
 
@@ -834,17 +798,64 @@ app.post("/create-tip-session", async (req, res) => {
     ],
     mode: "payment",
     success_url:
-      "https://crisp-frontend.onrender.com/success?session_id={CHECKOUT_SESSION_ID}",
-    cancel_url: "https://crisp-frontend.onrender.com/cancel",
+      "https://crisp-frontend.onrender.com/#/success?session_id={CHECKOUT_SESSION_ID}",
+    cancel_url: "https://crisp-frontend.onrender.com/#/cancel",
+  });
+
+  await Payment.create({
+    sessionId: session.id,
+    amount,
+    comment,
+    status: "pending",
+    createdAt: new Date(),
   });
 
   res.json({ id: session.id });
 });
 
 app.get("/payments/:sessionId", async (req, res) => {
-  const payment = await Payment.findOne({ sessionId: req.params.sessionId });
-  if (!payment) return res.status(404).send("Not found");
-  res.json(payment); // should include card object
+  try {
+    const { sessionId } = req.params;
+    const payment = await Payment.findOne({ sessionId });
+
+    if (!payment) return res.status(404).json({ message: "Not found" });
+
+    const card = payment.card || {
+      brand: "Visa",
+      last4: "1234",
+      exp_month: "--",
+      exp_year: "--",
+    };
+
+    res.json({
+      ...payment.toObject(),
+      card,
+    });
+  } catch (err) {
+    console.error("Error fetching payment:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.delete("/clean/user/:id", async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const result = await cleanModel.deleteMany({ email: user.email });
+
+    res.status(200).json({
+      success: true,
+      message: `${result.deletedCount} cleans deleted for user ${user.email}`,
+    });
+  } catch (error) {
+    console.error("Error deleting cleans by email:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
 });
 
 app.listen(4000, () => {
