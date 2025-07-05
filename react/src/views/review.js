@@ -332,7 +332,6 @@ const Review = (props) => {
 
         // Optionally, you can listen for animation complete event
         lottieInstance.addEventListener("complete", () => {
-          console.log("Lottie animation completed");
         });
       }
     }
@@ -442,7 +441,7 @@ const Review = (props) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/reviews")
+      .get("https://api-crisp-cleaning.onrender.com/api/reviews")
       .then((res) => {
         const fetchedReviews = res.data.data;
         const filteredVideos = fetchedReviews.filter(
@@ -459,9 +458,8 @@ const Review = (props) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/reviews")
+      .get("https://api-crisp-cleaning.onrender.com/api/reviews")
       .then((res) => {
-        console.log(res.data);
         if (res.data.success && res.data.data.length > 6) {
           setReviews(res.data.data);
         }

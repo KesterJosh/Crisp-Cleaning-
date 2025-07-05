@@ -148,7 +148,6 @@ const About = (props) => {
 
         // Optionally, you can listen for animation complete event
         lottieInstance.addEventListener("complete", () => {
-          console.log("Lottie animation completed");
         });
       }
     }

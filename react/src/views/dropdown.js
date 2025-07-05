@@ -28,12 +28,6 @@ const Dropdownx = ({yearY, monthY, dayY, timeY}) => {
     // Update state variables based on the selected date and time slot
     setSelectedDate(`${yearx}/${monthx}/${dayx}`);
     setSelectedTimeSlot(timex);
-
-    console.log(yearx);
-    console.log(monthx);
-    console.log(dayx);
-    console.log(timex);
-    console.log(value);
 };
 
 

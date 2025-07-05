@@ -30,7 +30,6 @@ const CancelBooking = ({ onClose, cleanId }) => {
         // Correctly parse your custom date format
         const cleanDateTime = moment(clean.date, "dddd, MMMM D, YYYY").toDate();
 
-        console.log("Clean date from API:", cleanDateTime);
         setCleanDate(cleanDateTime);
 
         const now = new Date();

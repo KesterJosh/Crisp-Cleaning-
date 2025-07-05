@@ -347,12 +347,10 @@ const Cleanerspass = (props) => {
       const result = ((100 - 20) / 100) * discount; // 20% is equivalent to 0.2
       setDiscountAmount(20);
       setDiscountNew(result.toFixed(2));
-      console.log(`Result after dividing by 20%: ${result}`);
     } else {
       // Reset the state if the input value is not "PERCENT20"
       setDiscountAmount(0);
       setDiscount(0);
-      console.log('Input value is not "PERCENT20".');
     }
   };
 

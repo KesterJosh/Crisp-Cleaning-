@@ -393,8 +393,6 @@ const Settings = (props) => {
     );
 
     userId = sessionStorage.getItem("userId");
-
-    console.log(userId);
   }, [userId]);
 
   const SummaryRef = useRef(null);
@@ -457,12 +455,10 @@ const Settings = (props) => {
       const result = ((100 - 20) / 100) * discount; // 20% is equivalent to 0.2
       setDiscountAmount(20);
       setDiscountNew(result.toFixed(2));
-      console.log(`Result after dividing by 20%: ${result}`);
     } else {
       // Reset the state if the input value is not "PERCENT20"
       setDiscountAmount(0);
       setDiscount(0);
-      console.log('Input value is not "PERCENT20".');
     }
   };
 
@@ -614,7 +610,6 @@ const Settings = (props) => {
     axios
       .post("https://api-crisp-cleaning.onrender.com/data", { userId })
       .then((result) => {
-        console.log("User Data:", result.data);
         const user = result.data;
         setData(user);
         setOriginalData(user);
@@ -633,7 +628,6 @@ const Settings = (props) => {
     const userId = JSON.parse(localStorage.getItem("user"))?.userId;
 
     if (!userId) return;
-    console.log("fetching");
     try {
       const response = await axios.get(
         `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`
@@ -642,7 +636,6 @@ const Settings = (props) => {
         const cleanList = response.data.cleanRecords;
         const firstClean = cleanList[0];
         setCleans(firstClean);
-        console.log("fetched", cleanList[0]);
 
         if (firstClean) {
           // Ensured numerical conversion from fetched data
@@ -749,12 +742,8 @@ const Settings = (props) => {
     if (firstSpaceIndex !== -1) {
       firstName = fullName.slice(0, firstSpaceIndex); // Extract the first name
       lastName = fullName.slice(firstSpaceIndex + 1); // Extract the remaining part as last name
-
-      // console.log("First Name:", firstName); // Output: "Alexander"
-      // console.log("Last Name:", "Gabriel John");
     } else {
-      // console.log("First Name:", fullName);  // If no spaces, entire name is the first name
-      // console.log("Last Name:", "");         // No last name
+      // No last name
     }
 
     axios
@@ -767,9 +756,7 @@ const Settings = (props) => {
         password: password, // Optional new password
         address: address,
       })
-      .then((response) => {
-        console.log("User updated:", response.data);
-      })
+      .then((response) => {})
       .catch((error) => {
         console.error("Error updating user:", error.response.data);
       });

@@ -70,10 +70,8 @@ const Dashboard = (props) => {
 
       // Check if the response data exists
       if (response.data) {
-        console.log(response.data);
         setCleans(response.data.cleanRecords);
         setError(null);
-        console.log("Cleans fetched successfully:", response.data); // Optional: Debug log
       } else {
         throw new Error("No data found in the response.");
       }
@@ -120,10 +118,8 @@ const Dashboard = (props) => {
 
       // Check if the response data exists
       if (response.data) {
-        console.log(response.data);
         setAllCleans(response.data.cleanRecords);
         setError(null);
-        console.log("All Cleans fetched successfully:", response.data); // Optional: Debug log
       } else {
         throw new Error("No data found in the response.");
       }

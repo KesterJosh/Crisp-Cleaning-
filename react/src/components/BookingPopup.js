@@ -338,7 +338,6 @@ const BookingPopup = ({ onClose }) => {
       );
 
       alert("Clean record created successfully! Redirecting to checkout");
-      console.log("Clean booking response:", response.data);
       return true;
     } catch (error) {
       alert("Error creating clean record.");
@@ -906,10 +905,8 @@ const BookingPopup = ({ onClose }) => {
     if (isValid && currentStep < totalSteps - 1) {
       setCurrentStep(currentStep + 1);
       setShowValidationMessage(false);
-      console.log("Moving to step:", currentStep + 1);
     } else {
       setShowValidationMessage(true);
-      console.log("Validation failed for step:", currentStepId);
     }
   };
 
@@ -917,7 +914,6 @@ const BookingPopup = ({ onClose }) => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
       setShowValidationMessage(false);
-      console.log("Moving back to step:", currentStep - 1);
     }
   };
 
@@ -925,7 +921,6 @@ const BookingPopup = ({ onClose }) => {
     if (step <= currentStep) {
       setCurrentStep(step);
       setShowValidationMessage(false);
-      console.log("Jumping to step:", step);
     }
   };
 

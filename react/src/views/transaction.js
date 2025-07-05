@@ -208,7 +208,6 @@ const Transaction = (props) => {
     fetch(`https://api-crisp-cleaning.onrender.com/payments/${sessionId}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("Payment data:", data);
         setCardInfo(data.card);
       })
       .catch((err) => console.error("Failed to fetch card info:", err));

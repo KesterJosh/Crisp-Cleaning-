@@ -223,9 +223,7 @@ const Home = (props) => {
         });
 
         // Optionally, you can listen for animation complete event
-        lottieInstance.addEventListener("complete", () => {
-          console.log("Lottie animation completed");
-        });
+        lottieInstance.addEventListener("complete", () => {});
       }
     }
   };
@@ -441,7 +439,6 @@ const Home = (props) => {
   const handleMouseLeaveC = () => {
     setIsHoveredx(false);
     document.body.style.cursor = "auto";
-    console.log("false");
     cursor.current.style.display = "none";
   };
 
@@ -569,11 +566,8 @@ const Home = (props) => {
           duration: 0.5,
         });
       }
-
-      // console.log(tabs);
     }
   }, [Summary, tabs, setTabs, setSummary]);
-  // console.log(Summary);
 
   useEffect(() => {
     if (sum == true) {
@@ -852,8 +846,6 @@ const Home = (props) => {
     gsap.to(".home-container192", { right: p4 });
     gsap.to(".home-container192x", { right: p5 });
     gsap.to(".home-container192y", { right: p6 });
-
-    // console.log(tabs);
   }, [tabs, setTabs, setSum, sum]);
 
   useEffect(() => {
@@ -861,8 +853,6 @@ const Home = (props) => {
     let px6 = tabx * 100 - 200 + "%";
     gsap.to(".home-container021", { right: px1 });
     gsap.to(".home-container192y", { right: px6, duration: 0.5 });
-
-    console.log(tabx);
   }, [tabx, setTabx]);
 
   // Final Price
@@ -883,12 +873,10 @@ const Home = (props) => {
       const result = ((100 - 20) / 100) * discount; // 20% is equivalent to 0.2
       setDiscountAmount(20);
       setDiscountNew(result.toFixed(2));
-      console.log(`Result after dividing by 20%: ${result}`);
     } else {
       // Reset the state if the input value is not "PERCENT20"
       setDiscountAmount(0);
       setDiscount(0);
-      console.log('Input value is not "PERCENT20".');
     }
   };
 
@@ -1272,7 +1260,6 @@ const Home = (props) => {
         referral,
       })
       .then((result) => {
-        console.log(result);
         if (result.data.message === "Successful") {
           if (layer === 2) handleSubmitCommercial();
           if (layer === 1) setSum(true);
@@ -1336,7 +1323,6 @@ const Home = (props) => {
         email,
       })
       .then((result) => {
-        console.log(result);
         if (result.data.status === "Pending") {
           alert("Business information submitted successfully.");
           OpenLogin();
@@ -1392,13 +1378,11 @@ const Home = (props) => {
       spComments,
       discountNew,
     };
-    console.log(requestData);
     axios
       .post("https://api-crisp-cleaning.onrender.com/clean", requestData) // Replace with your server endpoint
       .then((response) => {
         alert("Clean record created successfully!");
         OpenLogin();
-        console.log(response.data);
       })
       .catch((error) => {
         alert("Error creating clean record.");
@@ -1460,7 +1444,7 @@ const Home = (props) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/reviews")
+      .get("https://api-crisp-cleaning.onrender.com/api/reviews")
       .then((res) => {
         const fetchedReviews = res.data.data;
         const filteredVideos = fetchedReviews.filter(
@@ -1477,9 +1461,8 @@ const Home = (props) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/reviews")
+      .get("https://api-crisp-cleaning.onrender.com/api/reviews")
       .then((res) => {
-        console.log(res.data);
         if (res.data.success && res.data.data.length > 6) {
           setReviews(res.data.data);
         }

@@ -186,7 +186,6 @@ const Contact = (props) => {
         message,
       })
       .then((result) => {
-        console.log(result);
         if ((result.data = "Successful")) {
           alert(
             "Your informations has been submitted successfully. We will contact you after going through the info"
@@ -196,7 +195,6 @@ const Contact = (props) => {
         }
       })
       .catch((error) => {
-        console.log(error);
         // alert(error.message);
         if (error.message === "Request failed with status code 400") {
           alert("This email has been registered before. Kindly Login");

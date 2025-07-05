@@ -1,152 +1,168 @@
-import { forwardRef, useEffect, useState, useCallback } from "react"
-import axios from "axios"
-import "./swiper-styles.css"
-import { Link } from "react-router-dom/cjs/react-router-dom.min"
-import Login from "../views/login"
-import { Eye, EyeSlashIcon } from "@phosphor-icons/react"
-import MelbourneAddressInput from "./MelbourneInput"
+import { forwardRef, useEffect, useState, useCallback } from "react";
+import axios from "axios";
+import "./swiper-styles.css";
+import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import Login from "../views/login";
+import { Eye, EyeSlashIcon } from "@phosphor-icons/react";
+import MelbourneAddressInput from "./MelbourneInput";
 
 const CleaningSwiper = forwardRef((props, ref) => {
-  const [notify, setNotify] = useState(false)
-  const [login, setLogin] = useState(false)
-  const [activeStepSet, setActiveStepSet] = useState("residential") // or "commercial"
-  const [showPassword, setShowPassword] = useState(false)
-  const [currentStep, setCurrentStep] = useState(0)
-  const [Quote, setQuote] = useState(0)
-  const [type, setType] = useState(0)
-  const [sliderValueO, setSliderValueO] = useState(1)
-  const [sliderValue, setSliderValue] = useState(0)
-  const [sliderValueK, setSliderValueK] = useState(0)
-  const [sliderValueOX, setSliderValueOX] = useState(0)
-  const [windows, setWindows] = useState(0)
-  const [walls, setwalls] = useState(0)
-  const [Cabinets, setCabinets] = useState(0)
-  const [organization, setorganization] = useState(0)
-  const [blind, setblind] = useState(0)
-  const [stovetop, setstovetop] = useState(0)
-  const [fridge, setfridge] = useState(0)
-  const [Dishwasher, setDishwasher] = useState(0)
-  const [garage, setgarage] = useState(0)
-  const [microwave, setmicrowave] = useState(0)
-  const [Laundry, setLaundry] = useState(0)
-  const [tiles, settiles] = useState(0)
-  const [CleanType, setCleanType] = useState(true)
-  const [intervalValue, setIntervalValue] = useState(15)
-  const [GetInside, setGetInside] = useState("I will be home")
-  const [Park, setPark] = useState("I will provide parking on site")
-  const [Animal, setAnimal] = useState("Dog/Cat")
-  const [spComments, setspComments] = useState("")
-  const [supports, setSupports] = useState(false)
-  const [showValidationMessage, setShowValidationMessage] = useState(false)
-  const [isCommercial, setIsCommercial] = useState(false)
-  const [selectedReg, setSelectedReg] = useState(true)
-  const [total, setTotal] = useState(0)
+  const [notify, setNotify] = useState(false);
+  const [login, setLogin] = useState(false);
+  const [activeStepSet, setActiveStepSet] = useState("residential"); // or "commercial"
+  const [showPassword, setShowPassword] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [Quote, setQuote] = useState(0);
+  const [type, setType] = useState(0);
+  const [sliderValueO, setSliderValueO] = useState(1);
+  const [sliderValue, setSliderValue] = useState(0);
+  const [sliderValueK, setSliderValueK] = useState(0);
+  const [sliderValueOX, setSliderValueOX] = useState(0);
+  const [windows, setWindows] = useState(0);
+  const [walls, setwalls] = useState(0);
+  const [Cabinets, setCabinets] = useState(0);
+  const [organization, setorganization] = useState(0);
+  const [blind, setblind] = useState(0);
+  const [stovetop, setstovetop] = useState(0);
+  const [fridge, setfridge] = useState(0);
+  const [Dishwasher, setDishwasher] = useState(0);
+  const [garage, setgarage] = useState(0);
+  const [microwave, setmicrowave] = useState(0);
+  const [Laundry, setLaundry] = useState(0);
+  const [tiles, settiles] = useState(0);
+  const [CleanType, setCleanType] = useState(true);
+  const [intervalValue, setIntervalValue] = useState(15);
+  const [GetInside, setGetInside] = useState("I will be home");
+  const [Park, setPark] = useState("I will provide parking on site");
+  const [Animal, setAnimal] = useState("Dog/Cat");
+  const [spComments, setspComments] = useState("");
+  const [supports, setSupports] = useState(false);
+  const [showValidationMessage, setShowValidationMessage] = useState(false);
+  const [isCommercial, setIsCommercial] = useState(false);
+  const [selectedReg, setSelectedReg] = useState(true);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     const initializeGoogleSignIn = () => {
-      if (window.google && window.google.accounts && window.google.accounts.id) {
+      if (
+        window.google &&
+        window.google.accounts &&
+        window.google.accounts.id
+      ) {
         window.google.accounts.id.initialize({
-          client_id: "617840144228-0fa899q99cktsq7a8culf9cacamvr0kf.apps.googleusercontent.com",
+          client_id:
+            "617840144228-0fa899q99cktsq7a8culf9cacamvr0kf.apps.googleusercontent.com",
           callback: handleCredentialResponse,
-        })
-        window.google.accounts.id.renderButton(document.getElementById("googleSignInButton"), {
-          theme: "outline",
-          size: "large",
-        })
+        });
+        window.google.accounts.id.renderButton(
+          document.getElementById("googleSignInButton"),
+          {
+            theme: "outline",
+            size: "large",
+          }
+        );
       } else {
-        console.error("Google Identity Services not ready")
+        console.error("Google Identity Services not ready");
       }
-    }
+    };
 
     // Wait until the script is actually loaded
     const interval = setInterval(() => {
-      if (window.google && window.google.accounts && window.google.accounts.id) {
-        clearInterval(interval)
-        initializeGoogleSignIn()
+      if (
+        window.google &&
+        window.google.accounts &&
+        window.google.accounts.id
+      ) {
+        clearInterval(interval);
+        initializeGoogleSignIn();
       }
-    }, 100)
+    }, 100);
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
 
   const handleCredentialResponse = (response) => {
-    const credential = response.credential
+    const credential = response.credential;
     axios
       .post(`https://api-crisp-cleaning.onrender.com/google-auth`, {
         credential,
-        clientId: "617840144228-0fa899q99cktsq7a8culf9cacamvr0kf.apps.googleusercontent.com",
+        clientId:
+          "617840144228-0fa899q99cktsq7a8culf9cacamvr0kf.apps.googleusercontent.com",
       })
       .then((response) => {
         if (response.data.success) {
-          const { email, firstName, lastName } = response.data.user
-          localStorage.setItem("user", JSON.stringify(response.data))
+          const { email, firstName, lastName } = response.data.user;
+          localStorage.setItem("user", JSON.stringify(response.data));
         } else {
-          alert(response.data.message || "Authentication failed")
+          alert(response.data.message || "Authentication failed");
         }
-        setIsSubmitting(false)
+        setIsSubmitting(false);
       })
       .catch((error) => {
-        console.error("Error during Google authentication:", error)
+        console.error("Error during Google authentication:", error);
         if (error.response) {
-          alert(error.response.data.message || "An error occurred during authentication")
+          alert(
+            error.response.data.message ||
+              "An error occurred during authentication"
+          );
         } else {
-          alert("Network error or server is down")
+          alert("Network error or server is down");
         }
         setTimeout(() => {
-          alert(null)
-        }, 3000)
-        setIsSubmitting(false)
-      })
-  }
+          alert(null);
+        }, 3000);
+        setIsSubmitting(false);
+      });
+  };
 
   // Calendar and scheduling states
-  const [selectedDate, setSelectedDate] = useState("")
-  const [selectedTime, setSelectedTime] = useState("")
-  const [selectedTimeLabel, setSelectedTimeLabel] = useState("")
-  const [MyDate, setMyDate] = useState("")
-  const [timeFrame, setTimeFrame] = useState(8)
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
+  const [selectedTimeLabel, setSelectedTimeLabel] = useState("");
+  const [MyDate, setMyDate] = useState("");
+  const [timeFrame, setTimeFrame] = useState(8);
 
   // Day selection states for recurring cleans
-  const [daySelect1, setDaySelect1] = useState(0) // Monday
-  const [daySelect2, setDaySelect2] = useState(0) // Tuesday
-  const [daySelect3, setDaySelect3] = useState(0) // Wednesday
-  const [daySelect4, setDaySelect4] = useState(0) // Thursday
-  const [daySelect5, setDaySelect5] = useState(0) // Friday
-  const [daySelect6, setDaySelect6] = useState(0) // Saturday
-  const [daySelect7, setDaySelect7] = useState(0) // Sunday
+  const [daySelect1, setDaySelect1] = useState(0); // Monday
+  const [daySelect2, setDaySelect2] = useState(0); // Tuesday
+  const [daySelect3, setDaySelect3] = useState(0); // Wednesday
+  const [daySelect4, setDaySelect4] = useState(0); // Thursday
+  const [daySelect5, setDaySelect5] = useState(0); // Friday
+  const [daySelect6, setDaySelect6] = useState(0); // Saturday
+  const [daySelect7, setDaySelect7] = useState(0); // Sunday
 
   // User registration states
-  const [firstName, setFirstName] = useState("")
-  const [lastName, setLastName] = useState("")
-  const [email, setEmail] = useState("")
-  const [phone, setPhone] = useState("")
-  const [password, setPassword] = useState("")
-  const [address, setAddress] = useState("")
-  const [referral, setReferral] = useState("")
-  const [acceptTerms, setAcceptTerms] = useState(false)
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [address, setAddress] = useState("");
+  const [referral, setReferral] = useState("");
+  const [acceptTerms, setAcceptTerms] = useState(false);
 
   // Commercial cleaning specific states
-  const [businessType, setBusinessType] = useState("")
-  const [businessSize, setBusinessSize] = useState("")
-  const [cleaningFrequency, setCleaningFrequency] = useState("")
-  const [specialRequirements, setSpecialRequirements] = useState([])
-  const [businessHours, setBusinessHours] = useState("")
-  const [accessInstructions, setAccessInstructions] = useState("")
-  const [emergencyContact, setEmergencyContact] = useState("")
-  const [budgetRange, setBudgetRange] = useState("")
-  const [contractLength, setContractLength] = useState("")
-  const [insuranceRequired, setInsuranceRequired] = useState(false)
+  const [businessType, setBusinessType] = useState("");
+  const [businessSize, setBusinessSize] = useState("");
+  const [cleaningFrequency, setCleaningFrequency] = useState("");
+  const [specialRequirements, setSpecialRequirements] = useState([]);
+  const [businessHours, setBusinessHours] = useState("");
+  const [accessInstructions, setAccessInstructions] = useState("");
+  const [emergencyContact, setEmergencyContact] = useState("");
+  const [budgetRange, setBudgetRange] = useState("");
+  const [contractLength, setContractLength] = useState("");
+  const [insuranceRequired, setInsuranceRequired] = useState(false);
 
   // New commercial cleaning specific states
-  const [businessName, setBusinessName] = useState("")
-  const [typeOfEnvironment, setTypeOfEnvironment] = useState("")
-  const [typeOfClean, setTypeOfClean] = useState("")
-  const [availabilityDays, setAvailabilityDays] = useState([])
-  const [insuranceDocs, setInsuranceDocs] = useState(false)
+  const [businessName, setBusinessName] = useState("");
+  const [typeOfEnvironment, setTypeOfEnvironment] = useState("");
+  const [typeOfClean, setTypeOfClean] = useState("");
+  const [availabilityDays, setAvailabilityDays] = useState([]);
+  const [insuranceDocs, setInsuranceDocs] = useState(false);
 
   // Loading and error states
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitError, setSubmitError] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   // Track validation state for each step
   const [validations, setValidations] = useState({
@@ -162,26 +178,33 @@ const CleaningSwiper = forwardRef((props, ref) => {
     "frequency-schedule": false,
     "insurance-budget": false,
     "commercial-summary": true,
-  })
+  });
 
   // Heart states for room visualization
-  const [H1, setH1] = useState(true)
-  const [H2, setH2] = useState(false)
-  const [H3, setH3] = useState(false)
-  const [H4, setH4] = useState(false)
-  const [H5, setH5] = useState(false)
-  const [H6, setH6] = useState(false)
-  const [H7, setH7] = useState(false)
-  const [Heart, setHeart] = useState(true)
-  const [Heart1, setHeart1] = useState(false)
-  const [Heart2, setHeart2] = useState(false)
-  const [Heart3, setHeart3] = useState(false)
-  const [Heart4, setHeart4] = useState(false)
-  const [Heart5, setHeart5] = useState(false)
-  const [Heart6, setHeart6] = useState(false)
+  const [H1, setH1] = useState(true);
+  const [H2, setH2] = useState(false);
+  const [H3, setH3] = useState(false);
+  const [H4, setH4] = useState(false);
+  const [H5, setH5] = useState(false);
+  const [H6, setH6] = useState(false);
+  const [H7, setH7] = useState(false);
+  const [Heart, setHeart] = useState(true);
+  const [Heart1, setHeart1] = useState(false);
+  const [Heart2, setHeart2] = useState(false);
+  const [Heart3, setHeart3] = useState(false);
+  const [Heart4, setHeart4] = useState(false);
+  const [Heart5, setHeart5] = useState(false);
+  const [Heart6, setHeart6] = useState(false);
 
-  const totalSteps = 6
-  const stepIds = ["quote", "details", "schedule", "instructions", "signup", "summary"]
+  const totalSteps = 6;
+  const stepIds = [
+    "quote",
+    "details",
+    "schedule",
+    "instructions",
+    "signup",
+    "summary",
+  ];
 
   // Calculate total price
   const calculateTotal = () => {
@@ -202,17 +225,17 @@ const CleaningSwiper = forwardRef((props, ref) => {
       microwave +
       Laundry +
       tiles
-    )
-  }
+    );
+  };
 
-  const Total = calculateTotal()
+  const Total = calculateTotal();
 
   const calculateEstimatedTime = () => {
-    let totalMinutes = 0
-    totalMinutes += sliderValueO * 20 // 20 mins per bedroom
-    totalMinutes += sliderValue * 30 // 30 mins per bathroom
-    totalMinutes += sliderValueK * 25 // 25 mins per kitchen
-    totalMinutes += sliderValueOX * 15 // 15 mins per 'other' room
+    let totalMinutes = 0;
+    totalMinutes += sliderValueO * 20; // 20 mins per bedroom
+    totalMinutes += sliderValue * 30; // 30 mins per bathroom
+    totalMinutes += sliderValueK * 25; // 25 mins per kitchen
+    totalMinutes += sliderValueOX * 15; // 15 mins per 'other' room
 
     const extras = [
       windows,
@@ -227,30 +250,30 @@ const CleaningSwiper = forwardRef((props, ref) => {
       microwave,
       Laundry,
       tiles,
-    ]
+    ];
 
     // Add 10 minutes for each extra selected
     extras.forEach((extra) => {
-      if (extra > 0) totalMinutes += 10
-    })
+      if (extra > 0) totalMinutes += 10;
+    });
 
-    return totalMinutes
-  }
+    return totalMinutes;
+  };
 
-  const estimatedTime = calculateEstimatedTime()
+  const estimatedTime = calculateEstimatedTime();
 
   // Generate monthly calendar data from current month to end of year
   const generateMonthlyCalendar = () => {
-    const months = []
-    const today = new Date()
-    const currentYear = today.getFullYear()
-    const currentMonth = today.getMonth()
+    const months = [];
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
 
     for (let month = currentMonth; month <= 11; month++) {
-      const firstDay = new Date(currentYear, month, 1)
-      const lastDay = new Date(currentYear, month + 1, 0)
-      const daysInMonth = lastDay.getDate()
-      const startingDayOfWeek = firstDay.getDay()
+      const firstDay = new Date(currentYear, month, 1);
+      const lastDay = new Date(currentYear, month + 1, 0);
+      const daysInMonth = lastDay.getDate();
+      const startingDayOfWeek = firstDay.getDay();
 
       const monthData = {
         name: firstDay.toLocaleDateString("en-US", {
@@ -260,18 +283,18 @@ const CleaningSwiper = forwardRef((props, ref) => {
         month: month,
         year: currentYear,
         days: [],
-      }
+      };
 
       // Add empty cells for days before the first day of the month
       for (let i = 0; i < startingDayOfWeek; i++) {
-        monthData.days.push(null)
+        monthData.days.push(null);
       }
 
       // Add all days of the month
       for (let day = 1; day <= daysInMonth; day++) {
-        const date = new Date(currentYear, month, day)
-        const isToday = date.toDateString() === today.toDateString()
-        const isPast = date < today && !isToday
+        const date = new Date(currentYear, month, day);
+        const isToday = date.toDateString() === today.toDateString();
+        const isPast = date < today && !isToday;
 
         monthData.days.push({
           day,
@@ -279,27 +302,27 @@ const CleaningSwiper = forwardRef((props, ref) => {
           isToday,
           isPast,
           isSelectable: !isPast,
-        })
+        });
       }
 
-      months.push(monthData)
+      months.push(monthData);
     }
 
-    return months
-  }
+    return months;
+  };
 
-  const [discountCode, setDiscountCode] = useState("")
-  const [isDiscountApplied, setIsDiscountApplied] = useState(false)
-  const discountedTotal = isDiscountApplied ? Total * 0.75 : Total
+  const [discountCode, setDiscountCode] = useState("");
+  const [isDiscountApplied, setIsDiscountApplied] = useState(false);
+  const discountedTotal = isDiscountApplied ? Total * 0.75 : Total;
 
   // Get available time slots for a specific date
   const getAvailableTimeSlots = (selectedDate) => {
-    if (!selectedDate) return []
+    if (!selectedDate) return [];
 
-    const date = new Date(selectedDate)
-    const dayOfWeek = date.getDay()
-    const hour = new Date().getHours()
-    const isToday = date.toDateString() === new Date().toDateString()
+    const date = new Date(selectedDate);
+    const dayOfWeek = date.getDay();
+    const hour = new Date().getHours();
+    const isToday = date.toDateString() === new Date().toDateString();
 
     let availableSlots = [
       { value: 8, label: "8:00 AM - 10:00 AM" },
@@ -308,250 +331,280 @@ const CleaningSwiper = forwardRef((props, ref) => {
       { value: 14, label: "2:00 PM - 4:00 PM" },
       { value: 16, label: "4:00 PM - 6:00 PM" },
       { value: 18, label: "6:00 PM - 8:00 PM" },
-    ]
+    ];
 
     // Filter out past time slots if it's today
     if (isToday) {
-      availableSlots = availableSlots.filter((slot) => slot.value > hour + 2)
+      availableSlots = availableSlots.filter((slot) => slot.value > hour + 2);
     }
 
     // Reduce availability on weekends (example business logic)
     if (dayOfWeek === 0 || dayOfWeek === 6) {
-      availableSlots = availableSlots.filter((slot) => slot.value >= 10 && slot.value <= 16)
+      availableSlots = availableSlots.filter(
+        (slot) => slot.value >= 10 && slot.value <= 16
+      );
     }
 
-    return availableSlots
-  }
+    return availableSlots;
+  };
 
   // New commercial handlers
   const handleEnvironmentTypeChange = useCallback((envType, e) => {
     if (e) {
-      e.preventDefault()
-      e.stopPropagation()
+      e.preventDefault();
+      e.stopPropagation();
     }
-    setTypeOfEnvironment(envType)
-  }, [])
+    setTypeOfEnvironment(envType);
+  }, []);
 
   const handleCleanTypeChange = useCallback((cleanType, e) => {
     if (e) {
-      e.preventDefault()
-      e.stopPropagation()
+      e.preventDefault();
+      e.stopPropagation();
     }
-    setTypeOfClean(cleanType)
-  }, [])
+    setTypeOfClean(cleanType);
+  }, []);
 
   const handleAvailabilityDayToggle = useCallback((day, e) => {
     if (e) {
-      e.preventDefault()
-      e.stopPropagation()
+      e.preventDefault();
+      e.stopPropagation();
     }
     setAvailabilityDays((prev) => {
       if (prev.includes(day)) {
-        return prev.filter((d) => d !== day)
+        return prev.filter((d) => d !== day);
       } else {
-        return [...prev, day]
+        return [...prev, day];
       }
-    })
-  }, [])
+    });
+  }, []);
 
   // MEMOIZED VALIDATION FUNCTIONS
   const validateQuoteStep = useCallback(() => {
     if (Quote === 0) {
-      setSubmitError("Please select a cleaning type (Residential or Commercial)")
-      return false
+      setSubmitError(
+        "Please select a cleaning type (Residential or Commercial)"
+      );
+      return false;
     }
-    setSubmitError("")
-    return true
-  }, [Quote])
+    setSubmitError("");
+    return true;
+  }, [Quote]);
 
   const validateDetailsStep = useCallback(() => {
-    const errors = []
+    const errors = [];
     if (type === 0) {
-      errors.push("Please select a cleaning service type")
+      errors.push("Please select a cleaning service type");
     }
     if (sliderValueO === 0) {
-      errors.push("Please select at least one room")
+      errors.push("Please select at least one room");
     }
     if (errors.length > 0) {
-      setSubmitError(errors.join(". "))
-      return false
+      setSubmitError(errors.join(". "));
+      return false;
     }
-    setSubmitError("")
-    return true
-  }, [type, sliderValueO])
+    setSubmitError("");
+    return true;
+  }, [type, sliderValueO]);
 
   const validateScheduleStep = useCallback(() => {
-    const errors = []
+    const errors = [];
     if (!selectedDate) {
-      errors.push("Please select a date")
+      errors.push("Please select a date");
     }
     if (!selectedTime) {
-      errors.push("Please select a time slot")
+      errors.push("Please select a time slot");
     }
     if (errors.length > 0) {
-      setSubmitError(errors.join(". "))
-      return false
+      setSubmitError(errors.join(". "));
+      return false;
     }
-    setSubmitError("")
-    return true
-  }, [selectedDate, selectedTime])
+    setSubmitError("");
+    return true;
+  }, [selectedDate, selectedTime]);
 
   const validateInstructionsStep = useCallback(() => {
     // Instructions step is always valid since all fields have default values
-    setSubmitError("")
-    return true
-  }, [])
+    setSubmitError("");
+    return true;
+  }, []);
 
   const validateSignupStep = useCallback(() => {
-    const errors = []
+    const errors = [];
     if (!firstName || firstName.trim() === "") {
       if (isCommercial) {
-        errors.push("Business name is required")
+        errors.push("Business name is required");
       } else {
-        errors.push("First name is required")
+        errors.push("First name is required");
       }
     }
     if (!lastName || lastName.trim() === "") {
       if (isCommercial) {
-        errors.push("Contact person is required")
+        errors.push("Contact person is required");
       } else {
-        errors.push("Last name is required")
+        errors.push("Last name is required");
       }
     }
     if (!email || email.trim() === "") {
-      errors.push("Email is required")
+      errors.push("Email is required");
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      errors.push("Please enter a valid email address")
+      errors.push("Please enter a valid email address");
     }
     if (!phone || phone.trim() === "") {
-      errors.push("Phone number is required")
+      errors.push("Phone number is required");
     } else if (!/^\d{10,}$/.test(phone.replace(/\D/g, ""))) {
-      errors.push("Please enter a valid phone number")
+      errors.push("Please enter a valid phone number");
     }
     if (!address || address.trim() === "") {
-      errors.push("Address is required")
+      errors.push("Address is required");
     }
     if (!acceptTerms) {
       if (isCommercial) {
-        errors.push("Please accept the Commercial Service Agreement")
+        errors.push("Please accept the Commercial Service Agreement");
       } else {
-        errors.push("Please accept the Terms & Conditions")
+        errors.push("Please accept the Terms & Conditions");
       }
     }
     // Only require password for residential flow
     if (!isCommercial && (!password || password.length < 6)) {
-      errors.push("Password must be at least 6 characters long")
+      errors.push("Password must be at least 6 characters long");
     }
     if (errors.length > 0) {
-      setSubmitError(errors.join(". "))
-      return false
+      setSubmitError(errors.join(". "));
+      return false;
     }
-    setSubmitError("")
-    return true
-  }, [firstName, lastName, email, phone, address, acceptTerms, password, isCommercial])
+    setSubmitError("");
+    return true;
+  }, [
+    firstName,
+    lastName,
+    email,
+    phone,
+    address,
+    acceptTerms,
+    password,
+    isCommercial,
+  ]);
 
   const validateCommercialDetailsStep = useCallback(() => {
-    const errors = []
+    const errors = [];
     if (!businessType) {
-      errors.push("Please select your business type")
+      errors.push("Please select your business type");
     }
     if (!businessSize) {
-      errors.push("Please specify your business size")
+      errors.push("Please specify your business size");
     }
     if (!cleaningFrequency) {
-      errors.push("Please select cleaning frequency")
+      errors.push("Please select cleaning frequency");
     }
     if (errors.length > 0) {
-      setSubmitError(errors.join(". "))
-      return false
+      setSubmitError(errors.join(". "));
+      return false;
     }
-    setSubmitError("")
-    return true
-  }, [businessType, businessSize, cleaningFrequency])
+    setSubmitError("");
+    return true;
+  }, [businessType, businessSize, cleaningFrequency]);
 
   const validateCommercialScheduleStep = useCallback(() => {
-    const errors = []
+    const errors = [];
     if (!selectedDate) {
-      errors.push("Please select a preferred start date")
+      errors.push("Please select a preferred start date");
     }
     if (!businessHours) {
-      errors.push("Please specify your business hours")
+      errors.push("Please specify your business hours");
     }
     if (errors.length > 0) {
-      setSubmitError(errors.join(". "))
-      return false
+      setSubmitError(errors.join(". "));
+      return false;
     }
-    setSubmitError("")
-    return true
-  }, [selectedDate, businessHours])
+    setSubmitError("");
+    return true;
+  }, [selectedDate, businessHours]);
 
   const validateCommercialRequirementsStep = useCallback(() => {
-    const errors = []
+    const errors = [];
     if (!budgetRange) {
-      errors.push("Please select your budget range")
+      errors.push("Please select your budget range");
     }
     if (!contractLength) {
-      errors.push("Please specify preferred contract length")
+      errors.push("Please specify preferred contract length");
     }
     if (errors.length > 0) {
-      setSubmitError(errors.join(". "))
-      return false
+      setSubmitError(errors.join(". "));
+      return false;
     }
-    setSubmitError("")
-    return true
-  }, [budgetRange, contractLength])
+    setSubmitError("");
+    return true;
+  }, [budgetRange, contractLength]);
 
   // Update the calendar state
-  const [currentMonthIndex, setCurrentMonthIndex] = useState(0)
-  const monthlyCalendar = generateMonthlyCalendar()
+  const [currentMonthIndex, setCurrentMonthIndex] = useState(0);
+  const monthlyCalendar = generateMonthlyCalendar();
 
   // MEMOIZED UPDATE FUNCTIONS
   const updateScheduleValidation = useCallback(
     (date, time) => {
-      let isValid = false
+      let isValid = false;
       if (CleanType) {
         // For recurring service: only need date and time (days are optional)
-        isValid = date && time
+        isValid = date && time;
       } else {
         // For one-time service: just need date and time
-        isValid = date && time
+        isValid = date && time;
       }
-      setValidations((prev) => ({ ...prev, schedule: isValid }))
-      if (isValid) setShowValidationMessage(false)
+      setValidations((prev) => ({ ...prev, schedule: isValid }));
+      if (isValid) setShowValidationMessage(false);
     },
-    [CleanType],
-  )
+    [CleanType]
+  );
 
   const updateSignupValidation = useCallback(() => {
-    let isValid
+    let isValid;
     if (isCommercial) {
       // For commercial flow, don't require password
-      isValid = firstName && lastName && email && phone && address && acceptTerms
+      isValid =
+        firstName && lastName && email && phone && address && acceptTerms;
     } else {
       // For residential flow, require password
-      isValid = firstName && lastName && email && phone && password && address && acceptTerms
+      isValid =
+        firstName &&
+        lastName &&
+        email &&
+        phone &&
+        password &&
+        address &&
+        acceptTerms;
     }
-    setValidations((prev) => ({ ...prev, signup: isValid }))
-    if (isValid) setShowValidationMessage(false)
-  }, [firstName, lastName, email, phone, password, address, acceptTerms, isCommercial])
+    setValidations((prev) => ({ ...prev, signup: isValid }));
+    if (isValid) setShowValidationMessage(false);
+  }, [
+    firstName,
+    lastName,
+    email,
+    phone,
+    password,
+    address,
+    acceptTerms,
+    isCommercial,
+  ]);
 
   const updateCommercialValidation = useCallback(() => {
-    const isValid = businessType && businessSize && cleaningFrequency
-    setValidations((prev) => ({ ...prev, "business-details": isValid }))
-    if (isValid) setShowValidationMessage(false)
-  }, [businessType, businessSize, cleaningFrequency])
+    const isValid = businessType && businessSize && cleaningFrequency;
+    setValidations((prev) => ({ ...prev, "business-details": isValid }));
+    if (isValid) setShowValidationMessage(false);
+  }, [businessType, businessSize, cleaningFrequency]);
 
   const updateCommercialScheduleValidation = useCallback(() => {
-    const isValid = selectedDate && businessHours
-    setValidations((prev) => ({ ...prev, "commercial-schedule": isValid }))
-    if (isValid) setShowValidationMessage(false)
-  }, [selectedDate, businessHours])
+    const isValid = selectedDate && businessHours;
+    setValidations((prev) => ({ ...prev, "commercial-schedule": isValid }));
+    if (isValid) setShowValidationMessage(false);
+  }, [selectedDate, businessHours]);
 
   const updateCommercialRequirementsValidation = useCallback(() => {
-    const isValid = budgetRange && contractLength
-    setValidations((prev) => ({ ...prev, "commercial-requirements": isValid }))
-    if (isValid) setShowValidationMessage(false)
-  }, [budgetRange, contractLength])
+    const isValid = budgetRange && contractLength;
+    setValidations((prev) => ({ ...prev, "commercial-requirements": isValid }));
+    if (isValid) setShowValidationMessage(false);
+  }, [budgetRange, contractLength]);
 
   // MEMOIZED CLICK HANDLERS
   const handleDateSelect = useCallback(
@@ -580,21 +633,21 @@ const CleaningSwiper = forwardRef((props, ref) => {
 
   const handleTimeSelect = useCallback(
     (time) => {
-      setSelectedTime(time)
-      setTimeFrame(time)
-      const timeSlots = getAvailableTimeSlots(selectedDate)
-      const selectedSlot = timeSlots.find((slot) => slot.value == time)
-      setSelectedTimeLabel(selectedSlot ? selectedSlot.label : "")
-      updateScheduleValidation(selectedDate, time)
+      setSelectedTime(time);
+      setTimeFrame(time);
+      const timeSlots = getAvailableTimeSlots(selectedDate);
+      const selectedSlot = timeSlots.find((slot) => slot.value == time);
+      setSelectedTimeLabel(selectedSlot ? selectedSlot.label : "");
+      updateScheduleValidation(selectedDate, time);
     },
-    [selectedDate, updateScheduleValidation],
-  )
+    [selectedDate, updateScheduleValidation]
+  );
 
   const toggleDay = useCallback(
     (dayNumber, e) => {
       if (e) {
-        e.preventDefault()
-        e.stopPropagation()
+        e.preventDefault();
+        e.stopPropagation();
       }
       const setters = [
         setDaySelect1,
@@ -604,10 +657,18 @@ const CleaningSwiper = forwardRef((props, ref) => {
         setDaySelect5,
         setDaySelect6,
         setDaySelect7,
-      ]
-      const getters = [daySelect1, daySelect2, daySelect3, daySelect4, daySelect5, daySelect6, daySelect7]
-      setters[dayNumber - 1](getters[dayNumber - 1] === 0 ? 1 : 0)
-      updateScheduleValidation(selectedDate, selectedTime)
+      ];
+      const getters = [
+        daySelect1,
+        daySelect2,
+        daySelect3,
+        daySelect4,
+        daySelect5,
+        daySelect6,
+        daySelect7,
+      ];
+      setters[dayNumber - 1](getters[dayNumber - 1] === 0 ? 1 : 0);
+      updateScheduleValidation(selectedDate, selectedTime);
     },
     [
       daySelect1,
@@ -620,283 +681,290 @@ const CleaningSwiper = forwardRef((props, ref) => {
       selectedDate,
       selectedTime,
       updateScheduleValidation,
-    ],
-  )
+    ]
+  );
 
   const handleQuoteSelection = useCallback((quoteId, e) => {
     if (e) {
-      e.preventDefault()
-      e.stopPropagation()
+      e.preventDefault();
+      e.stopPropagation();
     }
-    setQuote(quoteId)
-    setIsCommercial(quoteId === 2)
-    setValidations((prev) => ({ ...prev, quote: true }))
-    setShowValidationMessage(false)
-  }, [])
+    setQuote(quoteId);
+    setIsCommercial(quoteId === 2);
+    setValidations((prev) => ({ ...prev, quote: true }));
+    setShowValidationMessage(false);
+  }, []);
 
   const handleTypeSelection = useCallback(
     (typeId, e) => {
       if (e) {
-        e.preventDefault()
-        e.stopPropagation()
+        e.preventDefault();
+        e.stopPropagation();
       }
 
-      const previousType = type // capture current before updating
+      const previousType = type; // capture current before updating
 
-      setType(typeId)
-      setTotal((prevTotal) => prevTotal - previousType + typeId)
+      setType(typeId);
+      setTotal((prevTotal) => prevTotal - previousType + typeId);
 
       setValidations((prev) => ({
         ...prev,
         details: typeId > 0 && sliderValueO > 0,
-      }))
+      }));
 
-      setShowValidationMessage(false)
+      setShowValidationMessage(false);
     },
-    [sliderValueO, type],
-  )
+    [sliderValueO, type]
+  );
 
   // MEMOIZED COUNTER HANDLERS
   const incrementRooms = useCallback(() => {
     if (sliderValueO < 8) {
-      const newValue = sliderValueO + 1
-      setSliderValueO(newValue)
+      const newValue = sliderValueO + 1;
+      setSliderValueO(newValue);
       setValidations((prev) => ({
         ...prev,
         details: newValue > 0 && type > 0,
-      }))
+      }));
     }
-  }, [sliderValueO, type])
+  }, [sliderValueO, type]);
 
   const decrementRooms = useCallback(() => {
     if (sliderValueO > 1) {
-      const newValue = sliderValueO - 1
-      setSliderValueO(newValue)
+      const newValue = sliderValueO - 1;
+      setSliderValueO(newValue);
       setValidations((prev) => ({
         ...prev,
         details: newValue > 0 && type > 0,
-      }))
+      }));
     }
-  }, [sliderValueO, type])
+  }, [sliderValueO, type]);
 
   const incrementBathrooms = useCallback(() => {
     if (sliderValue < 8) {
-      setSliderValue(sliderValue + 1)
+      setSliderValue(sliderValue + 1);
     }
-  }, [sliderValue])
+  }, [sliderValue]);
 
   const decrementBathrooms = useCallback(() => {
     if (sliderValue > 0) {
-      setSliderValue(sliderValue - 1)
+      setSliderValue(sliderValue - 1);
     }
-  }, [sliderValue])
+  }, [sliderValue]);
 
   const incrementKitchens = useCallback(() => {
     if (sliderValueK < 8) {
-      setSliderValueK(sliderValueK + 1)
+      setSliderValueK(sliderValueK + 1);
     }
-  }, [sliderValueK])
+  }, [sliderValueK]);
 
   const decrementKitchens = useCallback(() => {
     if (sliderValueK > 0) {
-      setSliderValueK(sliderValueK - 1)
+      setSliderValueK(sliderValueK - 1);
     }
-  }, [sliderValueK])
+  }, [sliderValueK]);
 
   const incrementOther = useCallback(() => {
     if (sliderValueOX < 8) {
-      setSliderValueOX(sliderValueOX + 1)
+      setSliderValueOX(sliderValueOX + 1);
     }
-  }, [sliderValueOX])
+  }, [sliderValueOX]);
 
   const decrementOther = useCallback(() => {
     if (sliderValueOX > 0) {
-      setSliderValueOX(sliderValueOX - 1)
+      setSliderValueOX(sliderValueOX - 1);
     }
-  }, [sliderValueOX])
+  }, [sliderValueOX]);
 
   // MEMOIZED EXTRA ITEM HANDLER
-  const handleExtraItemClick = useCallback((extraSetter, currentValue, price, e) => {
-    if (e) {
-      e.preventDefault()
-      e.stopPropagation()
-    }
-    extraSetter(currentValue === 0 ? price : 0)
-  }, [])
+  const handleExtraItemClick = useCallback(
+    (extraSetter, currentValue, price, e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      extraSetter(currentValue === 0 ? price : 0);
+    },
+    []
+  );
 
   // MEMOIZED CLEAN TYPE TOGGLE HANDLERS
   const handleRegularCleanToggle = useCallback(
     (e) => {
       if (e) {
-        e.preventDefault()
-        e.stopPropagation()
+        e.preventDefault();
+        e.stopPropagation();
       }
-      setCleanType(true)
-      setSelectedReg(true)
-      setIntervalValue(15)
-      updateScheduleValidation(selectedDate, selectedTime)
+      setCleanType(true);
+      setSelectedReg(true);
+      setIntervalValue(15);
+      updateScheduleValidation(selectedDate, selectedTime);
     },
-    [selectedDate, selectedTime, updateScheduleValidation],
-  )
+    [selectedDate, selectedTime, updateScheduleValidation]
+  );
 
   const handleOneTimeCleanToggle = useCallback(
     (e) => {
       if (e) {
-        e.preventDefault()
-        e.stopPropagation()
+        e.preventDefault();
+        e.stopPropagation();
       }
-      setCleanType(false)
-      setIntervalValue(0)
-      updateScheduleValidation(selectedDate, selectedTime)
+      setCleanType(false);
+      setIntervalValue(0);
+      updateScheduleValidation(selectedDate, selectedTime);
     },
-    [selectedDate, selectedTime, updateScheduleValidation],
-  )
+    [selectedDate, selectedTime, updateScheduleValidation]
+  );
 
   // MEMOIZED FREQUENCY HANDLERS
   const handleFrequencySelect = useCallback((value, e) => {
     if (e) {
-      e.preventDefault()
-      e.stopPropagation()
+      e.preventDefault();
+      e.stopPropagation();
     }
-    setIntervalValue(value)
-  }, [])
+    setIntervalValue(value);
+  }, []);
 
   // MEMOIZED COMMERCIAL HANDLERS
   const handleBusinessTypeChange = useCallback(
     (value) => {
-      setBusinessType(value)
-      updateCommercialValidation()
+      setBusinessType(value);
+      updateCommercialValidation();
     },
-    [updateCommercialValidation],
-  )
+    [updateCommercialValidation]
+  );
 
   const handleBusinessSizeChange = useCallback(
     (value) => {
-      setBusinessSize(value)
-      updateCommercialValidation()
+      setBusinessSize(value);
+      updateCommercialValidation();
     },
-    [updateCommercialValidation],
-  )
+    [updateCommercialValidation]
+  );
 
   const handleCleaningFrequencySelect = useCallback(
     (freq, e) => {
       if (e) {
-        e.preventDefault()
-        e.stopPropagation()
+        e.preventDefault();
+        e.stopPropagation();
       }
-      setCleaningFrequency(freq)
-      updateCommercialValidation()
+      setCleaningFrequency(freq);
+      updateCommercialValidation();
     },
-    [updateCommercialValidation],
-  )
+    [updateCommercialValidation]
+  );
 
   const handleSpecialRequirementToggle = useCallback((requirement, e) => {
     if (e) {
-      e.preventDefault()
-      e.stopPropagation()
+      e.preventDefault();
+      e.stopPropagation();
     }
     setSpecialRequirements((prev) => {
       if (prev.includes(requirement)) {
-        return prev.filter((r) => r !== requirement)
+        return prev.filter((r) => r !== requirement);
       } else {
-        return [...prev, requirement]
+        return [...prev, requirement];
       }
-    })
-  }, [])
+    });
+  }, []);
 
   const handleBusinessHoursChange = useCallback(
     (value) => {
-      setBusinessHours(value)
-      updateCommercialScheduleValidation()
+      setBusinessHours(value);
+      updateCommercialScheduleValidation();
     },
-    [updateCommercialScheduleValidation],
-  )
+    [updateCommercialScheduleValidation]
+  );
 
   const handleBudgetRangeSelect = useCallback(
     (budget, e) => {
       if (e) {
-        e.preventDefault()
-        e.stopPropagation()
+        e.preventDefault();
+        e.stopPropagation();
       }
-      setBudgetRange(budget)
-      updateCommercialRequirementsValidation()
+      setBudgetRange(budget);
+      updateCommercialRequirementsValidation();
     },
-    [updateCommercialRequirementsValidation],
-  )
+    [updateCommercialRequirementsValidation]
+  );
 
   const handleContractLengthSelect = useCallback(
     (contract, e) => {
       if (e) {
-        e.preventDefault()
-        e.stopPropagation()
+        e.preventDefault();
+        e.stopPropagation();
       }
-      setContractLength(contract)
-      updateCommercialRequirementsValidation()
+      setContractLength(contract);
+      updateCommercialRequirementsValidation();
     },
-    [updateCommercialRequirementsValidation],
-  )
+    [updateCommercialRequirementsValidation]
+  );
 
   // Handle slider changes with validation
   const handleSliderChangeO = (value) => {
-    setSliderValueO(value)
+    setSliderValueO(value);
     // Update heart visibility based on room count
-    setH1(value >= 1)
-    setH2(value >= 2)
-    setH3(value >= 3)
-    setH4(value >= 4)
-    setH5(value >= 5)
-    setH6(value >= 6)
-    setH7(value >= 7)
-    setHeart(value >= 1)
-    setHeart1(value >= 2)
-    setHeart2(value >= 3)
-    setHeart3(value >= 4)
-    setHeart4(value >= 5)
-    setHeart5(value >= 6)
-    setHeart6(value >= 7)
+    setH1(value >= 1);
+    setH2(value >= 2);
+    setH3(value >= 3);
+    setH4(value >= 4);
+    setH5(value >= 5);
+    setH6(value >= 6);
+    setH7(value >= 7);
+    setHeart(value >= 1);
+    setHeart1(value >= 2);
+    setHeart2(value >= 3);
+    setHeart3(value >= 4);
+    setHeart4(value >= 5);
+    setHeart5(value >= 6);
+    setHeart6(value >= 7);
     // Validate details step if a room is selected and a cleaning type is selected
-    setValidations((prev) => ({ ...prev, details: value > 0 && type > 0 }))
-  }
+    setValidations((prev) => ({ ...prev, details: value > 0 && type > 0 }));
+  };
 
-  const handleSliderChange = (value) => setSliderValue(value)
-  const handleSliderChangeK = (value) => setSliderValueK(value)
-  const handleSliderChangeOX = (value) => setSliderValueOX(value)
+  const handleSliderChange = (value) => setSliderValue(value);
+  const handleSliderChangeK = (value) => setSliderValueK(value);
+  const handleSliderChangeOX = (value) => setSliderValueOX(value);
 
   // API call functions
   const handleSubmitRegistration = async () => {
     try {
-      setIsSubmitting(true)
-      setSubmitError("")
-      const response = await axios.post("https://api-crisp-cleaning.onrender.com/register", {
-        first_name: firstName,
-        last_name: lastName,
-        email,
-        phone,
-        password,
-        address,
-        referral,
-      })
-      console.log("Registration response:", response)
+      setIsSubmitting(true);
+      setSubmitError("");
+      const response = await axios.post(
+        "https://api-crisp-cleaning.onrender.com/register",
+        {
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          phone,
+          password,
+          address,
+          referral,
+        }
+      );
       if (response.data.message === "Successful") {
         // Move to summary step after successful registration
-        setCurrentStep(5)
-        return true
+        setCurrentStep(5);
+        return true;
       } else {
-        setSubmitError(response.data.error || response.data)
-        return false
+        setSubmitError(response.data.error || response.data);
+        return false;
       }
     } catch (error) {
-      console.error("Registration error:", error)
+      console.error("Registration error:", error);
       if (error.response?.status === 400) {
-        setSubmitError("This email has been registered before. Kindly Login")
+        setSubmitError("This email has been registered before. Kindly Login");
       } else {
-        setSubmitError("Something went wrong! Check your internet connection or try again later")
+        setSubmitError(
+          "Something went wrong! Check your internet connection or try again later"
+        );
       }
-      return false
+      return false;
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const handleSubmitClean = async () => {
     try {
@@ -936,32 +1004,34 @@ const CleaningSwiper = forwardRef((props, ref) => {
         Animal,
         spComments,
         discountNew: discountedTotal, // Assuming no discount for now
-      }
-      console.log("Clean booking data:", requestData)
-      const response = await axios.post("https://api-crisp-cleaning.onrender.com/clean", requestData)
-      alert("Clean record created successfully! Redirecting to checkout")
-      return true
+      };
+      const response = await axios.post(
+        "https://api-crisp-cleaning.onrender.com/clean",
+        requestData
+      );
+      alert("Clean record created successfully! Redirecting to checkout");
+      return true;
     } catch (error) {
-      alert("Error creating clean record.")
-      console.error("Clean booking error:", error)
-      return false
+      alert("Error creating clean record.");
+      console.error("Clean booking error:", error);
+      return false;
     }
-  }
+  };
 
   const makePayment = async () => {
     try {
-      setIsSubmitting(true)
+      setIsSubmitting(true);
       // First submit the registration
-      const registrationSuccess = await handleSubmitRegistration()
+      const registrationSuccess = await handleSubmitRegistration();
       if (!registrationSuccess) {
-        setIsSubmitting(false)
-        return
+        setIsSubmitting(false);
+        return;
       }
       // Then create the booking
-      const bookingSuccess = await handleSubmitClean()
+      const bookingSuccess = await handleSubmitClean();
       if (!bookingSuccess) {
-        setIsSubmitting(false)
-        return
+        setIsSubmitting(false);
+        return;
       }
       // Finally process payment
       const body = {
@@ -971,43 +1041,46 @@ const CleaningSwiper = forwardRef((props, ref) => {
             price: Math.round(Total * 100), // In cents
           },
         ],
-      }
-      const response = await fetch("https://api-crisp-cleaning.onrender.com/create-checkout-session", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      })
-      const session = await response.json()
+      };
+      const response = await fetch(
+        "https://api-crisp-cleaning.onrender.com/create-checkout-session",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      );
+      const session = await response.json();
       // Redirect to Stripe checkout
       if (typeof window !== "undefined" && window.Stripe) {
         const stripe = await window.Stripe(
-          "pk_test_51ROhYnH9E7pqq95xLp67muP87yzw3XmN9BdV5ZbF2ZoAQuFJPBDYN0HgbnPfaYiN0Z9scDimOVICuZ7iD5kvBaq900M6capXFd",
-        )
+          "pk_test_51ROhYnH9E7pqq95xLp67muP87yzw3XmN9BdV5ZbF2ZoAQuFJPBDYN0HgbnPfaYiN0Z9scDimOVICuZ7iD5kvBaq900M6capXFd"
+        );
         const result = await stripe.redirectToCheckout({
           sessionId: session.id,
-        })
+        });
         if (result.error) {
-          console.error("Stripe error:", result.error)
-          setSubmitError("Payment processing failed. Please try again.")
+          console.error("Stripe error:", result.error);
+          setSubmitError("Payment processing failed. Please try again.");
         }
       } else {
         // Fallback if Stripe is not loaded
-        window.location.href = session.url
+        window.location.href = session.url;
       }
     } catch (error) {
-      console.error("Payment error:", error)
-      setSubmitError("Payment processing failed. Please try again.")
+      console.error("Payment error:", error);
+      setSubmitError("Payment processing failed. Please try again.");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const submitCommercialQuote = async () => {
     try {
-      setIsSubmitting(true)
-      setSubmitError("")
+      setIsSubmitting(true);
+      setSubmitError("");
       const commercialData = {
         businessName: businessName,
         contactPerson: lastName,
@@ -1022,156 +1095,160 @@ const CleaningSwiper = forwardRef((props, ref) => {
         insuranceRequired: insuranceDocs,
         budgetRange,
         additionalNotes: spComments,
-      }
-      const response = await axios.post("https://api-crisp-cleaning.onrender.com/commercial", commercialData)
+      };
+      const response = await axios.post(
+        "https://api-crisp-cleaning.onrender.com/commercial",
+        commercialData
+      );
       if (response.status === 200 || response.status === 201) {
-        alert("Commercial quote request submitted successfully! We'll contact you within 24 hours.")
+        alert(
+          "Commercial quote request submitted successfully! We'll contact you within 24 hours."
+        );
       } else {
-        throw new Error("Unexpected response")
+        throw new Error("Unexpected response");
       }
     } catch (error) {
-      console.error("Commercial quote error:", error)
-      setSubmitError("Failed to submit quote request. Please try again.")
+      console.error("Commercial quote error:", error);
+      setSubmitError("Failed to submit quote request. Please try again.");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const nextStep = () => {
-    const currentStepId = steps[currentStep].id
-    let isValid = false
+    const currentStepId = steps[currentStep].id;
+    let isValid = false;
     if (isCommercial) {
       switch (currentStepId) {
         case "quote":
-          isValid = validateQuoteStep()
-          break
+          isValid = validateQuoteStep();
+          break;
         case "business-info":
-          isValid = businessName && businessSize
+          isValid = businessName && businessSize;
           if (!isValid) {
-            setSubmitError("Please enter business name and select business size")
+            setSubmitError(
+              "Please enter business name and select business size"
+            );
           } else {
-            setSubmitError("")
+            setSubmitError("");
           }
-          break
+          break;
         case "cleaning-needs":
-          isValid = typeOfEnvironment && typeOfClean
+          isValid = typeOfEnvironment && typeOfClean;
           if (!isValid) {
-            setSubmitError("Please select environment type and type of clean")
+            setSubmitError("Please select environment type and type of clean");
           } else {
-            setSubmitError("")
+            setSubmitError("");
           }
-          break
+          break;
         case "frequency-schedule":
-          isValid = cleaningFrequency
+          isValid = cleaningFrequency;
           if (!isValid) {
-            setSubmitError("Please select cleaning frequency")
+            setSubmitError("Please select cleaning frequency");
           } else {
-            setSubmitError("")
+            setSubmitError("");
           }
-          break
+          break;
         case "insurance-budget":
-          isValid = budgetRange
+          isValid = budgetRange;
           if (!isValid) {
-            setSubmitError("Please select your monthly budget")
+            setSubmitError("Please select your monthly budget");
           } else {
-            setSubmitError("")
+            setSubmitError("");
           }
-          break
+          break;
         case "signup":
-          isValid = validateSignupStep()
-          break
+          isValid = validateSignupStep();
+          break;
         default:
-          isValid = true
+          isValid = true;
       }
     } else {
       // Existing residential validation logic
       switch (currentStepId) {
         case "quote":
-          isValid = validateQuoteStep()
-          break
+          isValid = validateQuoteStep();
+          break;
         case "details":
-          isValid = validateDetailsStep()
-          break
+          isValid = validateDetailsStep();
+          break;
         case "schedule":
-          isValid = validateScheduleStep()
-          break
+          isValid = validateScheduleStep();
+          break;
         case "instructions":
-          isValid = validateInstructionsStep()
-          break
+          isValid = validateInstructionsStep();
+          break;
         case "signup":
-          isValid = validateSignupStep()
-          break
+          isValid = validateSignupStep();
+          break;
         default:
-          isValid = true
+          isValid = true;
       }
     }
     if (isValid && currentStep < totalSteps - 1) {
-      setCurrentStep(currentStep + 1)
-      setShowValidationMessage(false)
-      console.log("Moving to step:", currentStep + 1)
+      setCurrentStep(currentStep + 1);
+      setShowValidationMessage(false);
     } else {
-      setShowValidationMessage(true)
-      console.log("Validation failed for step:", currentStepId)
+      setShowValidationMessage(true);
     }
-  }
+  };
 
   const prevStep = () => {
     if (currentStep > 0) {
-      setCurrentStep(currentStep - 1)
-      setShowValidationMessage(false)
-      console.log("Moving back to step:", currentStep - 1)
+      setCurrentStep(currentStep - 1);
+      setShowValidationMessage(false);
     }
-  }
+  };
 
   const goToStep = (step) => {
     if (step <= currentStep) {
-      setCurrentStep(step)
-      setShowValidationMessage(false)
+      setCurrentStep(step);
+      setShowValidationMessage(false);
     }
-  }
+  };
 
-  const handleMouseEnterSupport = () => setSupports(true)
-  const handleMouseLeaveSupport = () => setSupports(false)
+  const handleMouseEnterSupport = () => setSupports(true);
+  const handleMouseLeaveSupport = () => setSupports(false);
 
   // Get validation message based on current step
   const getValidationMessage = () => {
     if (isCommercial) {
       switch (stepIds[currentStep]) {
         case "quote":
-          return "Please select a cleaning type to proceed"
+          return "Please select a cleaning type to proceed";
         case "business-info":
-          return "Please enter business name and select business size"
+          return "Please enter business name and select business size";
         case "cleaning-needs":
-          return "Please select environment type and type of clean"
+          return "Please select environment type and type of clean";
         case "frequency-schedule":
-          return "Please select cleaning frequency"
+          return "Please select cleaning frequency";
         case "insurance-budget":
-          return "Please select your monthly budget"
+          return "Please select your monthly budget";
         case "signup":
-          return "Please complete all required business contact fields"
+          return "Please complete all required business contact fields";
         default:
-          return ""
+          return "";
       }
     } else {
       // Existing residential validation messages
       switch (stepIds[currentStep]) {
         case "quote":
-          return "Please select a cleaning type to proceed"
+          return "Please select a cleaning type to proceed";
         case "details":
-          return "Please select a cleaning type and ensure you have at least one room"
+          return "Please select a cleaning type and ensure you have at least one room";
         case "schedule":
           return CleanType
             ? "Please select a date and a time for recurring service"
-            : "Please correct all errors to proceed"
+            : "Please correct all errors to proceed";
         case "instructions":
-          return "Please complete the required fields to proceed"
+          return "Please complete the required fields to proceed";
         case "signup":
-          return "Please complete all required fields and accept terms to proceed"
+          return "Please complete all required fields and accept terms to proceed";
         default:
-          return ""
+          return "";
       }
     }
-  }
+  };
 
   // Define steps array
   const residentialSteps = [
@@ -1181,22 +1258,31 @@ const CleaningSwiper = forwardRef((props, ref) => {
       subtitle: "What type of project? Please provide what type of cleaning.",
       content: (
         <div className="step-content">
-          <div className={`quote-options ${showValidationMessage ? "validation-active" : ""}`}>
+          <div
+            className={`quote-options ${
+              showValidationMessage ? "validation-active" : ""
+            }`}
+          >
             <div
               className={`quote-option ${Quote === 1 ? "selected" : ""}`}
               onClick={(e) => handleQuoteSelection(1, e)}
             >
               <div className="quote-icon">
                 <img
-                  src={require("../views/img/house_60156731-200h.png") || "/placeholder.svg" || "/placeholder.svg"}
+                  src={
+                    require("../views/img/house_60156731-200h.png") ||
+                    "/placeholder.svg" ||
+                    "/placeholder.svg"
+                  }
                   alt="House"
                 />
                 {Quote === 1 && <div className="selection-indicator"></div>}
               </div>
               <h3>Residential Cleaning</h3>
               <p>
-                Bring a breath of fresh air and elevate your living spaces with our residential cleaning services,
-                designed to bring comfort and hygiene to your home
+                Bring a breath of fresh air and elevate your living spaces with
+                our residential cleaning services, designed to bring comfort and
+                hygiene to your home
               </p>
             </div>
             <div
@@ -1205,19 +1291,29 @@ const CleaningSwiper = forwardRef((props, ref) => {
             >
               <div className="quote-icon">
                 <img
-                  src={require("../views/img/building_60159951-200w.png") || "/placeholder.svg" || "/placeholder.svg"}
+                  src={
+                    require("../views/img/building_60159951-200w.png") ||
+                    "/placeholder.svg" ||
+                    "/placeholder.svg"
+                  }
                   alt="Building"
                 />
                 {Quote === 2 && <div className="selection-indicator"></div>}
               </div>
               <h3>Commercial Cleaning</h3>
               <p>
-                Our commercial cleaning services are tailored to meet the unique demands of offices, restaurants,
-                schools, gyms... you name it!
+                Our commercial cleaning services are tailored to meet the unique
+                demands of offices, restaurants, schools, gyms... you name it!
               </p>
             </div>
           </div>
-          <div className={`validation-message ${showValidationMessage ? "visible" : ""}`}>{getValidationMessage()}</div>
+          <div
+            className={`validation-message ${
+              showValidationMessage ? "visible" : ""
+            }`}
+          >
+            {getValidationMessage()}
+          </div>
         </div>
       ),
     },
@@ -1227,7 +1323,11 @@ const CleaningSwiper = forwardRef((props, ref) => {
       subtitle: "Tell us about your lovely home.",
       content: (
         <div className="step-content">
-          <div className={`cleaning-types ${showValidationMessage ? "validation-active" : ""}`}>
+          <div
+            className={`cleaning-types ${
+              showValidationMessage ? "validation-active" : ""
+            }`}
+          >
             <div
               className={`cleaning-type ${type === 45 ? "selected" : ""}`}
               onClick={(e) => handleTypeSelection(45, e)}
@@ -1268,11 +1368,19 @@ const CleaningSwiper = forwardRef((props, ref) => {
           <div className="counters-container">
             <div className="counter-group">
               <div className="counter-controls">
-                <button className="counter-btn" onClick={decrementRooms} disabled={sliderValueO <= 1}>
+                <button
+                  className="counter-btn"
+                  onClick={decrementRooms}
+                  disabled={sliderValueO <= 1}
+                >
                   -
                 </button>
                 <span className="counter-value">{sliderValueO}</span>
-                <button className="counter-btn" onClick={incrementRooms} disabled={sliderValueO >= 8}>
+                <button
+                  className="counter-btn"
+                  onClick={incrementRooms}
+                  disabled={sliderValueO >= 8}
+                >
                   +
                 </button>
               </div>
@@ -1280,11 +1388,19 @@ const CleaningSwiper = forwardRef((props, ref) => {
             </div>
             <div className="counter-group">
               <div className="counter-controls">
-                <button className="counter-btn" onClick={decrementBathrooms} disabled={sliderValue <= 0}>
+                <button
+                  className="counter-btn"
+                  onClick={decrementBathrooms}
+                  disabled={sliderValue <= 0}
+                >
                   -
                 </button>
                 <span className="counter-value">{sliderValue}</span>
-                <button className="counter-btn" onClick={incrementBathrooms} disabled={sliderValue >= 8}>
+                <button
+                  className="counter-btn"
+                  onClick={incrementBathrooms}
+                  disabled={sliderValue >= 8}
+                >
                   +
                 </button>
               </div>
@@ -1292,11 +1408,19 @@ const CleaningSwiper = forwardRef((props, ref) => {
             </div>
             <div className="counter-group">
               <div className="counter-controls">
-                <button className="counter-btn" onClick={decrementKitchens} disabled={sliderValueK <= 0}>
+                <button
+                  className="counter-btn"
+                  onClick={decrementKitchens}
+                  disabled={sliderValueK <= 0}
+                >
                   -
                 </button>
                 <span className="counter-value">{sliderValueK}</span>
-                <button className="counter-btn" onClick={incrementKitchens} disabled={sliderValueK >= 8}>
+                <button
+                  className="counter-btn"
+                  onClick={incrementKitchens}
+                  disabled={sliderValueK >= 8}
+                >
                   +
                 </button>
               </div>
@@ -1304,11 +1428,19 @@ const CleaningSwiper = forwardRef((props, ref) => {
             </div>
             <div className="counter-group">
               <div className="counter-controls">
-                <button className="counter-btn" onClick={decrementOther} disabled={sliderValueOX <= 0}>
+                <button
+                  className="counter-btn"
+                  onClick={decrementOther}
+                  disabled={sliderValueOX <= 0}
+                >
                   -
                 </button>
                 <span className="counter-value">{sliderValueOX}</span>
-                <button className="counter-btn" onClick={incrementOther} disabled={sliderValueOX >= 8}>
+                <button
+                  className="counter-btn"
+                  onClick={incrementOther}
+                  disabled={sliderValueOX >= 8}
+                >
                   +
                 </button>
               </div>
@@ -1370,7 +1502,14 @@ const CleaningSwiper = forwardRef((props, ref) => {
                 <div
                   key={index}
                   className={`extra-item ${extra.value > 0 ? "selected" : ""}`}
-                  onClick={(e) => handleExtraItemClick(extra.setter, extra.value, extra.price, e)}
+                  onClick={(e) =>
+                    handleExtraItemClick(
+                      extra.setter,
+                      extra.value,
+                      extra.price,
+                      e
+                    )
+                  }
                 >
                   <div className="extra-icon"></div>
                   <p>{extra.name}</p>
@@ -1378,7 +1517,13 @@ const CleaningSwiper = forwardRef((props, ref) => {
               ))}
             </div>
           </div>
-          <div className={`validation-message ${showValidationMessage ? "visible" : ""}`}>{getValidationMessage()}</div>
+          <div
+            className={`validation-message ${
+              showValidationMessage ? "visible" : ""
+            }`}
+          >
+            {getValidationMessage()}
+          </div>
         </div>
       ),
     },
@@ -1394,14 +1539,23 @@ const CleaningSwiper = forwardRef((props, ref) => {
               <span className="month-btn-group">
                 <button
                   className="month-nav-btn"
-                  onClick={() => setCurrentMonthIndex(Math.max(0, currentMonthIndex - 1))}
+                  onClick={() =>
+                    setCurrentMonthIndex(Math.max(0, currentMonthIndex - 1))
+                  }
                   disabled={currentMonthIndex === 0}
                 >
                   &#8249;
                 </button>
                 <button
                   className="month-nav-btn"
-                  onClick={() => setCurrentMonthIndex(Math.min(monthlyCalendar.length - 1, currentMonthIndex + 1))}
+                  onClick={() =>
+                    setCurrentMonthIndex(
+                      Math.min(
+                        monthlyCalendar.length - 1,
+                        currentMonthIndex + 1
+                      )
+                    )
+                  }
                   disabled={currentMonthIndex === monthlyCalendar.length - 1}
                 >
                   &#8250;
@@ -1416,25 +1570,27 @@ const CleaningSwiper = forwardRef((props, ref) => {
               ))}
             </div>
             <div className="monthly-calendar-grid2">
-              {monthlyCalendar[currentMonthIndex]?.days.map((dayData, index) => (
-                <div
-                  key={index}
-                  className={`calendar-day2 ${!dayData ? "empty" : ""} ${
-                    dayData?.isPast ? "past" : ""
-                  } ${dayData?.isToday ? "today" : ""} ${
-                    selectedDate === dayData?.date ? "selected" : ""
-                  } ${dayData?.isSelectable ? "selectable" : ""}`}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    if (dayData?.isSelectable) {
-                      handleDateSelect(dayData.date)
-                    }
-                  }}
-                >
-                  {dayData?.day}
-                </div>
-              ))}
+              {monthlyCalendar[currentMonthIndex]?.days.map(
+                (dayData, index) => (
+                  <div
+                    key={index}
+                    className={`calendar-day2 ${!dayData ? "empty" : ""} ${
+                      dayData?.isPast ? "past" : ""
+                    } ${dayData?.isToday ? "today" : ""} ${
+                      selectedDate === dayData?.date ? "selected" : ""
+                    } ${dayData?.isSelectable ? "selectable" : ""}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (dayData?.isSelectable) {
+                        handleDateSelect(dayData.date);
+                      }
+                    }}
+                  >
+                    {dayData?.day}
+                  </div>
+                )
+              )}
             </div>
           </div>
           <div className="time-selection-section">
@@ -1445,16 +1601,23 @@ const CleaningSwiper = forwardRef((props, ref) => {
                 className="time-dropdown"
                 disabled={!selectedDate}
               >
-                <option value="">{selectedDate ? "Choose a time slot" : "Please select a date first"}</option>
+                <option value="">
+                  {selectedDate
+                    ? "Choose a time slot"
+                    : "Please select a date first"}
+                </option>
                 {getAvailableTimeSlots(selectedDate).map((slot) => (
                   <option key={slot.value} value={slot.value}>
                     {slot.label}
                   </option>
                 ))}
               </select>
-              {selectedDate && getAvailableTimeSlots(selectedDate).length === 0 && (
-                <p className="no-slots-message">No available time slots for this date</p>
-              )}
+              {selectedDate &&
+                getAvailableTimeSlots(selectedDate).length === 0 && (
+                  <p className="no-slots-message">
+                    No available time slots for this date
+                  </p>
+                )}
             </div>
           </div>
           <div className="schedule-options">
@@ -1465,19 +1628,23 @@ const CleaningSwiper = forwardRef((props, ref) => {
                     <div>
                       <h5>Cleaners Pass</h5>
                       <p>
-                        Schedule regular cleans with us and instantly save up to 15% off per clean! Also gain access to
-                        our loyalty and rewards systems to earn up to 25% off per clean, for life!
+                        Schedule regular cleans with us and instantly save up to
+                        15% off per clean! Also gain access to our loyalty and
+                        rewards systems to earn up to 25% off per clean, for
+                        life!
                       </p>
                       <p>
-                        Note: Weekly cleans earn the highest discount. The higher the frequency the higher the discount!
-                        Regardless of the frequency, our rewards system will increase your discount
+                        Note: Weekly cleans earn the highest discount. The
+                        higher the frequency the higher the discount! Regardless
+                        of the frequency, our rewards system will increase your
+                        discount
                       </p>
                     </div>
                     <div>
                       <h5>Cancellations</h5>
                       <p>
-                        Please note, cancellation fees may apply if you opt out of your cleaner's pass within the first
-                        3 cleans.{" "}
+                        Please note, cancellation fees may apply if you opt out
+                        of your cleaner's pass within the first 3 cleans.{" "}
                         <Link to="/faqs" target="_blank">
                           <span className="link">Learn more on our FAQs.</span>
                         </Link>
@@ -1487,17 +1654,26 @@ const CleaningSwiper = forwardRef((props, ref) => {
                 </div>
               )}
               <div className="button-with-exclamation">
-                <span onClick={() => setNotify(!notify)} className={`exclamation ${CleanType ? "highlighted" : ""}`}>
+                <span
+                  onClick={() => setNotify(!notify)}
+                  className={`exclamation ${CleanType ? "highlighted" : ""}`}
+                >
                   !
                 </span>
-                <button className={`toggle-btn-one ${CleanType ? "active" : ""}`} onClick={handleRegularCleanToggle}>
+                <button
+                  className={`toggle-btn-one ${CleanType ? "active" : ""}`}
+                  onClick={handleRegularCleanToggle}
+                >
                   Regular Cleans
                   <span className="off">
                     <small>Up to 25% OFF</small>
                   </span>
                 </button>
               </div>
-              <button className={`toggle-btn ${!CleanType ? "active" : ""}`} onClick={handleOneTimeCleanToggle}>
+              <button
+                className={`toggle-btn ${!CleanType ? "active" : ""}`}
+                onClick={handleOneTimeCleanToggle}
+              >
                 One Time Clean
               </button>
             </div>
@@ -1517,32 +1693,52 @@ const CleaningSwiper = forwardRef((props, ref) => {
                   >
                     Fortnight
                   </button>
-                  <button className={intervalValue === 5 ? "active" : ""} onClick={(e) => handleFrequencySelect(5, e)}>
+                  <button
+                    className={intervalValue === 5 ? "active" : ""}
+                    onClick={(e) => handleFrequencySelect(5, e)}
+                  >
                     Month
                   </button>
                 </div>
                 <h4>On Days:</h4>
                 <div className="day-selector">
-                  {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, index) => (
-                    <button
-                      key={day}
-                      className={`day-btn ${
-                        [daySelect1, daySelect2, daySelect3, daySelect4, daySelect5, daySelect6, daySelect7][index] ===
-                        1
-                          ? "selected"
-                          : ""
-                      }`}
-                      onClick={(e) => toggleDay(index + 1, e)}
-                    >
-                      {day}
-                    </button>
-                  ))}
+                  {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
+                    (day, index) => (
+                      <button
+                        key={day}
+                        className={`day-btn ${
+                          [
+                            daySelect1,
+                            daySelect2,
+                            daySelect3,
+                            daySelect4,
+                            daySelect5,
+                            daySelect6,
+                            daySelect7,
+                          ][index] === 1
+                            ? "selected"
+                            : ""
+                        }`}
+                        onClick={(e) => toggleDay(index + 1, e)}
+                      >
+                        {day}
+                      </button>
+                    )
+                  )}
                 </div>
               </div>
             )}
           </div>
-          {submitError && <div className="error-message visible">{submitError}</div>}
-          <div className={`validation-message ${showValidationMessage ? "visible" : ""}`}>{getValidationMessage()}</div>
+          {submitError && (
+            <div className="error-message visible">{submitError}</div>
+          )}
+          <div
+            className={`validation-message ${
+              showValidationMessage ? "visible" : ""
+            }`}
+          >
+            {getValidationMessage()}
+          </div>
         </div>
       ),
     },
@@ -1553,11 +1749,13 @@ const CleaningSwiper = forwardRef((props, ref) => {
       content: (
         <div className="step-content">
           <div className="form-group">
-            <label className="required-field">How will we get inside your home?</label>
+            <label className="required-field">
+              How will we get inside your home?
+            </label>
             <select
               value={GetInside}
               onChange={(e) => {
-                setGetInside(e.target.value)
+                setGetInside(e.target.value);
               }}
               className="form-select"
             >
@@ -1572,7 +1770,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
             <select
               value={Park}
               onChange={(e) => {
-                setPark(e.target.value)
+                setPark(e.target.value);
               }}
               className="form-select"
             >
@@ -1587,7 +1785,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
             <select
               value={Animal}
               onChange={(e) => {
-                setAnimal(e.target.value)
+                setAnimal(e.target.value);
               }}
               className="form-select"
             >
@@ -1601,13 +1799,19 @@ const CleaningSwiper = forwardRef((props, ref) => {
             <textarea
               value={spComments}
               onChange={(e) => {
-                setspComments(e.target.value)
+                setspComments(e.target.value);
               }}
               className="form-textarea"
               placeholder="If you have any information you would like to share, please write here..."
             />
           </div>
-          <div className={`validation-message ${showValidationMessage ? "visible" : ""}`}>{getValidationMessage()}</div>
+          <div
+            className={`validation-message ${
+              showValidationMessage ? "visible" : ""
+            }`}
+          >
+            {getValidationMessage()}
+          </div>
         </div>
       ),
     },
@@ -1630,8 +1834,8 @@ const CleaningSwiper = forwardRef((props, ref) => {
                   className="form-input"
                   value={firstName}
                   onChange={(e) => {
-                    setFirstName(e.target.value)
-                    updateSignupValidation()
+                    setFirstName(e.target.value);
+                    updateSignupValidation();
                   }}
                 />
               </div>
@@ -1642,8 +1846,8 @@ const CleaningSwiper = forwardRef((props, ref) => {
                   className="form-input"
                   value={lastName}
                   onChange={(e) => {
-                    setLastName(e.target.value)
-                    updateSignupValidation()
+                    setLastName(e.target.value);
+                    updateSignupValidation();
                   }}
                 />
               </div>
@@ -1656,8 +1860,8 @@ const CleaningSwiper = forwardRef((props, ref) => {
                   className="form-input"
                   value={email}
                   onChange={(e) => {
-                    setEmail(e.target.value)
-                    updateSignupValidation()
+                    setEmail(e.target.value);
+                    updateSignupValidation();
                   }}
                 />
               </div>
@@ -1668,8 +1872,8 @@ const CleaningSwiper = forwardRef((props, ref) => {
                   className="form-input"
                   value={phone}
                   onChange={(e) => {
-                    setPhone(e.target.value)
-                    updateSignupValidation()
+                    setPhone(e.target.value);
+                    updateSignupValidation();
                   }}
                 />
               </div>
@@ -1682,8 +1886,8 @@ const CleaningSwiper = forwardRef((props, ref) => {
                   className="form-input"
                   value={password}
                   onChange={(e) => {
-                    setPassword(e.target.value)
-                    updateSignupValidation()
+                    setPassword(e.target.value);
+                    updateSignupValidation();
                   }}
                 />
                 <button
@@ -1701,8 +1905,8 @@ const CleaningSwiper = forwardRef((props, ref) => {
               <MelbourneAddressInput
                 value={address}
                 onChange={(newAddress) => {
-                  setAddress(newAddress)
-                  updateSignupValidation()
+                  setAddress(newAddress);
+                  updateSignupValidation();
                 }}
                 onValidation={updateSignupValidation}
                 className="form-input"
@@ -1723,8 +1927,8 @@ const CleaningSwiper = forwardRef((props, ref) => {
                   type="checkbox"
                   checked={acceptTerms}
                   onChange={(e) => {
-                    setAcceptTerms(e.target.checked)
-                    updateSignupValidation()
+                    setAcceptTerms(e.target.checked);
+                    updateSignupValidation();
                   }}
                 />
                 I accept the <span className="link">Terms & Conditions</span>
@@ -1736,9 +1940,17 @@ const CleaningSwiper = forwardRef((props, ref) => {
                 </span>
               </p>
             </div>
-            {submitError && <div className="error-message visible">{submitError}</div>}
+            {submitError && (
+              <div className="error-message visible">{submitError}</div>
+            )}
           </div>
-          <div className={`validation-message ${showValidationMessage ? "visible" : ""}`}>{getValidationMessage()}</div>
+          <div
+            className={`validation-message ${
+              showValidationMessage ? "visible" : ""
+            }`}
+          >
+            {getValidationMessage()}
+          </div>
         </div>
       ),
     },
@@ -1890,9 +2102,9 @@ const CleaningSwiper = forwardRef((props, ref) => {
                   placeholder="Enter code"
                   value={discountCode}
                   onChange={(e) => {
-                    const code = e.target.value.toUpperCase()
-                    setDiscountCode(code)
-                    setIsDiscountApplied(code === "DIS")
+                    const code = e.target.value.toUpperCase();
+                    setDiscountCode(code);
+                    setIsDiscountApplied(code === "DIS");
                   }}
                   style={{
                     padding: "0.5rem",
@@ -1909,7 +2121,11 @@ const CleaningSwiper = forwardRef((props, ref) => {
                 <span>Total</span>
                 <span className="total-number">
                   ${discountedTotal.toFixed(2)}
-                  {isDiscountApplied && <small style={{ marginLeft: "6px", color: "green" }}>(25% off)</small>}
+                  {isDiscountApplied && (
+                    <small style={{ marginLeft: "6px", color: "green" }}>
+                      (25% off)
+                    </small>
+                  )}
                 </span>
               </div>
             </div>
@@ -1920,12 +2136,14 @@ const CleaningSwiper = forwardRef((props, ref) => {
             >
               {isSubmitting ? "Processing..." : "Book Now & Pay"}
             </button>
-            {submitError && <div className="error-message visible">{submitError}</div>}
+            {submitError && (
+              <div className="error-message visible">{submitError}</div>
+            )}
           </div>
         </div>
       ),
     },
-  ]
+  ];
 
   // Define commercial steps
   const commercialSteps = [
@@ -1935,19 +2153,30 @@ const CleaningSwiper = forwardRef((props, ref) => {
       subtitle: "What type of project? Please provide what type of cleaning.",
       content: (
         <div className="step-content">
-          <div className={`quote-options ${showValidationMessage ? "validation-active" : ""}`}>
+          <div
+            className={`quote-options ${
+              showValidationMessage ? "validation-active" : ""
+            }`}
+          >
             <div
               className={`quote-option ${Quote === 1 ? "selected" : ""}`}
               onClick={(e) => handleQuoteSelection(1, e)}
             >
               <div className="quote-icon">
-                <img src={require("../views/img/house_60156731-200h.png") || "/placeholder.svg"} alt="House" />
+                <img
+                  src={
+                    require("../views/img/house_60156731-200h.png") ||
+                    "/placeholder.svg"
+                  }
+                  alt="House"
+                />
                 {Quote === 1 && <div className="selection-indicator"></div>}
               </div>
               <h3>Residential Cleaning</h3>
               <p>
-                Bring a breath of fresh air and elevate your living spaces with our residential cleaning services,
-                designed to bring comfort and hygiene to your home
+                Bring a breath of fresh air and elevate your living spaces with
+                our residential cleaning services, designed to bring comfort and
+                hygiene to your home
               </p>
             </div>
             <div
@@ -1955,17 +2184,29 @@ const CleaningSwiper = forwardRef((props, ref) => {
               onClick={(e) => handleQuoteSelection(2, e)}
             >
               <div className="quote-icon">
-                <img src={require("../views/img/building_60159951-200w.png") || "/placeholder.svg"} alt="Building" />
+                <img
+                  src={
+                    require("../views/img/building_60159951-200w.png") ||
+                    "/placeholder.svg"
+                  }
+                  alt="Building"
+                />
                 {Quote === 2 && <div className="selection-indicator"></div>}
               </div>
               <h3>Commercial Cleaning</h3>
               <p>
-                Our commercial cleaning services are tailored to meet the unique demands of offices, restaurants,
-                schools, gyms... you name it!
+                Our commercial cleaning services are tailored to meet the unique
+                demands of offices, restaurants, schools, gyms... you name it!
               </p>
             </div>
           </div>
-          <div className={`validation-message ${showValidationMessage ? "visible" : ""}`}>{getValidationMessage()}</div>
+          <div
+            className={`validation-message ${
+              showValidationMessage ? "visible" : ""
+            }`}
+          >
+            {getValidationMessage()}
+          </div>
         </div>
       ),
     },
@@ -1988,7 +2229,11 @@ const CleaningSwiper = forwardRef((props, ref) => {
           </div>
           <div className="form-group">
             <label className="required-field">Business Size</label>
-            <select value={businessSize} onChange={(e) => setBusinessSize(e.target.value)} className="form-select">
+            <select
+              value={businessSize}
+              onChange={(e) => setBusinessSize(e.target.value)}
+              className="form-select"
+            >
               <option value="">Select business size</option>
               <option value="small">Small (Under 2,000 sq ft)</option>
               <option value="medium">Medium (2,000 - 10,000 sq ft)</option>
@@ -1996,7 +2241,13 @@ const CleaningSwiper = forwardRef((props, ref) => {
               <option value="enterprise">Enterprise (Over 50,000 sq ft)</option>
             </select>
           </div>
-          <div className={`validation-message ${showValidationMessage ? "visible" : ""}`}>{getValidationMessage()}</div>
+          <div
+            className={`validation-message ${
+              showValidationMessage ? "visible" : ""
+            }`}
+          >
+            {getValidationMessage()}
+          </div>
         </div>
       ),
     },
@@ -2052,7 +2303,13 @@ const CleaningSwiper = forwardRef((props, ref) => {
               ))}
             </div>
           </div>
-          <div className={`validation-message ${showValidationMessage ? "visible" : ""}`}>{getValidationMessage()}</div>
+          <div
+            className={`validation-message ${
+              showValidationMessage ? "visible" : ""
+            }`}
+          >
+            {getValidationMessage()}
+          </div>
         </div>
       ),
     },
@@ -2066,7 +2323,14 @@ const CleaningSwiper = forwardRef((props, ref) => {
           <div className="form-group">
             <label className="required-field">Frequency</label>
             <div className="frequency-options">
-              {["Daily", "Weekly", "Bi-weekly", "Monthly", "One-time", "Custom"].map((freq) => (
+              {[
+                "Daily",
+                "Weekly",
+                "Bi-weekly",
+                "Monthly",
+                "One-time",
+                "Custom",
+              ].map((freq) => (
                 <button
                   key={freq}
                   className={cleaningFrequency === freq ? "active" : ""}
@@ -2080,10 +2344,20 @@ const CleaningSwiper = forwardRef((props, ref) => {
           <div className="form-group">
             <label>Availability (Days of Week)</label>
             <div className="day-selector">
-              {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => (
+              {[
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday",
+              ].map((day) => (
                 <button
                   key={day}
-                  className={`day-btn ${availabilityDays.includes(day) ? "selected" : ""}`}
+                  className={`day-btn ${
+                    availabilityDays.includes(day) ? "selected" : ""
+                  }`}
                   onClick={(e) => handleAvailabilityDayToggle(day, e)}
                 >
                   {day.substring(0, 3)}
@@ -2091,7 +2365,13 @@ const CleaningSwiper = forwardRef((props, ref) => {
               ))}
             </div>
           </div>
-          <div className={`validation-message ${showValidationMessage ? "visible" : ""}`}>{getValidationMessage()}</div>
+          <div
+            className={`validation-message ${
+              showValidationMessage ? "visible" : ""
+            }`}
+          >
+            {getValidationMessage()}
+          </div>
         </div>
       ),
     },
@@ -2104,30 +2384,46 @@ const CleaningSwiper = forwardRef((props, ref) => {
         <div className="step-content">
           <div className="form-group">
             <label className="checkbox-label">
-              <input type="checkbox" checked={insuranceDocs} onChange={(e) => setInsuranceDocs(e.target.checked)} />
+              <input
+                type="checkbox"
+                checked={insuranceDocs}
+                onChange={(e) => setInsuranceDocs(e.target.checked)}
+              />
               Insurance and bonding documentation required
             </label>
             <p className="form-help-text">
-              Check this if you require our team to provide insurance and bonding documentation before service begins.
+              Check this if you require our team to provide insurance and
+              bonding documentation before service begins.
             </p>
           </div>
           <div className="form-group">
             <label className="required-field">Monthly Budget</label>
             <div className="frequency-options">
-              {["$500-$1,000", "$1,000-$2,500", "$2,500-$5,000", "$5,000-$10,000", "$10,000+", "Custom Quote"].map(
-                (budget) => (
-                  <button
-                    key={budget}
-                    className={budgetRange === budget ? "active" : ""}
-                    onClick={(e) => handleBudgetRangeSelect(budget, e)}
-                  >
-                    {budget}
-                  </button>
-                ),
-              )}
+              {[
+                "$500-$1,000",
+                "$1,000-$2,500",
+                "$2,500-$5,000",
+                "$5,000-$10,000",
+                "$10,000+",
+                "Custom Quote",
+              ].map((budget) => (
+                <button
+                  key={budget}
+                  className={budgetRange === budget ? "active" : ""}
+                  onClick={(e) => handleBudgetRangeSelect(budget, e)}
+                >
+                  {budget}
+                </button>
+              ))}
             </div>
           </div>
-          <div className={`validation-message ${showValidationMessage ? "visible" : ""}`}>{getValidationMessage()}</div>
+          <div
+            className={`validation-message ${
+              showValidationMessage ? "visible" : ""
+            }`}
+          >
+            {getValidationMessage()}
+          </div>
         </div>
       ),
     },
@@ -2135,7 +2431,8 @@ const CleaningSwiper = forwardRef((props, ref) => {
     {
       id: "signup",
       title: "Sign Up",
-      subtitle: "Provide your business contact information for the service agreement.",
+      subtitle:
+        "Provide your business contact information for the service agreement.",
       content: (
         <div className="step-content">
           <div className="signup-form">
@@ -2146,8 +2443,8 @@ const CleaningSwiper = forwardRef((props, ref) => {
                 className="form-input"
                 value={lastName}
                 onChange={(e) => {
-                  setLastName(e.target.value)
-                  updateSignupValidation()
+                  setLastName(e.target.value);
+                  updateSignupValidation();
                 }}
                 placeholder="Primary contact person name"
               />
@@ -2160,8 +2457,8 @@ const CleaningSwiper = forwardRef((props, ref) => {
                   className="form-input"
                   value={email}
                   onChange={(e) => {
-                    setEmail(e.target.value)
-                    updateSignupValidation()
+                    setEmail(e.target.value);
+                    updateSignupValidation();
                   }}
                   placeholder="business@company.com"
                 />
@@ -2173,8 +2470,8 @@ const CleaningSwiper = forwardRef((props, ref) => {
                   className="form-input"
                   value={phone}
                   onChange={(e) => {
-                    setPhone(e.target.value)
-                    updateSignupValidation()
+                    setPhone(e.target.value);
+                    updateSignupValidation();
                   }}
                   placeholder="(03) 1234 5678"
                 />
@@ -2185,8 +2482,8 @@ const CleaningSwiper = forwardRef((props, ref) => {
               <MelbourneAddressInput
                 value={address}
                 onChange={(newAddress) => {
-                  setAddress(newAddress)
-                  updateSignupValidation()
+                  setAddress(newAddress);
+                  updateSignupValidation();
                 }}
                 onValidation={updateSignupValidation}
                 className="form-input"
@@ -2199,16 +2496,25 @@ const CleaningSwiper = forwardRef((props, ref) => {
                   type="checkbox"
                   checked={acceptTerms}
                   onChange={(e) => {
-                    setAcceptTerms(e.target.checked)
-                    updateSignupValidation()
+                    setAcceptTerms(e.target.checked);
+                    updateSignupValidation();
                   }}
                 />
-                I accept the <span className="link">Commercial Service Agreement</span>
+                I accept the{" "}
+                <span className="link">Commercial Service Agreement</span>
               </label>
             </div>
-            {submitError && <div className="error-message visible">{submitError}</div>}
+            {submitError && (
+              <div className="error-message visible">{submitError}</div>
+            )}
           </div>
-          <div className={`validation-message ${showValidationMessage ? "visible" : ""}`}>{getValidationMessage()}</div>
+          <div
+            className={`validation-message ${
+              showValidationMessage ? "visible" : ""
+            }`}
+          >
+            {getValidationMessage()}
+          </div>
         </div>
       ),
     },
@@ -2290,15 +2596,17 @@ const CleaningSwiper = forwardRef((props, ref) => {
             >
               {isSubmitting ? "Submitting..." : "Submit Quote Request"}
             </button>
-            {submitError && <div className="error-message visible">{submitError}</div>}
+            {submitError && (
+              <div className="error-message visible">{submitError}</div>
+            )}
           </div>
         </div>
       ),
     },
-  ]
+  ];
 
   // Use conditional steps based on cleaning type
-  const steps = isCommercial ? commercialSteps : residentialSteps
+  const steps = isCommercial ? commercialSteps : residentialSteps;
 
   // Update validations when commercial fields change
   useEffect(() => {
@@ -2309,22 +2617,40 @@ const CleaningSwiper = forwardRef((props, ref) => {
         "cleaning-needs": typeOfEnvironment && typeOfClean,
         "frequency-schedule": cleaningFrequency,
         "insurance-budget": budgetRange,
-      }))
+      }));
     }
-  }, [businessName, businessSize, typeOfEnvironment, typeOfClean, cleaningFrequency, budgetRange, isCommercial])
+  }, [
+    businessName,
+    businessSize,
+    typeOfEnvironment,
+    typeOfClean,
+    cleaningFrequency,
+    budgetRange,
+    isCommercial,
+  ]);
 
   const navigateS = () => {
-    window.location.href = "/dashboard"
-  }
+    window.location.href = "/dashboard";
+  };
 
   return (
     <>
-      {login && <Login CloseLogin={() => setLogin(false)} navigateS={navigateS} />}
+      {login && (
+        <Login CloseLogin={() => setLogin(false)} navigateS={navigateS} />
+      )}
       <div ref={ref} className="swiper-container">
         <div className="swiper-wrapper">
-          <div className="swiper-track" style={{ transform: `translateX(-${currentStep * 100}%)` }}>
+          <div
+            className="swiper-track"
+            style={{ transform: `translateX(-${currentStep * 100}%)` }}
+          >
             {steps.map((step, index) => (
-              <div key={step.id} className={`swiper-slide ${index === currentStep ? "active" : ""}`}>
+              <div
+                key={step.id}
+                className={`swiper-slide ${
+                  index === currentStep ? "active" : ""
+                }`}
+              >
                 <div className="slide-content">
                   <div className="slide-header">
                     <h1>{step.title}</h1>
@@ -2349,50 +2675,72 @@ const CleaningSwiper = forwardRef((props, ref) => {
             ))}
           </div>
         </div>
-        {!isCommercial && currentStep >= 1 && currentStep <= steps.length - 3 && (
-          <>
-            <p className="check">
-              Already have an account?{" "}
-              <span className="link" onClick={() => setLogin(true)}>
-                Login
-              </span>
-            </p>
-            <div className="slide-footer">
-              <Link to="/contact" target="_blank">
-                <div className="support-section">
-                  <img
-                    src={require("../views/img/support.png") || "/placeholder.svg" || "/placeholder.svg"}
-                    alt="Support"
-                    className={supports ? "support-active" : ""}
-                  />
-                  <p onMouseEnter={handleMouseEnterSupport} onMouseLeave={handleMouseLeaveSupport}>
-                    Support
-                  </p>
-                </div>
-              </Link>
-              <div>
-                <h5 className="total-text">
-                  Total <span className="total-number">${Total.toFixed(2)}</span>
-                </h5>
-                <small>
-                  We estimate your cleaning to take: <span className="tim">{estimatedTime} minutes</span>
-                </small>
-              </div>
-              <div className="sum-txt" onClick={() => setCurrentStep(steps.length - 1)}>
-                <span>
-                  <h5>Booking Summary</h5>
-                  <small>have a discount code?</small>
+        {!isCommercial &&
+          currentStep >= 1 &&
+          currentStep <= steps.length - 3 && (
+            <>
+              <p className="check">
+                Already have an account?{" "}
+                <span className="link" onClick={() => setLogin(true)}>
+                  Login
                 </span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#000000" viewBox="0 0 256 256">
-                  <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
-                </svg>
+              </p>
+              <div className="slide-footer">
+                <Link to="/contact" target="_blank">
+                  <div className="support-section">
+                    <img
+                      src={
+                        require("../views/img/support.png") ||
+                        "/placeholder.svg" ||
+                        "/placeholder.svg"
+                      }
+                      alt="Support"
+                      className={supports ? "support-active" : ""}
+                    />
+                    <p
+                      onMouseEnter={handleMouseEnterSupport}
+                      onMouseLeave={handleMouseLeaveSupport}
+                    >
+                      Support
+                    </p>
+                  </div>
+                </Link>
+                <div>
+                  <h5 className="total-text">
+                    Total{" "}
+                    <span className="total-number">${Total.toFixed(2)}</span>
+                  </h5>
+                  <small>
+                    We estimate your cleaning to take:{" "}
+                    <span className="tim">{estimatedTime} minutes</span>
+                  </small>
+                </div>
+                <div
+                  className="sum-txt"
+                  onClick={() => setCurrentStep(steps.length - 1)}
+                >
+                  <span>
+                    <h5>Booking Summary</h5>
+                    <small>have a discount code?</small>
+                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="#000000"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
+                  </svg>
+                </div>
               </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
         {/* Navigation arrows */}
         <button
-          className={`swiper-nav swiper-nav-left ${currentStep === 0 ? "disabled" : ""}`}
+          className={`swiper-nav swiper-nav-left ${
+            currentStep === 0 ? "disabled" : ""
+          }`}
           onClick={prevStep}
           disabled={currentStep === 0}
         >
@@ -2400,16 +2748,22 @@ const CleaningSwiper = forwardRef((props, ref) => {
         </button>
         <button
           className={`swiper-nav swiper-nav-right ${
-            currentStep === totalSteps - 1 || !validations[steps[currentStep].id] ? "disabled" : ""
+            currentStep === totalSteps - 1 ||
+            !validations[steps[currentStep].id]
+              ? "disabled"
+              : ""
           }`}
           onClick={nextStep}
-          disabled={currentStep === totalSteps - 1 || !validations[steps[currentStep].id]}
+          disabled={
+            currentStep === totalSteps - 1 ||
+            !validations[steps[currentStep].id]
+          }
         >
           &#8250;
         </button>
       </div>
     </>
-  )
-})
+  );
+});
 
-export default CleaningSwiper
+export default CleaningSwiper;
