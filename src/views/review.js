@@ -11,6 +11,8 @@ import "./home.css";
 import Mobilex from "./mobile";
 import Login from "./login";
 import RegisterPopup from "../components/RegisterPopup";
+import axios from "axios";
+import Footer from "../components/Footer";
 
 const Review = (props) => {
   const [visibleCount, setVisibleCount] = useState(3);
@@ -330,7 +332,6 @@ const Review = (props) => {
 
         // Optionally, you can listen for animation complete event
         lottieInstance.addEventListener("complete", () => {
-          console.log("Lottie animation completed");
         });
       }
     }
@@ -434,6 +435,193 @@ const Review = (props) => {
       }
     );
   };
+
+  const [reviews, setReviews] = useState([]);
+  const [videoReviews, setVideoReviews] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("https://api-crisp-cleaning.onrender.com/api/reviews")
+      .then((res) => {
+        const fetchedReviews = res.data.data;
+        const filteredVideos = fetchedReviews.filter(
+          (review) => review.reviewType === "video"
+        );
+        if (filteredVideos.length > 6) {
+          setVideoReviews(filteredVideos);
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching reviews:", err);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("https://api-crisp-cleaning.onrender.com/api/reviews")
+      .then((res) => {
+        if (res.data.success && res.data.data.length > 6) {
+          setReviews(res.data.data);
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching reviews:", err);
+      });
+  }, []);
+
+  const dummyReviews = [
+    {
+      id: 1,
+      userName: "Jonathan Kim",
+      createdAt: new Date(),
+      image: require("./img/user1-200h.png"),
+      ratingImage: require("./img/r1-200h.png"),
+      text: "I've used several cleaning services in the past, but Crisp Cleaning Corp truly stands out...",
+    },
+    {
+      id: 2,
+      userName: "Emily Rose",
+      createdAt: new Date(),
+      image: require("./img/user6-200h.png"),
+      ratingImage: require("./img/r5-200h.png"),
+      text: "The attention to detail is impeccable. My home has never looked this clean and organized...",
+    },
+    {
+      id: 3,
+      userName: "Jonathan Kong",
+      createdAt: new Date(),
+      image: require("./img/user12-200h.png"),
+      ratingImage: require("./img/r2-200h.png"),
+      text: "The team went above and beyond to ensure every nook and cranny was spotless...",
+    },
+    {
+      id: 4,
+      userName: "Sophia Williams",
+      createdAt: new Date(),
+      image: require("./img/user1-200h.png"),
+      ratingImage: require("./img/r1-200h.png"),
+      text: "Absolutely fantastic service! The team was prompt, professional, and left my home sparkling.",
+    },
+    {
+      id: 5,
+      userName: "Michael Johnson",
+      createdAt: new Date(),
+      image: require("./img/user6-200h.png"),
+      ratingImage: require("./img/r2-200h.png"),
+      text: "Reliable and thorough. Crisp Cleaning Corp is the best cleaning service I've ever used.",
+    },
+    {
+      id: 6,
+      userName: "Isabella Martinez",
+      createdAt: new Date(),
+      image: require("./img/user12-200h.png"),
+      ratingImage: require("./img/r2-200h.png"),
+      text: "Friendly staff, attention to detail, and flawless results every time. Highly recommended!",
+    },
+    {
+      id: 7,
+      userName: "Liam Brown",
+      createdAt: new Date(),
+      image: require("./img/user1-200h.png"),
+      ratingImage: require("./img/r1-200h.png"),
+      text: "Sparkling clean! Their staff exceeded my expectations. Everything looks brand new.",
+    },
+    {
+      id: 8,
+      userName: "Olivia Davis",
+      createdAt: new Date(),
+      image: require("./img/user6-200h.png"),
+      ratingImage: require("./img/r5-200h.png"),
+      text: "Professional, quick, and efficient. They handled everything with care and precision.",
+    },
+    {
+      id: 9,
+      userName: "Noah Smith",
+      createdAt: new Date(),
+      image: require("./img/user12-200h.png"),
+      ratingImage: require("./img/r2-200h.png"),
+      text: "I couldn’t be happier with the service. My apartment looks immaculate. Thank you!",
+    },
+  ];
+
+  const dummyVideoReviews = [
+    {
+      id: 1,
+      userName: "Jonathan Kim",
+      videoUrl: require("./img/samplex.mp4"),
+      createdAt: new Date(),
+    },
+    {
+      id: 2,
+      userName: "Emily Johnson",
+      videoUrl: require("./img/samplex.mp4"),
+      createdAt: new Date(),
+    },
+    {
+      id: 3,
+      userName: "James Rodriguez",
+      videoUrl: require("./img/samplex.mp4"),
+      createdAt: new Date(),
+    },
+    {
+      id: 4,
+      userName: "Jonathan Kim",
+      videoUrl: require("./img/samplex.mp4"),
+      createdAt: new Date(),
+    },
+    {
+      id: 5,
+      userName: "Emily Johnson",
+      videoUrl: require("./img/samplex.mp4"),
+      createdAt: new Date(),
+    },
+    {
+      id: 6,
+      userName: "James Rodriguez",
+      videoUrl: require("./img/samplex.mp4"),
+      createdAt: new Date(),
+    },
+    {
+      id: 7,
+      userName: "Jonathan Kim",
+      videoUrl: require("./img/samplex.mp4"),
+      createdAt: new Date(),
+    },
+    {
+      id: 8,
+      userName: "Emily Johnson",
+      videoUrl: require("./img/samplex.mp4"),
+      createdAt: new Date(),
+    },
+    {
+      id: 9,
+      userName: "James Rodriguez",
+      videoUrl: require("./img/samplex.mp4"),
+      createdAt: new Date(),
+    },
+    {
+      id: 10,
+      userName: "Jonathan Kim",
+      videoUrl: require("./img/samplex.mp4"),
+      createdAt: new Date(),
+    },
+    {
+      id: 11,
+      userName: "Emily Johnson",
+      videoUrl: require("./img/samplex.mp4"),
+      createdAt: new Date(),
+    },
+    {
+      id: 12,
+      userName: "James Rodriguez",
+      videoUrl: require("./img/samplex.mp4"),
+      createdAt: new Date(),
+    },
+  ];
+
+  const displayReviews = reviews.length > 6 ? reviews : dummyReviews;
+  const displayVideoReviews =
+    videoReviews.length > 6 ? videoReviews : dummyVideoReviews;
 
   return (
     <div className="review-container">
@@ -549,7 +737,7 @@ const Review = (props) => {
             </div>
             <span
               className="home-text011"
-              onClick={() => setRegister(true)}
+              onClick={handleClick}
               onMouseEnter={handleMouseEnterX}
               onMouseLeave={handleMouseLeaveX}
             >
@@ -582,6 +770,13 @@ const Review = (props) => {
             <Link to="/contact">
               <h2>Contact</h2>
             </Link>
+            <h2
+              onClick={() => {
+                setLogin(true);
+              }}
+            >
+              Login
+            </h2>
           </div>
           <div className="home-container231xy">
             <div
@@ -590,493 +785,32 @@ const Review = (props) => {
               onMouseEnter={handleMouseEnterY}
               onMouseLeave={handleMouseLeaveY}
             >
-              <div className="home-container250">
-                <div className="home-container251">
-                  <div className="home-container252">
-                    <img
-                      alt="image"
-                      src={require("./img/user5-200h.png")}
-                      className="home-image28"
-                    />
-                    <div className="home-container253">
-                      <p className="home-text234">Jonathan Kim</p>
-                      <p className="home-text235">Manager @ Samsung</p>
+              <div className="text-reviews-section-2">
+                {displayReviews.map((review) => (
+                  <div key={review.id} className="text-review-card">
+                    <div className="review-header">
+                      <div className="reviewer-info">
+                        {review.image ? (
+                          <img
+                            alt="user"
+                            src={review.image}
+                            className="reviewer-avatar"
+                          />
+                        ) : (
+                          <UserIcon className="reviewer-avatar" size={28} />
+                        )}
+                        <div className="reviewer-details">
+                          <p className="reviewer-name">{review.userName}</p>
+                          <small className="review-date">
+                            {new Date(review.createdAt).toLocaleDateString()} -{" "}
+                            {new Date(review.createdAt).toLocaleTimeString()}
+                          </small>
+                        </div>
+                      </div>
                     </div>
+                    <p className="review-content">{review.text}</p>
                   </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r1-200h.png")}
-                    className="home-image29"
-                  />
-                </div>
-                <p className="home-text236">
-                  <span>
-                    Hats off to the Clean Team! They tackled the toughest
-                  </span>
-                  <span>
-                    stains with ease, leaving my office looking pristine.
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Their attention to detail and friendly staff make them
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>my go-to cleaning company</span>
-                </p>
-
-                <p className="home-text241">4:22 AM - Nov 29,2023</p>
-              </div>
-              <div className="home-container254">
-                <div className="home-container255">
-                  <div className="home-container256">
-                    <img
-                      alt="image"
-                      src={require("./img/user3-200h.png")}
-                      className="home-image30"
-                    />
-                    <div className="home-container257">
-                      <p className="home-text242">Emily Johnson</p>
-                      <p className="home-text243">Manager @ Nike</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r5-200h.png")}
-                    className="home-image31"
-                  />
-                </div>
-                <p className="home-text244">
-                  <span>
-                    I&apos;ve used several cleaning services in the past, but
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Crisp Cleaning Corp truly stands out. The attention to
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    detail is impeccable, and my home has never looked
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    this clean and organized. The team went above and
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    beyond to ensure every nook and cranny was
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>spotless.</span>
-                  <br></br>
-                  <br></br>
-                  <span>
-                    Moreover, the customer service was outstanding. The staff
-                    was friendly, responsive, and accommodating to my schedule.
-                    It&apos;s rare to find a company that values its customers
-                    as much as Sparkle Clean Corp does
-                  </span>
-                  <br></br>
-                </p>
-
-                <p className="home-text255">4:22 AM - Nov 29,2023</p>
-              </div>
-              <div className="home-container258">
-                <div className="home-container259">
-                  <div className="home-container260">
-                    <img
-                      alt="image"
-                      src={require("./img/user8-200h.png")}
-                      className="home-image32"
-                    />
-                    <div className="home-container261">
-                      <p className="home-text256">James Rodriguez</p>
-                      <p className="home-text257">Manager @ Adidas</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r2-200h.png")}
-                    className="home-image33"
-                  />
-                </div>
-                <p className="home-text258">
-                  <span>
-                    Hats off to the Clean Team! They tackled the toughest
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <br></br>
-                  <span>
-                    stains with ease, leaving my office looking pristine.
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <br></br>
-                  <span>
-                    Their attention to detail and friendly staff make them
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <br></br>
-                  <span>my go-to cleaning company</span>
-                </p>
-
-                <p className="home-text266">4:22 AM - Nov 29,2023</p>
-              </div>
-              <div className="home-container262">
-                <div className="home-container263">
-                  <div className="home-container264">
-                    <img
-                      alt="image"
-                      src={require("./img/user11-200h.png")}
-                      className="home-image34"
-                    />
-                    <div className="home-container265">
-                      <p className="home-text267">Jonathan Kim</p>
-                      <p className="home-text268">Manager @ Samsung</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r1-200h.png")}
-                    className="home-image35"
-                  />
-                </div>
-                <p className="home-text269">
-                  <span>
-                    I&apos;ve used several cleaning services in the past, but
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Crisp Cleaning Corp truly stands out. The attention to
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    detail is impeccable, and my home has never looked
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    this clean and organized. The team went above and
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    beyond to ensure every nook and cranny was
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>spotless.</span>
-                  <br></br>
-                  <br></br>
-                  <span>
-                    Moreover, the customer service was outstanding. The staff
-                    was friendly, responsive, and accommodating to my schedule.
-                    It&apos;s rare to find a company that values its customers
-                    as much as Sparkle Clean Corp does
-                  </span>
-                  <br></br>
-                </p>
-
-                <p className="home-text280">4:22 AM - Nov 29,2023</p>
-              </div>
-              <div className="home-container250">
-                <div className="home-container251">
-                  <div className="home-container252">
-                    <img
-                      alt="image"
-                      src={require("./img/user5-200h.png")}
-                      className="home-image28"
-                    />
-                    <div className="home-container253">
-                      <p className="home-text234">Jonathan Kim</p>
-                      <p className="home-text235">Manager @ Samsung</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r1-200h.png")}
-                    className="home-image29"
-                  />
-                </div>
-                <p className="home-text236">
-                  <span>
-                    Hats off to the Clean Team! They tackled the toughest
-                  </span>
-                  <span>
-                    stains with ease, leaving my office looking pristine.
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Their attention to detail and friendly staff make them
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>my go-to cleaning company</span>
-                </p>
-
-                <p className="home-text241">4:22 AM - Nov 29,2023</p>
-              </div>
-              <div className="home-container254">
-                <div className="home-container255">
-                  <div className="home-container256">
-                    <img
-                      alt="image"
-                      src={require("./img/user3-200h.png")}
-                      className="home-image30"
-                    />
-                    <div className="home-container257">
-                      <p className="home-text242">Emily Johnson</p>
-                      <p className="home-text243">Manager @ Nike</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r5-200h.png")}
-                    className="home-image31"
-                  />
-                </div>
-                <p className="home-text244">
-                  <span>
-                    I&apos;ve used several cleaning services in the past, but
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Crisp Cleaning Corp truly stands out. The attention to
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    detail is impeccable, and my home has never looked
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    this clean and organized. The team went above and
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    beyond to ensure every nook and cranny was
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>spotless.</span>
-                  <br></br>
-                  <br></br>
-                  <span>
-                    Moreover, the customer service was outstanding. The staff
-                    was friendly, responsive, and accommodating to my schedule.
-                    It&apos;s rare to find a company that values its customers
-                    as much as Sparkle Clean Corp does
-                  </span>
-                  <br></br>
-                </p>
-
-                <p className="home-text255">4:22 AM - Nov 29,2023</p>
-              </div>
-              <div className="home-container258">
-                <div className="home-container259">
-                  <div className="home-container260">
-                    <img
-                      alt="image"
-                      src={require("./img/user8-200h.png")}
-                      className="home-image32"
-                    />
-                    <div className="home-container261">
-                      <p className="home-text256">James Rodriguez</p>
-                      <p className="home-text257">Manager @ Adidas</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r2-200h.png")}
-                    className="home-image33"
-                  />
-                </div>
-                <p className="home-text258">
-                  <span>
-                    Hats off to the Clean Team! They tackled the toughest
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <br></br>
-                  <span>
-                    stains with ease, leaving my office looking pristine.
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <br></br>
-                  <span>
-                    Their attention to detail and friendly staff make them
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <br></br>
-                  <span>my go-to cleaning company</span>
-                </p>
-
-                <p className="home-text266">4:22 AM - Nov 29,2023</p>
-              </div>
-              <div className="home-container262">
-                <div className="home-container263">
-                  <div className="home-container264">
-                    <img
-                      alt="image"
-                      src={require("./img/user11-200h.png")}
-                      className="home-image34"
-                    />
-                    <div className="home-container265">
-                      <p className="home-text267">Jonathan Kim</p>
-                      <p className="home-text268">Manager @ Samsung</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r1-200h.png")}
-                    className="home-image35"
-                  />
-                </div>
-                <p className="home-text269">
-                  <span>
-                    I&apos;ve used several cleaning services in the past, but
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Crisp Cleaning Corp truly stands out. The attention to
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    detail is impeccable, and my home has never looked
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    this clean and organized. The team went above and
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    beyond to ensure every nook and cranny was
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>spotless.</span>
-                  <br></br>
-                  <br></br>
-                  <span>
-                    Moreover, the customer service was outstanding. The staff
-                    was friendly, responsive, and accommodating to my schedule.
-                    It&apos;s rare to find a company that values its customers
-                    as much as Sparkle Clean Corp does
-                  </span>
-                  <br></br>
-                </p>
-
-                <p className="home-text280">4:22 AM - Nov 29,2023</p>
+                ))}
               </div>
             </div>
             <div
@@ -1085,592 +819,32 @@ const Review = (props) => {
               onMouseEnter={handleMouseEnterGG}
               onMouseLeave={handleMouseLeaveGG}
             >
-              <div className="home-container267">
-                <div className="home-container268">
-                  <div className="home-container269">
-                    <div className="home-container270">
-                      <p className="home-text281">Jonathan Kim</p>
-                      <p className="home-text282">Manager @ Samsung</p>
+              <div className="text-reviews-section-2">
+                {displayReviews.map((review) => (
+                  <div key={review.id} className="text-review-card">
+                    <div className="review-header">
+                      <div className="reviewer-info">
+                        {review.image ? (
+                          <img
+                            alt="user"
+                            src={review.image}
+                            className="reviewer-avatar"
+                          />
+                        ) : (
+                          <UserIcon className="reviewer-avatar" size={28} />
+                        )}
+                        <div className="reviewer-details">
+                          <p className="reviewer-name">{review.userName}</p>
+                          <small className="review-date">
+                            {new Date(review.createdAt).toLocaleDateString()} -{" "}
+                            {new Date(review.createdAt).toLocaleTimeString()}
+                          </small>
+                        </div>
+                      </div>
                     </div>
+                    <p className="review-content">{review.text}</p>
                   </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r1-200h.png")}
-                    className="home-image37"
-                  />
-                </div>
-                <p className="home-text283">
-                  <span>
-                    I&apos;ve used several cleaning services in the past, but
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Crisp Cleaning Corp truly stands out. The attention to
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    detail is impeccable, and my home has never looked
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    this clean and organized. The team went above and
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    beyond to ensure every nook and cranny was
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>spotless.</span>
-                  <br></br>
-                  <br></br>
-                  <span>
-                    Moreover, the customer service was outstanding. The staff
-                    was friendly, responsive, and accommodating to my schedule.
-                    It&apos;s rare to find a company that values its customers
-                    as much as Sparkle Clean Corp does
-                  </span>
-                  <br></br>
-                </p>
-
-                <p className="home-text294">4:22 AM - Nov 29,2023</p>
-              </div>
-              <div className="home-container271">
-                <div className="home-container272">
-                  <div className="home-container273">
-                    <img
-                      alt="image"
-                      src={require("./img/user9-200h.png")}
-                      className="home-image38"
-                    />
-                    <div className="home-container274">
-                      <p className="home-text295">Emily Johnson</p>
-                      <p className="home-text296">Manager @ Nike</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r5-200h.png")}
-                    className="home-image39"
-                  />
-                </div>
-                <p className="home-text297">
-                  <span>
-                    I&apos;ve used several cleaning services in the past, but
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Crisp Cleaning Corp truly stands out. The attention to
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    detail is impeccable, and my home has never looked
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    this clean and organized. The team went above and
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    beyond to ensure every nook and cranny was
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>spotless.</span>
-                  <br></br>
-                  <br></br>
-                  <span>
-                    Moreover, the customer service was outstanding. The staff
-                    was friendly, responsive, and accommodating to my schedule.
-                    It&apos;s rare to find a company that values its customers
-                    as much as Sparkle Clean Corp does
-                  </span>
-                  <br></br>
-                </p>
-
-                <p className="home-text308">4:22 AM - Nov 29,2023</p>
-              </div>
-              <div className="home-container275">
-                <div className="home-container276">
-                  <div className="home-container277">
-                    <img
-                      alt="image"
-                      src={require("./img/user4-200h.png")}
-                      className="home-image40"
-                    />
-                    <div className="home-container278">
-                      <p className="home-text309">James Rodriguez</p>
-                      <p className="home-text310">Manager @ Adidas</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r2-200h.png")}
-                    className="home-image41"
-                  />
-                </div>
-                <p className="home-text311">
-                  <span>
-                    I&apos;ve used several cleaning services in the past, but
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Crisp Cleaning Corp truly stands out. The attention to
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    detail is impeccable, and my home has never looked
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    this clean and organized. The team went above and
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    beyond to ensure every nook and cranny was
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>spotless.</span>
-                  <br></br>
-                  <br></br>
-                  <span>
-                    Moreover, the customer service was outstanding. The staff
-                    was friendly, responsive, and accommodating to my schedule.
-                    It&apos;s rare to find a company that values its customers
-                    as much as Sparkle Clean Corp does
-                  </span>
-                  <br></br>
-                </p>
-
-                <p className="home-text322">4:22 AM - Nov 29,2023</p>
-              </div>
-              <div className="home-container279">
-                <div className="home-container280">
-                  <div className="home-container281">
-                    <img
-                      alt="image"
-                      src={require("./img/user10-200h.png")}
-                      className="home-image42"
-                    />
-                    <div className="home-container282">
-                      <p className="home-text323">Jonathan Kim</p>
-                      <p className="home-text324">Manager @ Samsung</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r1-200h.png")}
-                    className="home-image43"
-                  />
-                </div>
-                <p className="home-text325">
-                  <span>
-                    I&apos;ve used several cleaning services in the past, but
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Crisp Cleaning Corp truly stands out. The attention to
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    detail is impeccable, and my home has never looked
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    this clean and organized. The team went above and
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    beyond to ensure every nook and cranny was
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>spotless.</span>
-                  <br></br>
-                  <br></br>
-                  <span>
-                    Moreover, the customer service was outstanding. The staff
-                    was friendly, responsive, and accommodating to my schedule.
-                    It&apos;s rare to find a company that values its customers
-                    as much as Sparkle Clean Corp does
-                  </span>
-                  <br></br>
-                </p>
-
-                <p className="home-text336">4:22 AM - Nov 29,2023</p>
-              </div>
-              <div className="home-container267">
-                <div className="home-container268">
-                  <div className="home-container269">
-                    <img
-                      alt="image"
-                      src={require("./img/user12-200h.png")}
-                      className="home-image36"
-                    />
-                    <div className="home-container270">
-                      <p className="home-text281">Jonathan Kim</p>
-                      <p className="home-text282">Manager @ Samsung</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r1-200h.png")}
-                    className="home-image37"
-                  />
-                </div>
-                <p className="home-text283">
-                  <span>
-                    I&apos;ve used several cleaning services in the past, but
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Crisp Cleaning Corp truly stands out. The attention to
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    detail is impeccable, and my home has never looked
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    this clean and organized. The team went above and
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    beyond to ensure every nook and cranny was
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>spotless.</span>
-                  <br></br>
-                  <br></br>
-                  <span>
-                    Moreover, the customer service was outstanding. The staff
-                    was friendly, responsive, and accommodating to my schedule.
-                    It&apos;s rare to find a company that values its customers
-                    as much as Sparkle Clean Corp does
-                  </span>
-                  <br></br>
-                </p>
-
-                <p className="home-text294">4:22 AM - Nov 29,2023</p>
-              </div>
-              <div className="home-container271">
-                <div className="home-container272">
-                  <div className="home-container273">
-                    <img
-                      alt="image"
-                      src={require("./img/user9-200h.png")}
-                      className="home-image38"
-                    />
-                    <div className="home-container274">
-                      <p className="home-text295">Emily Johnson</p>
-                      <p className="home-text296">Manager @ Nike</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r5-200h.png")}
-                    className="home-image39"
-                  />
-                </div>
-                <p className="home-text297">
-                  <span>
-                    I&apos;ve used several cleaning services in the past, but
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Crisp Cleaning Corp truly stands out. The attention to
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    detail is impeccable, and my home has never looked
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    this clean and organized. The team went above and
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    beyond to ensure every nook and cranny was
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>spotless.</span>
-                  <br></br>
-                  <br></br>
-                  <span>
-                    Moreover, the customer service was outstanding. The staff
-                    was friendly, responsive, and accommodating to my schedule.
-                    It&apos;s rare to find a company that values its customers
-                    as much as Sparkle Clean Corp does
-                  </span>
-                  <br></br>
-                </p>
-
-                <p className="home-text308">4:22 AM - Nov 29,2023</p>
-              </div>
-              <div className="home-container275">
-                <div className="home-container276">
-                  <div className="home-container277">
-                    <img
-                      alt="image"
-                      src={require("./img/user4-200h.png")}
-                      className="home-image40"
-                    />
-                    <div className="home-container278">
-                      <p className="home-text309">James Rodriguez</p>
-                      <p className="home-text310">Manager @ Adidas</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r2-200h.png")}
-                    className="home-image41"
-                  />
-                </div>
-                <p className="home-text311">
-                  <span>
-                    I&apos;ve used several cleaning services in the past, but
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Crisp Cleaning Corp truly stands out. The attention to
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    detail is impeccable, and my home has never looked
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    this clean and organized. The team went above and
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    beyond to ensure every nook and cranny was
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>spotless.</span>
-                  <br></br>
-                  <br></br>
-                  <span>
-                    Moreover, the customer service was outstanding. The staff
-                    was friendly, responsive, and accommodating to my schedule.
-                    It&apos;s rare to find a company that values its customers
-                    as much as Sparkle Clean Corp does
-                  </span>
-                  <br></br>
-                </p>
-
-                <p className="home-text322">4:22 AM - Nov 29,2023</p>
-              </div>
-              <div className="home-container279">
-                <div className="home-container280">
-                  <div className="home-container281">
-                    <img
-                      alt="image"
-                      src={require("./img/user10-200h.png")}
-                      className="home-image42"
-                    />
-                    <div className="home-container282">
-                      <p className="home-text323">Jonathan Kim</p>
-                      <p className="home-text324">Manager @ Samsung</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r1-200h.png")}
-                    className="home-image43"
-                  />
-                </div>
-                <p className="home-text325">
-                  <span>
-                    I&apos;ve used several cleaning services in the past, but
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Crisp Cleaning Corp truly stands out. The attention to
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    detail is impeccable, and my home has never looked
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    this clean and organized. The team went above and
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    beyond to ensure every nook and cranny was
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>spotless.</span>
-                  <br></br>
-                  <br></br>
-                  <span>
-                    Moreover, the customer service was outstanding. The staff
-                    was friendly, responsive, and accommodating to my schedule.
-                    It&apos;s rare to find a company that values its customers
-                    as much as Sparkle Clean Corp does
-                  </span>
-                  <br></br>
-                </p>
-
-                <p className="home-text336">4:22 AM - Nov 29,2023</p>
+                ))}
               </div>
             </div>
           </div>
@@ -1774,446 +948,32 @@ const Review = (props) => {
             </span>
           </div>
 
-          <div className="home-container283xZ">
-            <div style={{ display: "flex" }}>
-              <div className="home-container285x">
-                <div className="home-container286">
-                  <div className="home-container287">
-                    <img
-                      alt="image"
-                      src={require("./img/user1-200h.png")}
-                      className="home-image46"
-                    />
-                    <div className="home-container288">
-                      <p className="home-text342">Jonathan Kim</p>
-                      <p className="home-text343">Manager @ Samsung</p>
+          <div className="text-reviews-section">
+            {displayReviews.slice(0, 3).map((review) => (
+              <div key={review.id} className="text-review-card">
+                <div className="review-header">
+                  <div className="reviewer-info">
+                    {review.image ? (
+                      <img
+                        alt="user"
+                        src={review.image}
+                        className="reviewer-avatar"
+                      />
+                    ) : (
+                      <UserIcon className="reviewer-avatar" size={28} />
+                    )}
+                    <div className="reviewer-details">
+                      <p className="reviewer-name">{review.userName}</p>
+                      <small className="review-date">
+                        {new Date(review.createdAt).toLocaleDateString()} -{" "}
+                        {new Date(review.createdAt).toLocaleTimeString()}
+                      </small>
                     </div>
                   </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r1-200h.png")}
-                    className="home-image47"
-                  />
                 </div>
-                <p className="home-text344">
-                  <span>
-                    I&apos;ve used several cleaning services in the past, but
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Crisp Cleaning Corp truly stands out. The attention to
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    detail is impeccable, and my home has never looked
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    this clean and organized. The team went above and
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    beyond to ensure every nook and cranny was
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>spotless.</span>
-                  <br></br>
-                  <br></br>
-                  <span>
-                    Moreover, the customer service was outstanding. The staff
-                    was friendly, responsive, and accommodating to my schedule.
-                    It&apos;s rare to find a company that values its customers
-                    as much as Sparkle Clean Corp does
-                  </span>
-                  <br></br>
-                </p>
+                <p className="review-content">{review.text}</p>
               </div>
-              <div className="home-container285x">
-                <div className="home-container290">
-                  <div className="home-container291">
-                    <img
-                      alt="image"
-                      src={require("./img/user6-200h.png")}
-                      className="home-image48"
-                    />
-                    <div className="home-container292">
-                      <p className="home-text355">Emily Rose</p>
-                      <p className="home-text356">Manager @ Nike</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r5-200h.png")}
-                    className="home-image49"
-                  />
-                </div>
-                <p className="home-text357">
-                  <span>
-                    I&apos;ve used several cleaning services in the past, but
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Crisp Cleaning Corp truly stands out. The attention to
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    detail is impeccable, and my home has never looked
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    this clean and organized. The team went above and
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    beyond to ensure every nook and cranny was
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>spotless.</span>
-                  <br></br>
-                  <br></br>
-                  <span>
-                    Moreover, the customer service was outstanding. The staff
-                    was friendly, responsive, and accommodating to my schedule.
-                    It&apos;s rare to find a company that values its customers
-                    as much as Sparkle Clean Corp does
-                  </span>
-                  <br></br>
-                </p>
-              </div>
-              <div className="home-container285x">
-                <div className="home-container294">
-                  <div className="home-container295">
-                    <img
-                      alt="image"
-                      src={require("./img/user12-200h.png")}
-                      className="home-image50"
-                    />
-                    <div className="home-container296">
-                      <p className="home-text368">Jonathan Kong</p>
-                      <p className="home-text369">Manager @ Adidas</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r2-200h.png")}
-                    className="home-image51"
-                  />
-                </div>
-                <p className="home-text370">
-                  <span>
-                    I&apos;ve used several cleaning services in the past, but
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Crisp Cleaning Corp truly stands out. The attention to
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    detail is impeccable, and my home has never looked
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    this clean and organized. The team went above and
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    beyond to ensure every nook and cranny was
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>spotless.</span>
-                  <br></br>
-                  <br></br>
-                  <span>
-                    Moreover, the customer service was outstanding. The staff
-                    was friendly, responsive, and accommodating to my schedule.
-                    It&apos;s rare to find a company that values its customers
-                    as much as Sparkle Clean Corp does
-                  </span>
-                  <br></br>
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="home-container283xZy">
-            <div style={{ display: "flex" }}>
-              <div className="home-container285x">
-                <div className="home-container286">
-                  <div className="home-container287">
-                    <img
-                      alt="image"
-                      src={require("./img/user1-200h.png")}
-                      className="home-image46"
-                    />
-                    <div className="home-container288">
-                      <p className="home-text342">Jonathan Kim</p>
-                      <p className="home-text343">Manager @ Samsung</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r1-200h.png")}
-                    className="home-image47"
-                  />
-                </div>
-                <p className="home-text344">
-                  <span>
-                    I&apos;ve used several cleaning services in the past, but
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Crisp Cleaning Corp truly stands out. The attention to
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    detail is impeccable, and my home has never looked
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    this clean and organized. The team went above and
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    beyond to ensure every nook and cranny was
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>spotless.</span>
-                  <br></br>
-                  <br></br>
-                  <span>
-                    Moreover, the customer service was outstanding. The staff
-                    was friendly, responsive, and accommodating to my schedule.
-                    It&apos;s rare to find a company that values its customers
-                    as much as Sparkle Clean Corp does
-                  </span>
-                  <br></br>
-                </p>
-              </div>
-              <div className="home-container285x">
-                <div className="home-container290">
-                  <div className="home-container291">
-                    <img
-                      alt="image"
-                      src={require("./img/user6-200h.png")}
-                      className="home-image48"
-                    />
-                    <div className="home-container292">
-                      <p className="home-text355">Emily Rose</p>
-                      <p className="home-text356">Manager @ Nike</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r5-200h.png")}
-                    className="home-image49"
-                  />
-                </div>
-                <p className="home-text357">
-                  <span>
-                    I&apos;ve used several cleaning services in the past, but
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Crisp Cleaning Corp truly stands out. The attention to
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    detail is impeccable, and my home has never looked
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    this clean and organized. The team went above and
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    beyond to ensure every nook and cranny was
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>spotless.</span>
-                  <br></br>
-                  <br></br>
-                  <span>
-                    Moreover, the customer service was outstanding. The staff
-                    was friendly, responsive, and accommodating to my schedule.
-                    It&apos;s rare to find a company that values its customers
-                    as much as Sparkle Clean Corp does
-                  </span>
-                  <br></br>
-                </p>
-              </div>
-              <div className="home-container285x">
-                <div className="home-container294">
-                  <div className="home-container295">
-                    <img
-                      alt="image"
-                      src={require("./img/user12-200h.png")}
-                      className="home-image50"
-                    />
-                    <div className="home-container296">
-                      <p className="home-text368">Jonathan Kong</p>
-                      <p className="home-text369">Manager @ Adidas</p>
-                    </div>
-                  </div>
-                  <img
-                    alt="image"
-                    src={require("./img/r2-200h.png")}
-                    className="home-image51"
-                  />
-                </div>
-                <p className="home-text370">
-                  <span>
-                    I&apos;ve used several cleaning services in the past, but
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    Crisp Cleaning Corp truly stands out. The attention to
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    detail is impeccable, and my home has never looked
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    this clean and organized. The team went above and
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>
-                    beyond to ensure every nook and cranny was
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: " ",
-                      }}
-                    />
-                  </span>
-                  <span>spotless.</span>
-                  <br></br>
-                  <br></br>
-                  <span>
-                    Moreover, the customer service was outstanding. The staff
-                    was friendly, responsive, and accommodating to my schedule.
-                    It&apos;s rare to find a company that values its customers
-                    as much as Sparkle Clean Corp does
-                  </span>
-                  <br></br>
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
@@ -2233,65 +993,55 @@ const Review = (props) => {
         </div>
       </div>
 
-      <div className="review-container31">
-        <div className="home-container230">
-          <div className="home-container231y">
-            {testimonials.slice(0, visibleCount).map((t, index) => (
-              <div className="home-container249s" key={index}>
-                <div className="home-container250">
-                  <div className="home-container251">
-                    <div className="home-container252">
-                      <img
-                        alt="avatar"
-                        src={t.avatar}
-                        className="home-image28"
-                      />
-                      <div className="home-container253">
-                        <p className="home-text234">{t.name}</p>
-                        <p className="home-text235">{t.role}</p>
-                      </div>
-                    </div>
-                    <img
-                      alt="rating"
-                      src={t.ratingImage}
-                      className="home-image29"
-                    />
+      <div className="video-reviews-section">
+        <div className="video-reviews-grid">
+          {displayVideoReviews.slice(0, visibleCount).map((review) => (
+            <div key={review.id} className="video-review-card">
+              <div className="review-card-header">
+                <div className="reviewer-info">
+                  <img
+                    alt="user"
+                    src={require("./img/user5-200h.png")}
+                    className="reviewer-avatar"
+                  />
+                  <div className="reviewer-details">
+                    <p className="reviewer-name">{review.userName}</p>
+                    <p className="reviewer-title">Valued Client</p>
                   </div>
-                  <p className="home-text236">{t.message}</p>
-                  <video
-                    src={t.video}
-                    poster="https://play.teleporthq.io/static/svg/videoposter.svg"
-                    preload="auto"
-                    controls
-                    className="home-video"
-                  ></video>
-                  <p className="home-text241">{t.time}</p>
                 </div>
               </div>
-            ))}
-          </div>
 
-          {loading && (
-            <div
-              style={{ marginTop: "20px", textAlign: "center", color: "#666" }}
-            >
-              Loading more testimonials...
+              <video
+                src={
+                  review.videoUrl.startsWith("http")
+                    ? review.videoUrl
+                    : require("./img/samplex.mp4")
+                }
+                poster="https://play.teleporthq.io/static/svg/videoposter.svg"
+                preload="auto"
+                controls
+                className="review-video"
+              ></video>
+
+              <p className="review-date">
+                {new Date(review.createdAt).toLocaleDateString()} -{" "}
+                {new Date(review.createdAt).toLocaleTimeString()}
+              </p>
             </div>
-          )}
-
-          {!loading && visibleCount < testimonials.length && (
-            <button
-              type="button"
-              className="home-button15f button"
-              onClick={handleLoadMore}
-              onMouseEnter={activateX}
-              onMouseLeave={offX}
-              style={{ marginTop: "30px" }}
-            >
-              <span>Load More</span>
-            </button>
-          )}
+          ))}
         </div>
+
+        {visibleCount < displayVideoReviews.length && (
+          <button
+            type="button"
+            className="load-more-btn"
+            onClick={handleLoadMore}
+            onMouseEnter={activateX}
+            onMouseLeave={offX}
+          >
+            <span>{loading ? "Loading..." : "Discover More"}</span>
+          </button>
+        )}
       </div>
 
       <div className="review-container48">
@@ -2338,65 +1088,7 @@ const Review = (props) => {
           </div>
         </div>
       </div>
-      <div className="home-container303">
-        <div className="home-container304">
-          <img
-            alt="image"
-            src={require("./img/crisp.png")}
-            className="home-image52"
-          />
-        </div>
-        <div className="home-container305">
-          <span className="home-text396">Sitemap</span>
-          <p className="home-text397">Home</p>
-          <p className="home-text398">Get Quote</p>
-          <p className="home-text399">About</p>
-          <p className="home-text400">Testimonials</p>
-          <p className="home-text401">FAQs</p>
-          <p className="home-text402">Contact</p>
-        </div>
-        <div className="home-container306">
-          <span className="home-text403">Help &amp; Support</span>
-          <p className="home-text404">support@crispcleaningcorp.com.au</p>
-        </div>
-        <div className="home-container307">
-          <span className="home-text405">Contact us</span>
-          <div className="home-container308">
-            <div className="home-container309">
-              <p className="home-text406">First Name</p>
-              <input type="text" className="home-textinput07 input" />
-            </div>
-            <div className="home-container310">
-              <p className="home-text407">Last Name</p>
-              <input type="text" className="home-textinput08 input" />
-            </div>
-          </div>
-          <div className="home-container311">
-            <div className="home-container312">
-              <p className="home-text408">Email</p>
-              <input type="email" className="home-textinput09 input" />
-            </div>
-            <div className="home-container313">
-              <p className="home-text409">Phone Number</p>
-              <input type="tel" className="home-textinput10 input" />
-            </div>
-          </div>
-          <div className="home-container314">
-            <div className="home-container315">
-              <p className="home-text410">Message</p>
-              <textarea
-                placeholder="placeholder"
-                className="home-textarea textarea"
-              ></textarea>
-              <button className="sendMButton">Send Message</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="CrispUnder">
-        <h3>CrispCleaningCorp @ 2024</h3>
-        <h3>Terms & Conditions</h3>
-      </div>
+      <Footer />
     </div>
   );
 };

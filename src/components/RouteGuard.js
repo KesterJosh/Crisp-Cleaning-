@@ -42,8 +42,6 @@ const RouteGuard = () => {
         );
         const cleans = res.data.cleanRecords || [];
 
-        console.log("Cleans fetched:", cleans); // ✅ DEBUG
-
         const hasRegularClean = cleans.some((c) => c.regularOronetime === true);
         setIsRestrictedUser(!hasRegularClean); // ❗️reverse logic
         setHasChecked(true);

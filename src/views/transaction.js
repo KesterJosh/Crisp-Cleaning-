@@ -186,6 +186,17 @@ const Transaction = (props) => {
   const [videoURL, setVideoURL] = useState(null);
 
   useEffect(() => {
+    if (showPopup) {
+      gsap.from(popupRef.current, {
+        duration: 0.4,
+        scale: 0.8,
+        opacity: 0,
+        ease: "power2.out",
+      });
+    }
+  }, [showPopup]);
+
+  useEffect(() => {
     const query = new URLSearchParams(window.location.search);
     const sessionId = query.get("session_id");
 
@@ -197,7 +208,6 @@ const Transaction = (props) => {
     fetch(`https://api-crisp-cleaning.onrender.com/payments/${sessionId}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("Payment data:", data);
         setCardInfo(data.card);
       })
       .catch((err) => console.error("Failed to fetch card info:", err));
@@ -560,7 +570,7 @@ const Transaction = (props) => {
       <div className="transaction-container25">
         <div className="transaction-container26">
           <span className="transaction-text22">Transactions</span>
-          <GlobalSearch />
+          {/* <GlobalSearch /> */}
           <div
             className="transaction-container29"
             onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}

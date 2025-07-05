@@ -1092,7 +1092,7 @@
   }
 }
 .containX{
-  border-bottom-right-radius: 200px;
+  border-bottom-right-radius: 100px;
   height: 100%;
 }
 @media(max-width: 1200px) {
@@ -1231,12 +1231,10 @@
 
   }
   .home1-button {
-    padding-left: var(--dl-space-space-oneandhalfunits);
-    padding-right: var(--dl-space-space-oneandhalfunits);
+    padding: 10px 20px
   }
   .home1-button1 {
-    padding-left: var(--dl-space-space-oneandhalfunits);
-    padding-right: var(--dl-space-space-oneandhalfunits);
+    padding: 10px 20px
   }
   .home1-container31{
     height: 670px;
@@ -1653,8 +1651,7 @@
   .home1-button {
     color: #FF914D;
     font-size: 14px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px 20px
   }
   .home1-button1 {
     color: #FF914D;
@@ -1662,10 +1659,7 @@
     font-style: normal;
     font-family: Inter;
     font-weight: 500;
-    padding-top: 10px;
-    padding-left: var(--dl-space-space-unit);
-    padding-right: var(--dl-space-space-unit);
-    padding-bottom: 10px;
+    padding: 10px 20px;
   }
   .home1-container28{
     height: 1250px;
@@ -1867,7 +1861,7 @@
   }
   .home1-container48 {
     height: auto;
-    margin-top: var(--dl-space-space-twounits);
+    margin-top: 100px;
     margin-bottom: var(--dl-space-space-twounits);
   }
   .home1-container49 {
@@ -1882,16 +1876,10 @@
   }
   .home1-button {
     font-size: 11px;
-    padding-top: var(--dl-space-space-halfunit);
-    padding-left: var(--dl-space-space-halfunit);
-    padding-right: var(--dl-space-space-halfunit);
-    padding-bottom: var(--dl-space-space-halfunit);
+    padding: 10px 20px
   }
   .home1-button1 {
     font-size: 11px;
-    padding-top: var(--dl-space-space-halfunit);
-    padding-left: var(--dl-space-space-halfunit);
-    padding-right: var(--dl-space-space-halfunit);
-    padding-bottom: var(--dl-space-space-halfunit);
+    padding: 10px 20px
   }
 }

@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "./static/css/main.fc79c8d0.css",
-    "main.js": "./static/js/main.2d3f77a8.js",
+    "main.css": "./static/css/main.7e69ccfc.css",
+    "main.js": "./static/js/main.b5bd78f8.js",
     "static/media/Final.mp4": "./static/media/Final.1f6e0488ea38a6458473.mp4",
     "static/media/samplex.mp4": "./static/media/samplex.ce921d54fa6deb6f2e83.mp4",
     "static/media/after.png": "./static/media/after.ca0a1809ff0dc432ea03.png",
@@ -33,26 +33,18 @@
     "static/media/blind_off.png": "./static/media/blind_off.16b2610b44afcf16d465.png",
     "static/media/organisation_on.png": "./static/media/organisation_on.6e44eb78759bbd2627dc.png",
     "static/media/organisation_off.png": "./static/media/organisation_off.5a51dfdf6c4acd0433ac.png",
-    "static/media/user4-200h.png": "./static/media/user4-200h.fcd8616bf7ada1340000.png",
-    "static/media/user9-200h.png": "./static/media/user9-200h.8377cf582b6663d1e4da.png",
     "static/media/user12-200h.png": "./static/media/user12-200h.dd797ce6576ef9832db3.png",
     "static/media/user6-200h.png": "./static/media/user6-200h.55cff30f9f69db00f63d.png",
-    "static/media/user11-200h.png": "./static/media/user11-200h.32b68b91b6aa9f28d1e7.png",
-    "static/media/user10-200h.png": "./static/media/user10-200h.b2b1b47d4f8847b88b9e.png",
-    "static/media/user8-200h.png": "./static/media/user8-200h.8b0f3e4eb191eb23bdec.png",
-    "static/media/user3-200h.png": "./static/media/user3-200h.c1fb9345f27bdb3f3e83.png",
     "static/media/user1-200h.png": "./static/media/user1-200h.3ea61af463e1d292a33e.png",
-    "static/media/twitter_white.png": "./static/media/twitter_white.50640db9b6435710dd78.png",
-    "static/media/twitter_Black.png": "./static/media/twitter_Black.69dbd87a5ff6f57b14eb.png",
     "static/media/user5-200h.png": "./static/media/user5-200h.09e39331565a0257f5df.png",
     "static/media/fullperson-200w.png": "./static/media/fullperson-200w.c5af628c06c885189232.png",
     "static/media/crisp.png": "./static/media/crisp.32b5e7daf2dd213cfdcf.png",
     "index.html": "./index.html",
-    "main.fc79c8d0.css.map": "./static/css/main.fc79c8d0.css.map",
-    "main.2d3f77a8.js.map": "./static/js/main.2d3f77a8.js.map"
+    "main.7e69ccfc.css.map": "./static/css/main.7e69ccfc.css.map",
+    "main.b5bd78f8.js.map": "./static/js/main.b5bd78f8.js.map"
   },
   "entrypoints": [
-    "static/css/main.fc79c8d0.css",
-    "static/js/main.2d3f77a8.js"
+    "static/css/main.7e69ccfc.css",
+    "static/js/main.b5bd78f8.js"
   ]
 }

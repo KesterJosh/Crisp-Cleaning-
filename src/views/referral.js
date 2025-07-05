@@ -164,7 +164,6 @@ const Referral = (props) => {
     axios
       .post("https://api-crisp-cleaning.onrender.com/referrals", { userId })
       .then((result) => {
-        console.log("User Data:", result.data.referrals);
         setReferrals(result.data.referrals);
         // setEmail(result.data.email)
         // setPhone(result.data.phone)
@@ -428,7 +427,7 @@ const Referral = (props) => {
       <div className="referral-container25">
         <div className="referral-container26">
           <span className="referral-text22">Referrals</span>
-          <GlobalSearch />
+          {/* <GlobalSearch /> */}
           <Link to="/settings" className="referral-navlink16">
             <img
               alt="image"

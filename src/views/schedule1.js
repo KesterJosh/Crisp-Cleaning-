@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
-
+import moment from "moment";
 import { Helmet } from "react-helmet";
 
 import "./schedule1.css";
@@ -157,7 +157,6 @@ const Schedule1 = (props) => {
       );
       if (response.data && response.data.cleanRecords) {
         setCleans(response.data.cleanRecords);
-        console.log(response.data); // Save cleans to state
       } else {
         throw new Error("No clean records found.");
       }
@@ -360,7 +359,7 @@ const Schedule1 = (props) => {
         <div className="schedule1-container116">
           <span className="schedule1-text112">Schedule</span>
 
-          <GlobalSearch />
+          {/* <GlobalSearch /> */}
           <div
             className="schedule1-container118"
             onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
@@ -501,9 +500,16 @@ const Schedule1 = (props) => {
                         </div>
                         <div className="schedule1-container317">
                           {(() => {
-                            const cleanDate = new Date(clean.date);
-                            const hoursUntilClean =
-                              (cleanDate - new Date()) / (1000 * 60 * 60);
+                            const cleanDate = moment(
+                              clean.date,
+                              "dddd, MMMM D, YYYY"
+                            ); // parse your formatted date
+                            const now = moment(); // current time
+
+                            const hoursUntilClean = cleanDate.diff(
+                              now,
+                              "hours"
+                            ); // get difference in hours
                             const isLessThan48Hours = hoursUntilClean < 48;
 
                             return (

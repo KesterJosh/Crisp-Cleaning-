@@ -3,6 +3,7 @@ import "./popschedule.css";
 import gsap from "gsap";
 import axios from "axios";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import moment from "moment";
 
 const CancelBooking = ({ onClose, cleanId }) => {
   const [cleanDate, setCleanDate] = useState(null);
@@ -21,27 +22,36 @@ const CancelBooking = ({ onClose, cleanId }) => {
     // Fetch clean data
     const fetchClean = async () => {
       try {
-        const res = await axios.get(`https://api-crisp-cleaning.onrender.com/clean/${cleanId}`);
+        const res = await axios.get(
+          `https://api-crisp-cleaning.onrender.com/clean/${cleanId}`
+        );
         const clean = res.data;
-        const cleanDateTime = new Date(clean.date); // use correct field name from your API
+
+        // Correctly parse your custom date format
+        const cleanDateTime = moment(clean.date, "dddd, MMMM D, YYYY").toDate();
+
         setCleanDate(cleanDateTime);
 
         const now = new Date();
         const diffInHours = (cleanDateTime - now) / (1000 * 60 * 60);
 
-        // Set message logic
+        // Refund message logic remains the same
         if (diffInHours < 24) {
-          setCancelMessage("As there are less than 24 hours until your clean, this is not eligible for a refund.");
+          setCancelMessage(
+            "As there are less than 24 hours until your clean, this is not eligible for a refund."
+          );
         } else if (diffInHours < 48) {
-          setCancelMessage("As there are less than 48 hours until your clean, you are only eligible for a 50% refund.");
+          setCancelMessage(
+            "As there are less than 48 hours until your clean, you are only eligible for a 50% refund."
+          );
         } else {
-          setCancelMessage("You are cancelling more than 48 hours in advance. You will receive a full refund minus a processing fee.");
+          setCancelMessage(
+            "You are cancelling more than 48 hours in advance. You will receive a full refund minus a processing fee."
+          );
         }
 
-        // Set other flags
         setCanReschedule(diffInHours >= 48);
-        setCanBookNow(diffInHours >= 48); // 2 days = 48 hours
-
+        setCanBookNow(diffInHours >= 48);
       } catch (error) {
         console.error("Failed to fetch clean info:", error);
       }
@@ -52,7 +62,9 @@ const CancelBooking = ({ onClose, cleanId }) => {
 
   const handleCancelBooking = async () => {
     try {
-      await axios.delete(`https://api-crisp-cleaning.onrender.com/clean/${cleanId}`);
+      await axios.delete(
+        `https://api-crisp-cleaning.onrender.com/clean/${cleanId}`
+      );
       alert("Booking cancelled successfully.");
       CloseCancelScreen();
       window.location.reload();
@@ -63,11 +75,21 @@ const CancelBooking = ({ onClose, cleanId }) => {
   };
 
   const handleMouseEnter = (button) => {
-    gsap.to(button, { scale: 1.05, opacity: 0.9, duration: 0.3, ease: "power2.out" });
+    gsap.to(button, {
+      scale: 1.05,
+      opacity: 0.9,
+      duration: 0.3,
+      ease: "power2.out",
+    });
   };
 
   const handleMouseLeave = (button) => {
-    gsap.to(button, { scale: 1, opacity: 1, duration: 0.3, ease: "power2.out" });
+    gsap.to(button, {
+      scale: 1,
+      opacity: 1,
+      duration: 0.3,
+      ease: "power2.out",
+    });
   };
 
   return (

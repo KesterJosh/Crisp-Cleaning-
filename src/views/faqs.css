@@ -15,6 +15,9 @@
   flex-direction: column;
   justify-content: flex-start;
 }
+.review-containe{
+  width: 100%;
+}
 .fa-qs-header {
   width: 100%;
   height: 167px;

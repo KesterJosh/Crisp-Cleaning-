@@ -520,7 +520,7 @@ const Reward = (props) => {
       <div className="reward-container25">
         <div className="reward-container26">
           <span className="reward-text22">Rewards</span>
-          <GlobalSearch />
+          {/* <GlobalSearch /> */}
           <div
             className="reward-container28"
             onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}

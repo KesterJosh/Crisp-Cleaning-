@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import "./bookingPopup.css";
 import { Link, useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import Login from "../views/login";
 import axios from "axios";
+import MelbourneAddressInput from "./MelbourneInput";
 
 const BookingPopup = ({ onClose }) => {
+  const [notify, setNotify] = useState(false);
+  const [total, setTotal] = useState(0);
   const [login, setLogin] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [Quote, setQuote] = useState(0);
@@ -37,7 +40,7 @@ const BookingPopup = ({ onClose }) => {
   const [showValidationMessage, setShowValidationMessage] = useState(false);
   const [isCommercial, setIsCommercial] = useState(false);
   const location = useLocation();
-  const [selectedReg, setSelectedReg] = useState(false);
+  const [selectedReg, setSelectedReg] = useState(true);
   const isDisabledRoute = location.pathname === "/cleanerspass";
 
   // Calendar and scheduling states
@@ -57,6 +60,13 @@ const BookingPopup = ({ onClose }) => {
   const [daySelect7, setDaySelect7] = useState(0); // Sunday
 
   // User registration states
+  // New commercial cleaning specific states
+  const [businessName, setBusinessName] = useState("");
+  const [typeOfEnvironment, setTypeOfEnvironment] = useState("");
+  const [typeOfClean, setTypeOfClean] = useState("");
+  const [availabilityDays, setAvailabilityDays] = useState([]);
+  const [insuranceDocs, setInsuranceDocs] = useState(false);
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -72,7 +82,10 @@ const BookingPopup = ({ onClose }) => {
       if (!userId) return;
 
       try {
-        const res = await axios.post("https://api-crisp-cleaning.onrender.com/data", { userId });
+        const res = await axios.post(
+          "https://api-crisp-cleaning.onrender.com/data",
+          { userId }
+        );
         const user = res.data;
 
         // Only set values if they are not already filled
@@ -141,6 +154,7 @@ const BookingPopup = ({ onClose }) => {
   // Calculate total price
   const calculateTotal = () => {
     return (
+      type +
       sliderValueO * 20 +
       sliderValue * 30 +
       sliderValueK * 45 +
@@ -243,6 +257,36 @@ const BookingPopup = ({ onClose }) => {
     return months;
   };
 
+  const updateSignupValidation = useCallback(() => {
+    let isValid;
+    if (isCommercial) {
+      // For commercial flow, don't require password
+      isValid =
+        firstName && lastName && email && phone && address && acceptTerms;
+    } else {
+      // For residential flow, require password
+      isValid =
+        firstName &&
+        lastName &&
+        email &&
+        phone &&
+        password &&
+        address &&
+        acceptTerms;
+    }
+    setValidations((prev) => ({ ...prev, signup: isValid }));
+    if (isValid) setShowValidationMessage(false);
+  }, [
+    firstName,
+    lastName,
+    email,
+    phone,
+    password,
+    address,
+    acceptTerms,
+    isCommercial,
+  ]);
+
   const [discountCode, setDiscountCode] = useState("");
   const [isDiscountApplied, setIsDiscountApplied] = useState(false);
   const discountedTotal = isDiscountApplied ? Total * 0.75 : Total;
@@ -285,10 +329,8 @@ const BookingPopup = ({ onClose }) => {
         Park,
         Animal,
         spComments,
-        discountNew: Total, // Assuming no discount for now
+        discountNew: discountedTotal,
       };
-
-      console.log("Clean booking data:", requestData);
 
       const response = await axios.post(
         "https://api-crisp-cleaning.onrender.com/clean",
@@ -296,7 +338,6 @@ const BookingPopup = ({ onClose }) => {
       );
 
       alert("Clean record created successfully! Redirecting to checkout");
-      console.log("Clean booking response:", response.data);
       return true;
     } catch (error) {
       alert("Error creating clean record.");
@@ -429,40 +470,21 @@ const BookingPopup = ({ onClose }) => {
     return true;
   };
 
-  const validateScheduleStep = () => {
+  const validateScheduleStep = useCallback(() => {
     const errors = [];
-
     if (!selectedDate) {
       errors.push("Please select a date");
     }
-
     if (!selectedTime) {
       errors.push("Please select a time slot");
     }
-
-    if (CleanType) {
-      const selectedDays = [
-        daySelect1,
-        daySelect2,
-        daySelect3,
-        daySelect4,
-        daySelect5,
-        daySelect6,
-        daySelect7,
-      ];
-      if (!selectedDays.some((day) => day === 1)) {
-        errors.push("Please select at least one day for recurring service");
-      }
-    }
-
     if (errors.length > 0) {
       setSubmitError(errors.join(". "));
       return false;
     }
-
     setSubmitError("");
     return true;
-  };
+  }, [selectedDate, selectedTime]);
 
   const validateInstructionsStep = () => {
     // Instructions step is always valid since all fields have default values
@@ -538,43 +560,78 @@ const BookingPopup = ({ onClose }) => {
   const [currentMonthIndex, setCurrentMonthIndex] = useState(0);
   const monthlyCalendar = generateMonthlyCalendar();
 
-  // Handle date selection
-  const handleDateSelect = (date) => {
-    setSelectedDate(date);
-    setMyDate(
-      new Date(date).toLocaleDateString("en-US", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    );
-
-    // Update schedule validation
-    updateScheduleValidation(date, selectedTime);
-  };
+  // MEMOIZED UPDATE FUNCTIONS
+  const updateScheduleValidation = useCallback(
+    (date, time) => {
+      let isValid = false;
+      if (CleanType) {
+        // For recurring service: only need date and time (days are optional)
+        isValid = date && time;
+      } else {
+        // For one-time service: just need date and time
+        isValid = date && time;
+      }
+      setValidations((prev) => ({ ...prev, schedule: isValid }));
+      if (isValid) setShowValidationMessage(false);
+    },
+    [CleanType]
+  );
 
   // Handle time selection
-  const handleTimeSelect = (time) => {
-    setSelectedTime(time);
-    setTimeFrame(time);
+  const handleTimeSelect = useCallback(
+    (time) => {
+      setSelectedTime(time);
+      setTimeFrame(time);
+      const timeSlots = getAvailableTimeSlots(selectedDate);
+      const selectedSlot = timeSlots.find((slot) => slot.value == time);
+      setSelectedTimeLabel(selectedSlot ? selectedSlot.label : "");
+      updateScheduleValidation(selectedDate, time);
+    },
+    [selectedDate, updateScheduleValidation]
+  );
 
-    // Find and store the time label for display
-    const timeSlots = getAvailableTimeSlots(selectedDate);
-    const selectedSlot = timeSlots.find((slot) => slot.value == time);
-    setSelectedTimeLabel(selectedSlot ? selectedSlot.label : "");
+  // Handle date selection
+  const handleDateSelect = useCallback(
+    (date) => {
+      setSelectedDate(date);
 
-    // Update schedule validation
-    updateScheduleValidation(selectedDate, time);
-  };
+      const newDate = new Date(date);
+      newDate.setDate(newDate.getDate() + 1);
 
-  // Update schedule validation helper
-  const updateScheduleValidation = (date, time) => {
-    let isValid = false;
+      // Format the new date
+      setMyDate(
+        newDate.toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })
+      );
 
-    if (CleanType) {
-      // For recurring service: need date, time, and at least one day selected
-      const selectedDays = [
+      setSelectedTime("");
+      setSelectedTimeLabel("");
+      updateScheduleValidation(date, "");
+    },
+    [updateScheduleValidation]
+  );
+
+  // Day selection handlers
+  const toggleDay = useCallback(
+    (dayNumber, e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const setters = [
+        setDaySelect1,
+        setDaySelect2,
+        setDaySelect3,
+        setDaySelect4,
+        setDaySelect5,
+        setDaySelect6,
+        setDaySelect7,
+      ];
+      const getters = [
         daySelect1,
         daySelect2,
         daySelect3,
@@ -583,28 +640,10 @@ const BookingPopup = ({ onClose }) => {
         daySelect6,
         daySelect7,
       ];
-      isValid = date && time && selectedDays.some((day) => day === 1);
-    } else {
-      // For one-time service: just need date and time
-      isValid = date && time;
-    }
-
-    setValidations((prev) => ({ ...prev, schedule: isValid }));
-    if (isValid) setShowValidationMessage(false);
-  };
-
-  // Day selection handlers
-  const toggleDay = (dayNumber) => {
-    const setters = [
-      setDaySelect1,
-      setDaySelect2,
-      setDaySelect3,
-      setDaySelect4,
-      setDaySelect5,
-      setDaySelect6,
-      setDaySelect7,
-    ];
-    const getters = [
+      setters[dayNumber - 1](getters[dayNumber - 1] === 0 ? 1 : 0);
+      updateScheduleValidation(selectedDate, selectedTime);
+    },
+    [
       daySelect1,
       daySelect2,
       daySelect3,
@@ -612,15 +651,11 @@ const BookingPopup = ({ onClose }) => {
       daySelect5,
       daySelect6,
       daySelect7,
-    ];
-
-    setters[dayNumber - 1](getters[dayNumber - 1] === 0 ? 1 : 0);
-
-    // Update validation after day selection
-    setTimeout(() => {
-      updateScheduleValidation(selectedDate, selectedTime);
-    }, 0);
-  };
+      selectedDate,
+      selectedTime,
+      updateScheduleValidation,
+    ]
+  );
 
   // Handle quote selection and validate
   const handleQuoteSelection = (quoteId) => {
@@ -630,67 +665,127 @@ const BookingPopup = ({ onClose }) => {
     setShowValidationMessage(false);
   };
 
-  // Handle cleaning type selection and validate
-  const handleTypeSelection = (typeId) => {
-    setType(typeId);
-    // Details step is valid if both type and rooms are selected
-    setValidations((prev) => ({
-      ...prev,
-      details: typeId > 0 && sliderValueO > 0,
-    }));
-    setShowValidationMessage(false);
-  };
+  // MEMOIZED EXTRA ITEM HANDLER
+  const handleExtraItemClick = useCallback(
+    (extraSetter, currentValue, price, e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      extraSetter(currentValue === 0 ? price : 0);
+    },
+    []
+  );
 
-  // Button handlers for room counts
-  const incrementRooms = () => {
+  // MEMOIZED CLEAN TYPE TOGGLE HANDLERS
+  const handleRegularCleanToggle = useCallback(
+    (e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      setCleanType(true);
+      setSelectedReg(true);
+      setIntervalValue(15);
+      updateScheduleValidation(selectedDate, selectedTime);
+    },
+    [selectedDate, selectedTime, updateScheduleValidation]
+  );
+
+  const handleOneTimeCleanToggle = useCallback(
+    (e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      setCleanType(false);
+      setIntervalValue(0);
+      updateScheduleValidation(selectedDate, selectedTime);
+    },
+    [selectedDate, selectedTime, updateScheduleValidation]
+  );
+
+  // Handle cleaning type selection and validate
+  const handleTypeSelection = useCallback(
+    (typeId, e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      const previousType = type; // capture current before updating
+
+      setType(typeId);
+      setTotal((prevTotal) => prevTotal - previousType + typeId);
+
+      setValidations((prev) => ({
+        ...prev,
+        details: typeId > 0 && sliderValueO > 0,
+      }));
+
+      setShowValidationMessage(false);
+    },
+    [sliderValueO, type]
+  );
+
+  // MEMOIZED COUNTER HANDLERS
+  const incrementRooms = useCallback(() => {
     if (sliderValueO < 8) {
       const newValue = sliderValueO + 1;
-      handleSliderChangeO(newValue);
+      setSliderValueO(newValue);
+      setValidations((prev) => ({
+        ...prev,
+        details: newValue > 0 && type > 0,
+      }));
     }
-  };
+  }, [sliderValueO, type]);
 
-  const decrementRooms = () => {
+  const decrementRooms = useCallback(() => {
     if (sliderValueO > 1) {
       const newValue = sliderValueO - 1;
-      handleSliderChangeO(newValue);
+      setSliderValueO(newValue);
+      setValidations((prev) => ({
+        ...prev,
+        details: newValue > 0 && type > 0,
+      }));
     }
-  };
+  }, [sliderValueO, type]);
 
-  const incrementBathrooms = () => {
+  const incrementBathrooms = useCallback(() => {
     if (sliderValue < 8) {
       setSliderValue(sliderValue + 1);
     }
-  };
+  }, [sliderValue]);
 
-  const decrementBathrooms = () => {
+  const decrementBathrooms = useCallback(() => {
     if (sliderValue > 0) {
       setSliderValue(sliderValue - 1);
     }
-  };
+  }, [sliderValue]);
 
-  const incrementKitchens = () => {
+  const incrementKitchens = useCallback(() => {
     if (sliderValueK < 8) {
       setSliderValueK(sliderValueK + 1);
     }
-  };
+  }, [sliderValueK]);
 
-  const decrementKitchens = () => {
+  const decrementKitchens = useCallback(() => {
     if (sliderValueK > 0) {
       setSliderValueK(sliderValueK - 1);
     }
-  };
+  }, [sliderValueK]);
 
-  const incrementOther = () => {
+  const incrementOther = useCallback(() => {
     if (sliderValueOX < 8) {
       setSliderValueOX(sliderValueOX + 1);
     }
-  };
+  }, [sliderValueOX]);
 
-  const decrementOther = () => {
+  const decrementOther = useCallback(() => {
     if (sliderValueOX > 0) {
       setSliderValueOX(sliderValueOX - 1);
     }
-  };
+  }, [sliderValueOX]);
 
   // Handle slider changes with validation
   const handleSliderChangeO = (value) => {
@@ -810,10 +905,8 @@ const BookingPopup = ({ onClose }) => {
     if (isValid && currentStep < totalSteps - 1) {
       setCurrentStep(currentStep + 1);
       setShowValidationMessage(false);
-      console.log("Moving to step:", currentStep + 1);
     } else {
       setShowValidationMessage(true);
-      console.log("Validation failed for step:", currentStepId);
     }
   };
 
@@ -821,7 +914,6 @@ const BookingPopup = ({ onClose }) => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
       setShowValidationMessage(false);
-      console.log("Moving back to step:", currentStep - 1);
     }
   };
 
@@ -829,12 +921,20 @@ const BookingPopup = ({ onClose }) => {
     if (step <= currentStep) {
       setCurrentStep(step);
       setShowValidationMessage(false);
-      console.log("Jumping to step:", step);
     }
   };
 
   const handleMouseEnterSupport = () => setSupports(true);
   const handleMouseLeaveSupport = () => setSupports(false);
+
+  // MEMOIZED FREQUENCY HANDLERS
+  const handleFrequencySelect = useCallback((value, e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setIntervalValue(value);
+  }, []);
 
   // Get validation message based on current step
   const getValidationMessage = () => {
@@ -860,8 +960,8 @@ const BookingPopup = ({ onClose }) => {
           return "Please select a cleaning type and ensure you have at least one room";
         case "schedule":
           return CleanType
-            ? "Please select a date, time, and at least one day for recurring service"
-            : "Please select a date and time to proceed";
+            ? "Please select a date and a time for recurring service"
+            : "Please correct all errors to proceed";
         case "instructions":
           return "Please complete the required fields to proceed";
         default:
@@ -885,11 +985,15 @@ const BookingPopup = ({ onClose }) => {
           >
             <div
               className={`quote-option ${Quote === 1 ? "selected" : ""}`}
-              onClick={() => handleQuoteSelection(1)}
+              onClick={(e) => handleQuoteSelection(1, e)}
             >
               <div className="quote-icon">
                 <img
-                  src={require("../views/img/house_60156731-200h.png")}
+                  src={
+                    require("../views/img/house_60156731-200h.png") ||
+                    "/placeholder.svg" ||
+                    "/placeholder.svg"
+                  }
                   alt="House"
                 />
                 {Quote === 1 && <div className="selection-indicator"></div>}
@@ -901,14 +1005,17 @@ const BookingPopup = ({ onClose }) => {
                 hygiene to your home
               </p>
             </div>
-
             <div
               className={`quote-option ${Quote === 2 ? "selected" : ""}`}
-              onClick={() => handleQuoteSelection(2)}
+              onClick={(e) => handleQuoteSelection(2, e)}
             >
               <div className="quote-icon">
                 <img
-                  src={require("../views/img/building_60159951-200w.png")}
+                  src={
+                    require("../views/img/building_60159951-200w.png") ||
+                    "/placeholder.svg" ||
+                    "/placeholder.svg"
+                  }
                   alt="Building"
                 />
                 {Quote === 2 && <div className="selection-indicator"></div>}
@@ -920,7 +1027,6 @@ const BookingPopup = ({ onClose }) => {
               </p>
             </div>
           </div>
-
           <div
             className={`validation-message ${
               showValidationMessage ? "visible" : ""
@@ -944,70 +1050,41 @@ const BookingPopup = ({ onClose }) => {
           >
             <div
               className={`cleaning-type ${type === 45 ? "selected" : ""}`}
-              onClick={() => handleTypeSelection(45)}
+              onClick={(e) => handleTypeSelection(45, e)}
             >
               <div className="cleaning-icon">
-                <div className="lottie-placeholder">🧹</div>
+                <div className="lottie-placeholder">
+                  <img src="/img/broom.png" />
+                </div>
                 {type === 45 && <div className="selection-indicator"></div>}
               </div>
               <h3>Regular Clean</h3>
             </div>
-
             <div
               className={`cleaning-type ${type === 135 ? "selected" : ""}`}
-              onClick={() => handleTypeSelection(135)}
+              onClick={(e) => handleTypeSelection(135, e)}
             >
               <div className="cleaning-icon">
-                <div className="lottie-placeholder">🧽</div>
+                <div className="lottie-placeholder">
+                  <img src="/img/sponge.png" />
+                </div>
                 {type === 135 && <div className="selection-indicator"></div>}
               </div>
               <h3>Deep Clean</h3>
             </div>
-
             <div
               className={`cleaning-type ${type === 280 ? "selected" : ""}`}
-              onClick={() => handleTypeSelection(280)}
+              onClick={(e) => handleTypeSelection(280, e)}
             >
               <div className="cleaning-icon">
-                <div className="lottie-placeholder">🪟</div>
+                <div className="lottie-placeholder">
+                  <img src="/img/window.png" />
+                </div>
                 {type === 280 && <div className="selection-indicator"></div>}
               </div>
               <h3>Vacate Clean</h3>
             </div>
           </div>
-
-          <div className="bxnHouse">
-            <div className="box2x">
-              {/* Added className="house-display-area" here for CSS targeting */}
-              <div className="house-display-area">
-                {/* Rooms */}
-                {[...Array(sliderValueO)].map((_, index) => (
-                  <div key={`r-${index}`} className="visibX">
-                    <div className="is-active heart"></div>
-                  </div>
-                ))}
-                {/* Bathrooms */}
-                {[...Array(sliderValue)].map((_, index) => (
-                  <div key={`b-${index}`} className="visibX">
-                    <div className="is-activex heartx"></div>
-                  </div>
-                ))}
-                {/* Kitchens */}
-                {[...Array(sliderValueK)].map((_, index) => (
-                  <div key={`k-${index}`} className="visibX">
-                    <div className="is-activex2 heartx2"></div>
-                  </div>
-                ))}
-                {/* Others */}
-                {[...Array(sliderValueOX)].map((_, index) => (
-                  <div key={`o-${index}`} className="visibX">
-                    <div className="is-activex3 heartx3"></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
           <div className="counters-container">
             <div className="counter-group">
               <div className="counter-controls">
@@ -1029,7 +1106,6 @@ const BookingPopup = ({ onClose }) => {
               </div>
               <h3>Room{sliderValueO > 1 ? "s" : ""}</h3>
             </div>
-
             <div className="counter-group">
               <div className="counter-controls">
                 <button
@@ -1050,7 +1126,6 @@ const BookingPopup = ({ onClose }) => {
               </div>
               <h3>Bathroom{sliderValue > 1 ? "s" : ""}</h3>
             </div>
-
             <div className="counter-group">
               <div className="counter-controls">
                 <button
@@ -1071,7 +1146,6 @@ const BookingPopup = ({ onClose }) => {
               </div>
               <h3>Kitchen{sliderValueK > 1 ? "s" : ""}</h3>
             </div>
-
             <div className="counter-group">
               <div className="counter-controls">
                 <button
@@ -1093,7 +1167,6 @@ const BookingPopup = ({ onClose }) => {
               <h3>Other{sliderValueOX > 1 ? "s" : ""}</h3>
             </div>
           </div>
-
           <div className="extras-section">
             <h3>Add Extra</h3>
             <div className="extras-grid">
@@ -1149,8 +1222,13 @@ const BookingPopup = ({ onClose }) => {
                 <div
                   key={index}
                   className={`extra-item ${extra.value > 0 ? "selected" : ""}`}
-                  onClick={() =>
-                    extra.setter(extra.value === 0 ? extra.price : 0)
+                  onClick={(e) =>
+                    handleExtraItemClick(
+                      extra.setter,
+                      extra.value,
+                      extra.price,
+                      e
+                    )
                   }
                 >
                   <div className="extra-icon"></div>
@@ -1159,7 +1237,6 @@ const BookingPopup = ({ onClose }) => {
               ))}
             </div>
           </div>
-
           <div
             className={`validation-message ${
               showValidationMessage ? "visible" : ""
@@ -1205,7 +1282,6 @@ const BookingPopup = ({ onClose }) => {
                 </button>
               </span>
             </div>
-
             <div className="calendar-weekdays">
               {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
                 <div key={day} className="weekday-header">
@@ -1213,7 +1289,6 @@ const BookingPopup = ({ onClose }) => {
                 </div>
               ))}
             </div>
-
             <div className="monthly-calendar-grid2">
               {monthlyCalendar[currentMonthIndex]?.days.map(
                 (dayData, index) => (
@@ -1224,11 +1299,11 @@ const BookingPopup = ({ onClose }) => {
                     } ${dayData?.isToday ? "today" : ""} ${
                       selectedDate === dayData?.date ? "selected" : ""
                     } ${dayData?.isSelectable ? "selectable" : ""}`}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
                       if (dayData?.isSelectable) {
                         handleDateSelect(dayData.date);
-                        setSelectedTime("");
-                        setSelectedTimeLabel("");
                       }
                     }}
                   >
@@ -1238,7 +1313,6 @@ const BookingPopup = ({ onClose }) => {
               )}
             </div>
           </div>
-
           <div className="time-selection-section">
             <div className="time-dropdown-container">
               <select
@@ -1266,23 +1340,49 @@ const BookingPopup = ({ onClose }) => {
                 )}
             </div>
           </div>
-
           <div className="schedule-options">
             <div className="clean-type-toggle">
+              {notify && (
+                <div className="glassmorphism-notification">
+                  <div>
+                    <div>
+                      <h5>Cleaners Pass</h5>
+                      <p>
+                        Schedule regular cleans with us and instantly save up to
+                        15% off per clean! Also gain access to our loyalty and
+                        rewards systems to earn up to 25% off per clean, for
+                        life!
+                      </p>
+                      <p>
+                        Note: Weekly cleans earn the highest discount. The
+                        higher the frequency the higher the discount! Regardless
+                        of the frequency, our rewards system will increase your
+                        discount
+                      </p>
+                    </div>
+                    <div>
+                      <h5>Cancellations</h5>
+                      <p>
+                        Please note, cancellation fees may apply if you opt out
+                        of your cleaner's pass within the first 3 cleans.{" "}
+                        <Link to="/faqs" target="_blank">
+                          <span className="link">Learn more on our FAQs.</span>
+                        </Link>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="button-with-exclamation">
                 <span
+                  onClick={() => setNotify(!notify)}
                   className={`exclamation ${CleanType ? "highlighted" : ""}`}
                 >
                   !
                 </span>
                 <button
                   className={`toggle-btn-one ${CleanType ? "active" : ""}`}
-                  onClick={() => {
-                    setCleanType(true);
-                    setSelectedReg(true);
-                    setIntervalValue(15);
-                    updateScheduleValidation(selectedDate, selectedTime);
-                  }}
+                  onClick={handleRegularCleanToggle}
                 >
                   Regular Cleans
                   <span className="off">
@@ -1290,48 +1390,36 @@ const BookingPopup = ({ onClose }) => {
                   </span>
                 </button>
               </div>
-
               <button
-                className={`toggle-btn ${!CleanType ? "active" : ""} ${
-                  isDisabledRoute ? "hidden-btn" : ""
-                }`}
-                onClick={() => {
-                  if (isDisabledRoute) {
-                    return;
-                  }
-                  setCleanType(false);
-                  setIntervalValue(0);
-                  updateScheduleValidation(selectedDate, selectedTime);
-                }}
+                className={`toggle-btn ${!CleanType ? "active" : ""}`}
+                onClick={handleOneTimeCleanToggle}
               >
                 One Time Clean
               </button>
             </div>
-
             {CleanType && (
               <div className="frequency-selector">
                 <h4>Every:</h4>
                 <div className="frequency-options">
                   <button
                     className={intervalValue === 15 ? "active" : ""}
-                    onClick={() => setIntervalValue(15)}
+                    onClick={(e) => handleFrequencySelect(15, e)}
                   >
                     Week
                   </button>
                   <button
                     className={intervalValue === 10 ? "active" : ""}
-                    onClick={() => setIntervalValue(10)}
+                    onClick={(e) => handleFrequencySelect(10, e)}
                   >
                     Fortnight
                   </button>
                   <button
                     className={intervalValue === 5 ? "active" : ""}
-                    onClick={() => setIntervalValue(5)}
+                    onClick={(e) => handleFrequencySelect(5, e)}
                   >
                     Month
                   </button>
                 </div>
-
                 <h4>On Days:</h4>
                 <div className="day-selector">
                   {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
@@ -1351,9 +1439,7 @@ const BookingPopup = ({ onClose }) => {
                             ? "selected"
                             : ""
                         }`}
-                        onClick={() => {
-                          toggleDay(index + 1);
-                        }}
+                        onClick={(e) => toggleDay(index + 1, e)}
                       >
                         {day}
                       </button>
@@ -1363,11 +1449,9 @@ const BookingPopup = ({ onClose }) => {
               </div>
             )}
           </div>
-
           {submitError && (
             <div className="error-message visible">{submitError}</div>
           )}
-
           <div
             className={`validation-message ${
               showValidationMessage ? "visible" : ""
@@ -1401,7 +1485,6 @@ const BookingPopup = ({ onClose }) => {
               <option>Other (please specify)</option>
             </select>
           </div>
-
           <div className="form-group">
             <label className="required-field">Where will we park?</label>
             <select
@@ -1417,7 +1500,6 @@ const BookingPopup = ({ onClose }) => {
               <option>Other (please specify)</option>
             </select>
           </div>
-
           <div className="form-group">
             <label>Do you have pets?</label>
             <select
@@ -1428,10 +1510,10 @@ const BookingPopup = ({ onClose }) => {
               className="form-select"
             >
               <option>Dog/Cat</option>
+              <option>No pets</option>
               <option>Other</option>
             </select>
           </div>
-
           <div className="form-group">
             <label>Have any comments?</label>
             <textarea
@@ -1443,7 +1525,6 @@ const BookingPopup = ({ onClose }) => {
               placeholder="If you have any information you would like to share, please write here..."
             />
           </div>
-
           <div
             className={`validation-message ${
               showValidationMessage ? "visible" : ""
@@ -1480,7 +1561,6 @@ const BookingPopup = ({ onClose }) => {
                 <span>{address}</span>
               </div>
             </div>
-
             <div className="summary-section">
               <h3>Customer Details</h3>
               <div className="summary-item">
@@ -1498,7 +1578,6 @@ const BookingPopup = ({ onClose }) => {
                 <span>{phone}</span>
               </div>
             </div>
-
             <div className="summary-section">
               <h3>Service Details</h3>
               <div className="summary-item">
@@ -1586,8 +1665,7 @@ const BookingPopup = ({ onClose }) => {
                 </div>
               )}
             </div>
-
-            {selectedReg === true && (
+            {selectedReg && (
               <div className="discount-field" style={{ marginTop: "1rem" }}>
                 <label
                   htmlFor="discount"
@@ -1619,7 +1697,6 @@ const BookingPopup = ({ onClose }) => {
                 />
               </div>
             )}
-
             <div className="summary-total">
               <div className="total-line">
                 <span>Total</span>
@@ -1633,7 +1710,6 @@ const BookingPopup = ({ onClose }) => {
                 </span>
               </div>
             </div>
-
             <button
               className={`book-now-btn2 ${isSubmitting ? "loading" : ""}`}
               onClick={makePayment}
@@ -1641,7 +1717,6 @@ const BookingPopup = ({ onClose }) => {
             >
               {isSubmitting ? "Processing..." : "Book Now & Pay"}
             </button>
-
             {submitError && (
               <div className="error-message visible">{submitError}</div>
             )}
@@ -1666,11 +1741,14 @@ const BookingPopup = ({ onClose }) => {
           >
             <div
               className={`quote-option ${Quote === 1 ? "selected" : ""}`}
-              onClick={() => handleQuoteSelection(1)}
+              onClick={(e) => handleQuoteSelection(1, e)}
             >
               <div className="quote-icon">
                 <img
-                  src={require("../views/img/house_60156731-200h.png")}
+                  src={
+                    require("../views/img/house_60156731-200h.png") ||
+                    "/placeholder.svg"
+                  }
                   alt="House"
                 />
                 {Quote === 1 && <div className="selection-indicator"></div>}
@@ -1682,14 +1760,16 @@ const BookingPopup = ({ onClose }) => {
                 hygiene to your home
               </p>
             </div>
-
             <div
               className={`quote-option ${Quote === 2 ? "selected" : ""}`}
-              onClick={() => handleQuoteSelection(2)}
+              onClick={(e) => handleQuoteSelection(2, e)}
             >
               <div className="quote-icon">
                 <img
-                  src={require("../views/img/building_60159951-200w.png")}
+                  src={
+                    require("../views/img/building_60159951-200w.png") ||
+                    "/placeholder.svg"
+                  }
                   alt="Building"
                 />
                 {Quote === 2 && <div className="selection-indicator"></div>}
@@ -1701,7 +1781,6 @@ const BookingPopup = ({ onClose }) => {
               </p>
             </div>
           </div>
-
           <div
             className={`validation-message ${
               showValidationMessage ? "visible" : ""
@@ -1712,43 +1791,28 @@ const BookingPopup = ({ onClose }) => {
         </div>
       ),
     },
+
     {
-      id: "business-details",
-      title: "Business Details",
-      subtitle: "Tell us about your business and cleaning needs.",
+      id: "business-info",
+      title: "Tell Us About Your Business",
+      subtitle: "Let's start with some basic information about your business.",
       content: (
         <div className="step-content">
           <div className="form-group">
-            <label className="required-field">Business Type</label>
-            <select
-              value={businessType}
-              onChange={(e) => {
-                setBusinessType(e.target.value);
-                updateCommercialValidation();
-              }}
-              className="form-select"
-            >
-              <option value="">Select your business type</option>
-              <option value="office">Office Building</option>
-              <option value="retail">Retail Store</option>
-              <option value="restaurant">Restaurant/Food Service</option>
-              <option value="medical">Medical Facility</option>
-              <option value="school">School/Educational</option>
-              <option value="gym">Gym/Fitness Center</option>
-              <option value="warehouse">Warehouse/Industrial</option>
-              <option value="hotel">Hotel/Hospitality</option>
-              <option value="other">Other</option>
-            </select>
+            <label className="required-field">Business Name</label>
+            <input
+              type="text"
+              className="form-input"
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              placeholder="Enter your business name"
+            />
           </div>
-
           <div className="form-group">
             <label className="required-field">Business Size</label>
             <select
               value={businessSize}
-              onChange={(e) => {
-                setBusinessSize(e.target.value);
-                updateCommercialValidation();
-              }}
+              onChange={(e) => setBusinessSize(e.target.value)}
               className="form-select"
             >
               <option value="">Select business size</option>
@@ -1758,9 +1822,87 @@ const BookingPopup = ({ onClose }) => {
               <option value="enterprise">Enterprise (Over 50,000 sq ft)</option>
             </select>
           </div>
+          <div
+            className={`validation-message ${
+              showValidationMessage ? "visible" : ""
+            }`}
+          >
+            {getValidationMessage()}
+          </div>
+        </div>
+      ),
+    },
 
+    {
+      id: "cleaning-needs",
+      title: "What Needs Cleaning",
+      subtitle: "Tell us about your cleaning requirements.",
+      content: (
+        <div className="step-content">
           <div className="form-group">
-            <label className="required-field">Cleaning Frequency</label>
+            <label className="required-field">Type of Environment</label>
+            <div className="frequency-options">
+              {[
+                "Office Building",
+                "Retail Store",
+                "Restaurant/Food Service",
+                "Medical Facility",
+                "School/Educational",
+                "Gym/Fitness Center",
+                "Warehouse/Industrial",
+                "Hotel/Hospitality",
+                "Other",
+              ].map((env) => (
+                <button
+                  key={env}
+                  className={typeOfEnvironment === env ? "active" : ""}
+                  onClick={(e) => handleEnvironmentTypeChange(env, e)}
+                >
+                  {env}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="form-group">
+            <label className="required-field">Type of Clean</label>
+            <div className="frequency-options">
+              {[
+                "Regular Maintenance",
+                "Deep Clean",
+                "Post-Construction",
+                "Move-in/Move-out",
+                "Event Cleanup",
+                "Specialized Cleaning",
+              ].map((clean) => (
+                <button
+                  key={clean}
+                  className={typeOfClean === clean ? "active" : ""}
+                  onClick={(e) => handleCleanTypeChange(clean, e)}
+                >
+                  {clean}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div
+            className={`validation-message ${
+              showValidationMessage ? "visible" : ""
+            }`}
+          >
+            {getValidationMessage()}
+          </div>
+        </div>
+      ),
+    },
+
+    {
+      id: "frequency-schedule",
+      title: "How Often",
+      subtitle: "When do you need cleaning services?",
+      content: (
+        <div className="step-content">
+          <div className="form-group">
+            <label className="required-field">Frequency</label>
             <div className="frequency-options">
               {[
                 "Daily",
@@ -1773,56 +1915,37 @@ const BookingPopup = ({ onClose }) => {
                 <button
                   key={freq}
                   className={cleaningFrequency === freq ? "active" : ""}
-                  onClick={() => {
-                    setCleaningFrequency(freq);
-                    updateCommercialValidation();
-                  }}
+                  onClick={(e) => handleCleaningFrequencySelect(freq, e)}
                 >
                   {freq}
                 </button>
               ))}
             </div>
           </div>
-
           <div className="form-group">
-            <label>Special Requirements</label>
-            <div className="extras-grid">
+            <label>Availability (Days of Week)</label>
+            <div className="day-selector">
               {[
-                "Deep Sanitization",
-                "Floor Waxing",
-                "Carpet Cleaning",
-                "Window Cleaning",
-                "Restroom Supplies",
-                "Trash Removal",
-                "Kitchen Cleaning",
-                "Medical Grade Cleaning",
-                "Green Cleaning Products",
-                "After Hours Service",
-              ].map((requirement) => (
-                <div
-                  key={requirement}
-                  className={`extra-item ${
-                    specialRequirements.includes(requirement) ? "selected" : ""
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday",
+              ].map((day) => (
+                <button
+                  key={day}
+                  className={`day-btn ${
+                    availabilityDays.includes(day) ? "selected" : ""
                   }`}
-                  onClick={() => {
-                    if (specialRequirements.includes(requirement)) {
-                      setSpecialRequirements(
-                        specialRequirements.filter((r) => r !== requirement)
-                      );
-                    } else {
-                      setSpecialRequirements([
-                        ...specialRequirements,
-                        requirement,
-                      ]);
-                    }
-                  }}
+                  onClick={(e) => handleAvailabilityDayToggle(day, e)}
                 >
-                  <p>{requirement}</p>
-                </div>
+                  {day.substring(0, 3)}
+                </button>
               ))}
             </div>
           </div>
-
           <div
             className={`validation-message ${
               showValidationMessage ? "visible" : ""
@@ -1833,131 +1956,29 @@ const BookingPopup = ({ onClose }) => {
         </div>
       ),
     },
+
     {
-      id: "commercial-schedule",
-      title: "Schedule & Access",
-      subtitle: "When and how should we service your business?",
-      content: (
-        <div className="step-content">
-          <div className="monthly-calendar-section">
-            <div className="calendar-header">
-              <button
-                className="month-nav-btn"
-                onClick={() =>
-                  setCurrentMonthIndex(Math.max(0, currentMonthIndex - 1))
-                }
-                disabled={currentMonthIndex === 0}
-              >
-                &#8249;
-              </button>
-              <h3>{monthlyCalendar[currentMonthIndex]?.name}</h3>
-              <button
-                className="month-nav-btn"
-                onClick={() =>
-                  setCurrentMonthIndex(
-                    Math.min(monthlyCalendar.length - 1, currentMonthIndex + 1)
-                  )
-                }
-                disabled={currentMonthIndex === monthlyCalendar.length - 1}
-              >
-                &#8250;
-              </button>
-            </div>
-
-            <div className="calendar-weekdays">
-              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-                <div key={day} className="weekday-header">
-                  {day}
-                </div>
-              ))}
-            </div>
-
-            <div className="monthly-calendar-grid2">
-              {monthlyCalendar[currentMonthIndex]?.days.map(
-                (dayData, index) => (
-                  <div
-                    key={index}
-                    className={`calendar-day2 ${!dayData ? "empty" : ""} ${
-                      dayData?.isPast ? "past" : ""
-                    } ${dayData?.isToday ? "today" : ""} ${
-                      selectedDate === dayData?.date ? "selected" : ""
-                    } ${dayData?.isSelectable ? "selectable" : ""}`}
-                    onClick={() => {
-                      if (dayData?.isSelectable) {
-                        handleDateSelect(dayData.date);
-                        updateCommercialScheduleValidation();
-                      }
-                    }}
-                  >
-                    {dayData?.day}
-                  </div>
-                )
-              )}
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label className="required-field">Business Hours</label>
-            <select
-              value={businessHours}
-              onChange={(e) => {
-                setBusinessHours(e.target.value);
-                updateCommercialScheduleValidation();
-              }}
-              className="form-select"
-            >
-              <option value="">Select your business hours</option>
-              <option value="24/7">24/7 Operations</option>
-              <option value="early-morning">Early Morning (5 AM - 9 AM)</option>
-              <option value="business-hours">
-                Business Hours (9 AM - 5 PM)
-              </option>
-              <option value="evening">Evening (5 PM - 10 PM)</option>
-              <option value="overnight">Overnight (10 PM - 5 AM)</option>
-              <option value="weekends">Weekends Only</option>
-              <option value="flexible">Flexible Schedule</option>
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label>Access Instructions</label>
-            <textarea
-              value={accessInstructions}
-              onChange={(e) => setAccessInstructions(e.target.value)}
-              className="form-textarea"
-              placeholder="How should our team access your facility? Include security codes, key locations, contact persons, etc."
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Emergency Contact</label>
-            <input
-              type="text"
-              value={emergencyContact}
-              onChange={(e) => setEmergencyContact(e.target.value)}
-              className="form-input"
-              placeholder="Name and phone number for emergencies"
-            />
-          </div>
-
-          <div
-            className={`validation-message ${
-              showValidationMessage ? "visible" : ""
-            }`}
-          >
-            {getValidationMessage()}
-          </div>
-        </div>
-      ),
-    },
-    {
-      id: "commercial-requirements",
-      title: "Contract & Requirements",
-      subtitle: "Let's discuss your budget and contract preferences.",
+      id: "insurance-budget",
+      title: "Insurance & Budget",
+      subtitle: "Let's discuss insurance requirements and your budget.",
       content: (
         <div className="step-content">
           <div className="form-group">
-            <label className="required-field">Monthly Budget Range</label>
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={insuranceDocs}
+                onChange={(e) => setInsuranceDocs(e.target.checked)}
+              />
+              Insurance and bonding documentation required
+            </label>
+            <p className="form-help-text">
+              Check this if you require our team to provide insurance and
+              bonding documentation before service begins.
+            </p>
+          </div>
+          <div className="form-group">
+            <label className="required-field">Monthly Budget</label>
             <div className="frequency-options">
               {[
                 "$500-$1,000",
@@ -1970,63 +1991,13 @@ const BookingPopup = ({ onClose }) => {
                 <button
                   key={budget}
                   className={budgetRange === budget ? "active" : ""}
-                  onClick={() => {
-                    setBudgetRange(budget);
-                    updateCommercialRequirementsValidation();
-                  }}
+                  onClick={(e) => handleBudgetRangeSelect(budget, e)}
                 >
                   {budget}
                 </button>
               ))}
             </div>
           </div>
-
-          <div className="form-group">
-            <label className="required-field">Preferred Contract Length</label>
-            <div className="frequency-options">
-              {[
-                "1 Month",
-                "3 Months",
-                "6 Months",
-                "1 Year",
-                "2+ Years",
-                "Month-to-Month",
-              ].map((contract) => (
-                <button
-                  key={contract}
-                  className={contractLength === contract ? "active" : ""}
-                  onClick={() => {
-                    setContractLength(contract);
-                    updateCommercialRequirementsValidation();
-                  }}
-                >
-                  {contract}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={insuranceRequired}
-                onChange={(e) => setInsuranceRequired(e.target.checked)}
-              />
-              Insurance and bonding documentation required
-            </label>
-          </div>
-
-          <div className="form-group">
-            <label>Additional Notes</label>
-            <textarea
-              value={spComments}
-              onChange={(e) => setspComments(e.target.value)}
-              className="form-textarea"
-              placeholder="Any additional requirements, concerns, or special instructions..."
-            />
-          </div>
-
           <div
             className={`validation-message ${
               showValidationMessage ? "visible" : ""
@@ -2037,43 +2008,28 @@ const BookingPopup = ({ onClose }) => {
         </div>
       ),
     },
+
     {
       id: "signup",
-      title: "Business Contact Details",
+      title: "Sign Up",
       subtitle:
         "Provide your business contact information for the service agreement.",
       content: (
         <div className="step-content">
           <div className="signup-form">
-            <div className="form-row">
-              <div className="form-group">
-                <label className="required-field">Business Name</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  value={firstName}
-                  onChange={(e) => {
-                    setFirstName(e.target.value);
-                    updateSignupValidation();
-                  }}
-                  placeholder="Your business name"
-                />
-              </div>
-              <div className="form-group">
-                <label className="required-field">Contact Person</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  value={lastName}
-                  onChange={(e) => {
-                    setLastName(e.target.value);
-                    updateSignupValidation();
-                  }}
-                  placeholder="Primary contact name"
-                />
-              </div>
+            <div className="form-group">
+              <label className="required-field">Primary Contact</label>
+              <input
+                type="text"
+                className="form-input"
+                value={lastName}
+                onChange={(e) => {
+                  setLastName(e.target.value);
+                  updateSignupValidation();
+                }}
+                placeholder="Primary contact person name"
+              />
             </div>
-
             <div className="form-row">
               <div className="form-group">
                 <label className="required-field">Business Email</label>
@@ -2085,6 +2041,7 @@ const BookingPopup = ({ onClose }) => {
                     setEmail(e.target.value);
                     updateSignupValidation();
                   }}
+                  placeholder="business@company.com"
                 />
               </div>
               <div className="form-group">
@@ -2097,35 +2054,23 @@ const BookingPopup = ({ onClose }) => {
                     setPhone(e.target.value);
                     updateSignupValidation();
                   }}
+                  placeholder="(03) 1234 5678"
                 />
               </div>
             </div>
-
             <div className="form-group">
               <label className="required-field">Business Address</label>
-              <input
-                type="text"
-                className="form-input"
+              <MelbourneAddressInput
                 value={address}
-                onChange={(e) => {
-                  setAddress(e.target.value);
+                onChange={(newAddress) => {
+                  setAddress(newAddress);
                   updateSignupValidation();
                 }}
+                onValidation={updateSignupValidation}
+                className="form-input"
                 placeholder="Full business address"
               />
             </div>
-
-            <div className="form-group">
-              <label>Tax ID / Business License</label>
-              <input
-                type="text"
-                className="form-input"
-                value={referral}
-                onChange={(e) => setReferral(e.target.value)}
-                placeholder="For invoicing purposes (optional)"
-              />
-            </div>
-
             <div className="terms-section">
               <label className="checkbox-label">
                 <input
@@ -2140,12 +2085,10 @@ const BookingPopup = ({ onClose }) => {
                 <span className="link">Commercial Service Agreement</span>
               </label>
             </div>
-
             {submitError && (
               <div className="error-message visible">{submitError}</div>
             )}
           </div>
-
           <div
             className={`validation-message ${
               showValidationMessage ? "visible" : ""
@@ -2156,6 +2099,7 @@ const BookingPopup = ({ onClose }) => {
         </div>
       ),
     },
+
     {
       id: "commercial-summary",
       title: "Service Agreement Summary",
@@ -2165,63 +2109,52 @@ const BookingPopup = ({ onClose }) => {
           <div className="summary-content">
             <div className="summary-section">
               <h3>Business Information</h3>
-
               <div className="summary-item">
                 <span>Business Name</span>
-                <span>{firstName}</span>
-              </div>
-              <div className="summary-item">
-                <span>Business Type</span>
-                <span>{businessType}</span>
+                <span>{businessName}</span>
               </div>
               <div className="summary-item">
                 <span>Business Size</span>
                 <span>{businessSize}</span>
               </div>
             </div>
-
             <div className="summary-section">
-              <h3>Service Details</h3>
+              <h3>Cleaning Requirements</h3>
               <div className="summary-item">
-                <span>Cleaning Frequency</span>
+                <span>Environment Type</span>
+                <span>{typeOfEnvironment}</span>
+              </div>
+              <div className="summary-item">
+                <span>Type of Clean</span>
+                <span>{typeOfClean}</span>
+              </div>
+            </div>
+            <div className="summary-section">
+              <h3>Schedule</h3>
+              <div className="summary-item">
+                <span>Frequency</span>
                 <span>{cleaningFrequency}</span>
               </div>
               <div className="summary-item">
-                <span>Start Date</span>
-                <span>{MyDate || "To be scheduled"}</span>
+                <span>Available Days</span>
+                <span>{availabilityDays.join(", ") || "Not specified"}</span>
               </div>
-              <div className="summary-item">
-                <span>Service Hours</span>
-                <span>{businessHours}</span>
-              </div>
-              {specialRequirements.length > 0 && (
-                <div className="summary-item">
-                  <span>Special Requirements</span>
-                  <span>{specialRequirements.join(", ")}</span>
-                </div>
-              )}
             </div>
-
             <div className="summary-section">
-              <h3>Contract Terms</h3>
-              <div className="summary-item">
-                <span>Budget Range</span>
-                <span>{budgetRange}</span>
-              </div>
-              <div className="summary-item">
-                <span>Contract Length</span>
-                <span>{contractLength}</span>
-              </div>
+              <h3>Requirements & Budget</h3>
               <div className="summary-item">
                 <span>Insurance Required</span>
-                <span>{insuranceRequired ? "Yes" : "No"}</span>
+                <span>{insuranceDocs ? "Yes" : "No"}</span>
+              </div>
+              <div className="summary-item">
+                <span>Monthly Budget</span>
+                <span>{budgetRange}</span>
               </div>
             </div>
-
             <div className="summary-section">
               <h3>Contact Information</h3>
               <div className="summary-item">
-                <span>Contact Person</span>
+                <span>Primary Contact</span>
                 <span>{lastName}</span>
               </div>
               <div className="summary-item">
@@ -2232,8 +2165,11 @@ const BookingPopup = ({ onClose }) => {
                 <span>Phone</span>
                 <span>{phone}</span>
               </div>
+              <div className="summary-item">
+                <span>Address</span>
+                <span>{address}</span>
+              </div>
             </div>
-
             <button
               className={`book-now-btn2 ${isSubmitting ? "loading" : ""}`}
               onClick={submitCommercialQuote}
@@ -2241,7 +2177,6 @@ const BookingPopup = ({ onClose }) => {
             >
               {isSubmitting ? "Submitting..." : "Submit Quote Request"}
             </button>
-
             {submitError && (
               <div className="error-message visible">{submitError}</div>
             )}
@@ -2253,6 +2188,27 @@ const BookingPopup = ({ onClose }) => {
 
   // Use conditional steps based on cleaning type
   const steps = isCommercial ? commercialSteps : residentialSteps;
+
+  // Update validations when commercial fields change
+  useEffect(() => {
+    if (isCommercial) {
+      setValidations((prev) => ({
+        ...prev,
+        "business-info": businessName && businessSize,
+        "cleaning-needs": typeOfEnvironment && typeOfClean,
+        "frequency-schedule": cleaningFrequency,
+        "insurance-budget": budgetRange,
+      }));
+    }
+  }, [
+    businessName,
+    businessSize,
+    typeOfEnvironment,
+    typeOfClean,
+    cleaningFrequency,
+    budgetRange,
+    isCommercial,
+  ]);
 
   const navigateS = () => {
     window.location.href = "/dashboard";
@@ -2266,10 +2222,10 @@ const BookingPopup = ({ onClose }) => {
     <>
       <div className="overlay-main">
         <div className="swiper-container2">
+          <button className="close-button" onClick={onClose}>
+            &times;
+          </button>
           <div className="swiper-wrapper">
-            <button className="close-button" onClick={onClose}>
-              X
-            </button>
             <div
               className="swiper-track"
               style={{ transform: `translateX(-${currentStep * 100}%)` }}
@@ -2287,85 +2243,79 @@ const BookingPopup = ({ onClose }) => {
                       <p>{step.subtitle}</p>
                     </div>
                     {step.content}
-
-                    <div className="navigation-buttons">
-                      {currentStep > 0 && (
-                        <button className="nav-btn prev-btn" onClick={prevStep}>
-                          Go back
-                        </button>
-                      )}
-                      {currentStep < totalSteps - 1 && (
-                        <button
-                          className={`nav-btn next-btn ${
-                            !validations[steps[currentStep].id]
-                              ? "disabled"
-                              : ""
-                          }`}
-                          onClick={nextStep}
-                          disabled={!validations[steps[currentStep].id]}
-                        >
-                          Proceed
-                        </button>
-                      )}
-                    </div>
                   </div>
                 </div>
               ))}
             </div>
+            {/* Progress indicators */}
+            <div className="swiper-pagination">
+              {steps.map((_, index) => (
+                <button
+                  key={index}
+                  className={`pagination-dot ${
+                    index === currentStep ? "active" : ""
+                  } ${index > currentStep ? "disabled" : ""}`}
+                  onClick={() => goToStep(index)}
+                  disabled={index > currentStep}
+                />
+              ))}
+            </div>
           </div>
-
-          {!isCommercial && steps[currentStep]?.id === "details" && (
-            <>
-              <div className="slide-footer">
-                <Link to="/contact" target="_blank">
-                  <div className="support-section">
-                    <img
-                      src={require("../views/img/support.png")}
-                      alt="Support"
-                      className={supports ? "support-active" : ""}
-                    />
-                    <p
-                      onMouseEnter={handleMouseEnterSupport}
-                      onMouseLeave={handleMouseLeaveSupport}
-                    >
-                      Support
-                    </p>
+          {!isCommercial &&
+            currentStep >= 1 &&
+            currentStep <= steps.length - 3 && (
+              <>
+                <div className="slide-footer">
+                  <Link to="/contact" target="_blank">
+                    <div className="support-section">
+                      <img
+                        src={
+                          require("../views/img/support.png") ||
+                          "/placeholder.svg" ||
+                          "/placeholder.svg"
+                        }
+                        alt="Support"
+                        className={supports ? "support-active" : ""}
+                      />
+                      <p
+                        onMouseEnter={handleMouseEnterSupport}
+                        onMouseLeave={handleMouseLeaveSupport}
+                      >
+                        Support
+                      </p>
+                    </div>
+                  </Link>
+                  <div>
+                    <h5 className="total-text">
+                      Total{" "}
+                      <span className="total-number">${Total.toFixed(2)}</span>
+                    </h5>
+                    <small>
+                      We estimate your cleaning to take:{" "}
+                      <span className="tim">{estimatedTime} minutes</span>
+                    </small>
                   </div>
-                </Link>
-
-                <div>
-                  <h5 className="total-text">
-                    Total{" "}
-                    <span className="total-number">${Total.toFixed(2)}</span>
-                  </h5>
-                  <small>
-                    We estimate your cleaning to take:{" "}
-                    <span className="tim">{estimatedTime} minutes</span>
-                  </small>
-                </div>
-
-                <div
-                  className="sum-txt"
-                  onClick={() => setCurrentStep(steps.length - 1)}
-                >
-                  <span>
-                    <h5>Booking Summary</h5>
-                    <small>have a discount code?</small>
-                  </span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    fill="#000000"
-                    viewBox="0 0 256 256"
+                  <div
+                    className="sum-txt"
+                    onClick={() => setCurrentStep(steps.length - 1)}
                   >
-                    <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
-                  </svg>
+                    <span>
+                      <h5>Booking Summary</h5>
+                      <small>have a discount code?</small>
+                    </span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      fill="#000000"
+                      viewBox="0 0 256 256"
+                    >
+                      <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
+                    </svg>
+                  </div>
                 </div>
-              </div>
-            </>
-          )}
-
+              </>
+            )}
           {/* Navigation arrows */}
           <button
             className={`swiper-nav swiper-nav-left ${
@@ -2376,7 +2326,6 @@ const BookingPopup = ({ onClose }) => {
           >
             &#8249;
           </button>
-
           <button
             className={`swiper-nav swiper-nav-right ${
               currentStep === totalSteps - 1 ||
@@ -2392,20 +2341,6 @@ const BookingPopup = ({ onClose }) => {
           >
             &#8250;
           </button>
-
-          {/* Progress indicators */}
-          <div className="swiper-pagination">
-            {steps.map((_, index) => (
-              <button
-                key={index}
-                className={`pagination-dot ${
-                  index === currentStep ? "active" : ""
-                } ${index > currentStep ? "disabled" : ""}`}
-                onClick={() => goToStep(index)}
-                disabled={index > currentStep}
-              />
-            ))}
-          </div>
         </div>
       </div>
     </>

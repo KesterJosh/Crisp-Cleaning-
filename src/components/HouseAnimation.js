@@ -47,15 +47,14 @@ const HouseAnimation = ({ cleans }) => {
   const [timeFrame, setTimeFrame] = useState(8);
 
   useEffect(() => {
-  if (cleans) {
-    if (cleans.rooms !== undefined) setSliderValueO(cleans.rooms);
-    if (cleans.bathroom !== undefined) setSliderValue(cleans.bathroom);
-    if (cleans.kitchen !== undefined) setSliderValueK(cleans.kitchen);
-    if (cleans.others !== undefined) setSliderValueOX(cleans.others);
-    // Add more fields here as needed
-  }
-}, [cleans]);
-
+    if (cleans) {
+      if (cleans.rooms !== undefined) setSliderValueO(cleans.rooms);
+      if (cleans.bathroom !== undefined) setSliderValue(cleans.bathroom);
+      if (cleans.kitchen !== undefined) setSliderValueK(cleans.kitchen);
+      if (cleans.others !== undefined) setSliderValueOX(cleans.others);
+      // Add more fields here as needed
+    }
+  }, [cleans]);
 
   // Day selection states for recurring cleans
   const [daySelect1, setDaySelect1] = useState(0); // Monday
@@ -690,17 +689,18 @@ const HouseAnimation = ({ cleans }) => {
       setIsSubmitting(true);
       setSubmitError("");
 
-      const response = await axios.post("https://api-crisp-cleaning.onrender.com/register", {
-        first_name: firstName,
-        last_name: lastName,
-        email,
-        phone,
-        password,
-        address,
-        referral,
-      });
-
-      console.log("Registration response:", response);
+      const response = await axios.post(
+        "https://api-crisp-cleaning.onrender.com/register",
+        {
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          phone,
+          password,
+          address,
+          referral,
+        }
+      );
 
       if (response.data.message === "Successful") {
         // Move to summary step after successful registration
@@ -764,8 +764,6 @@ const HouseAnimation = ({ cleans }) => {
         spComments,
         discountNew: Total, // Assuming no discount for now
       };
-
-      console.log("Clean booking data:", requestData);
 
       const response = await axios.post(
         "https://api-crisp-cleaning.onrender.com/clean",
@@ -943,10 +941,8 @@ const HouseAnimation = ({ cleans }) => {
     if (isValid && currentStep < totalSteps - 1) {
       setCurrentStep(currentStep + 1);
       setShowValidationMessage(false);
-      console.log("Moving to step:", currentStep + 1);
     } else {
       setShowValidationMessage(true);
-      console.log("Validation failed for step:", currentStepId);
     }
   };
 
@@ -954,7 +950,6 @@ const HouseAnimation = ({ cleans }) => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
       setShowValidationMessage(false);
-      console.log("Moving back to step:", currentStep - 1);
     }
   };
 
@@ -962,7 +957,6 @@ const HouseAnimation = ({ cleans }) => {
     if (step <= currentStep) {
       setCurrentStep(step);
       setShowValidationMessage(false);
-      console.log("Jumping to step:", step);
     }
   };
 
@@ -1020,38 +1014,6 @@ const HouseAnimation = ({ cleans }) => {
               showValidationMessage ? "validation-active" : ""
             }`}
           ></div>
-
-          <div className="bxnHouse">
-            <div className="box2x">
-              {/* Added className="house-display-area" here for CSS targeting */}
-              <div className="house-display-area">
-                {/* Rooms */}
-                {[...Array(sliderValueO)].map((_, index) => (
-                  <div key={`r-${index}`} className="visibX">
-                    <div className="is-active heart"></div>
-                  </div>
-                ))}
-                {/* Bathrooms */}
-                {[...Array(sliderValue)].map((_, index) => (
-                  <div key={`b-${index}`} className="visibX">
-                    <div className="is-activex heartx"></div>
-                  </div>
-                ))}
-                {/* Kitchens */}
-                {[...Array(sliderValueK)].map((_, index) => (
-                  <div key={`k-${index}`} className="visibX">
-                    <div className="is-activex2 heartx2"></div>
-                  </div>
-                ))}
-                {/* Others */}
-                {[...Array(sliderValueOX)].map((_, index) => (
-                  <div key={`o-${index}`} className="visibX">
-                    <div className="is-activex3 heartx3"></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
 
           <div className="counters-container">
             <div className="counter-group">
