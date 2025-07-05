@@ -22,7 +22,7 @@ const authRoutes = require("./routes/resetPassword.js");
 const otpAuth = require("./routes/otpVerification.js");
 const updatePassword = require("./routes/updatePassword.js");
 const transporter = require("./utils/emailService");
-
+const Review = require("./models/review.js");
 require("dotenv").config;
 const client = new OAuth2Client(
   "617840144228-0fa899q99cktsq7a8culf9cacamvr0kf.apps.googleusercontent.com"
@@ -113,74 +113,68 @@ app.post("/data", (req, res) => {
     });
 });
 // 📦 Commercial Cleaning Mail
-const SendMail = (
-  {
-    contactPerson,
+const SendCommercialEmail = async (data, res) => {
+  const {
     businessName,
+    contactPerson,
     email,
     phone,
     address,
-    businessType,
     businessSize,
+    typeOfEnvironment,
+    typeOfClean,
     cleaningFrequency,
-    specialRequirements,
-    startDate,
-    businessHours,
-    accessInstructions,
-    emergencyContact,
-    budgetRange,
-    contractLength,
+    availabilityDays,
     insuranceRequired,
+    budgetRange,
     additionalNotes,
-    taxId,
-  },
-  res
-) => {
+  } = data;
+
   const mailOption = {
-    from: `"Crisp Cleaning" <preciousopia7@gmail.com>`,
-    to: "adeemole@gmail.com", // or your company email
-    subject: "Commercial Cleaning Request",
+    from: '"Crisp Cleaning"',
+    to: "crispcleaningmelbourne@outlook.com",
+    subject: "New Commercial Cleaning Request",
     html: `
-      <p>A commercial cleaning request has been submitted by <strong>${contactPerson}</strong>.</p>
+      <h3>Commercial Cleaning Request</h3>
       <p><strong>Business Name:</strong> ${businessName}</p>
       <p><strong>Contact Person:</strong> ${contactPerson}</p>
       <p><strong>Email:</strong> ${email}</p>
       <p><strong>Phone:</strong> ${phone}</p>
       <p><strong>Address:</strong> ${address}</p>
-      <p><strong>Business Type:</strong> ${businessType}</p>
       <p><strong>Business Size:</strong> ${businessSize}</p>
+      <p><strong>Type of Environment:</strong> ${typeOfEnvironment || "N/A"}</p>
+      <p><strong>Type of Clean:</strong> ${typeOfClean || "N/A"}</p>
       <p><strong>Cleaning Frequency:</strong> ${cleaningFrequency}</p>
-      <p><strong>Special Requirements:</strong> ${specialRequirements}</p>
-      <p><strong>Preferred Start Date:</strong> ${startDate}</p>
-      <p><strong>Business Hours:</strong> ${businessHours}</p>
-      <p><strong>Access Instructions:</strong> ${accessInstructions}</p>
-      <p><strong>Emergency Contact:</strong> ${emergencyContact}</p>
+      <p><strong>Availability Days:</strong> ${
+        availabilityDays?.join(", ") || "N/A"
+      }</p>
+      <p><strong>Insurance Required:</strong> ${
+        insuranceRequired ? "Yes" : "No"
+      }</p>
       <p><strong>Budget Range:</strong> ${budgetRange}</p>
-      <p><strong>Contract Length:</strong> ${contractLength}</p>
-      <p><strong>Insurance Required:</strong> ${insuranceRequired}</p>
-      <p><strong>Additional Notes:</strong> ${additionalNotes}</p>
-      <p><strong>Tax ID:</strong> ${taxId}</p>
+      <p><strong>Additional Notes:</strong> ${additionalNotes || "None"}</p>
     `,
   };
 
-  transporter
-    .sendMail(mailOption)
-    .then(() => {
-      res.status(200).json({ success: true, message: "Email sent" });
-    })
-    .catch((error) => {
-      console.error("Error sending email:", error);
-      res.status(500).json({ success: false, message: "Failed to send email" });
-    });
+  try {
+    await transporter.sendMail(mailOption);
+    console.log("Commercial request email sent");
+    res.status(200).json({ success: true, message: "Email sent" });
+  } catch (err) {
+    console.error("Email sending failed:", err);
+    res.status(500).json({ success: false, message: "Email failed to send" });
+  }
 };
+
+module.exports = SendCommercialEmail;
 
 const SendContactMail = (
   { first_name, last_name, email, phone, message },
   res
 ) => {
   const mailOption = {
-    from: `"Crisp Support" <preciousopia7@gmail.com>`,
-    to: "adeemole@gmail.com",
+    from: `"Crisp Support"`,
+    to: "crispcleaningmelbourne@outlook.com",
     subject: "New Customer Contact Form",
     html: `
       <p>This message came from <strong>${first_name} ${last_name}</strong></p>
@@ -193,6 +187,7 @@ const SendContactMail = (
   transporter
     .sendMail(mailOption)
     .then(() => {
+      console.log("Contact email sent");
       res.status(200).json({ success: true, message: "Email sent" });
     })
     .catch((error) => {
@@ -605,6 +600,8 @@ app.get("/user-clean/:id", async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    // console.log(user)
+
     // Find cleaning records with the user's email
     const cleanRecords = await cleanModel
       .find({ email: user.email })
@@ -619,6 +616,7 @@ app.get("/user-clean/:id", async (req, res) => {
       },
       cleanRecords: cleanRecords,
     });
+    console.log(cleanRecords);
   } catch (error) {
     console.error("Error fetching user or cleaning records:", error);
     res.status(500).json({ message: "Server error", error: error.message });
@@ -634,6 +632,31 @@ app.get("/cleans", async (req, res) => {
   } catch (error) {
     console.error("Error fetching cleaning records:", error);
     res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+app.get("/clean/:id", async (req, res) => {
+  try {
+    const clean = await cleanModel.findById(req.params.id);
+    if (!clean) {
+      return res.status(404).json({ message: "Clean record not found." });
+    }
+    res.json(clean);
+  } catch (error) {
+    console.error("Error fetching clean record:", error);
+    res.status(500).json({ message: "Server error." });
+  }
+});
+
+app.delete("/clean/user/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    await cleanModel.deleteMany({ userId });
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error cancelling cleans:", error);
+    res.status(500).json({ success: false, error: "Failed to cancel cleans" });
   }
 });
 
@@ -829,6 +852,24 @@ app.get("/payments/:sessionId", async (req, res) => {
   } catch (err) {
     console.error("Error fetching payment:", err);
     res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.get("/api/reviews", async (req, res) => {
+  try {
+    const reviews = await Review.find().sort({ createdAt: -1 }); // Sorted by latest
+
+    res.status(200).json({
+      success: true,
+      total: reviews.length,
+      data: reviews,
+    });
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
   }
 });
 
