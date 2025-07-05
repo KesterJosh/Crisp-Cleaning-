@@ -186,17 +186,6 @@ const Transaction = (props) => {
   const [videoURL, setVideoURL] = useState(null);
 
   useEffect(() => {
-    if (showPopup) {
-      gsap.from(popupRef.current, {
-        duration: 0.4,
-        scale: 0.8,
-        opacity: 0,
-        ease: "power2.out",
-      });
-    }
-  }, [showPopup]);
-
-  useEffect(() => {
     const query = new URLSearchParams(window.location.search);
     const sessionId = query.get("session_id");
 
@@ -253,10 +242,13 @@ const Transaction = (props) => {
     }
 
     try {
-      const res = await fetch("https://api-crisp-cleaning.onrender.com/api/reviews", {
-        method: "POST",
-        body: formData,
-      });
+      const res = await fetch(
+        "https://api-crisp-cleaning.onrender.com/api/reviews",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const data = await res.json();
 
@@ -618,12 +610,8 @@ const Transaction = (props) => {
               <tbody>
                 <tr>
                   <td>Cleaners Pass</td>
-                  <td>
-                    {lastPayment ? lastPayment : "N/A"}
-                  </td>
-                  <td>
-                    {nextPayment ? nextPayment : "N/A"}
-                  </td>
+                  <td>{lastPayment ? lastPayment : "N/A"}</td>
+                  <td>{nextPayment ? nextPayment : "N/A"}</td>
                   <td className="card-info-cell">
                     {cardInfo && cardInfo.brand && cardInfo.last4 ? (
                       <>
