@@ -12,10 +12,10 @@ import BeforeAfterImage from "./BeforeAfterImage";
 import Mobilex from "./mobile";
 import Login from "./login";
 import RegisterPopup from "../components/RegisterPopup";
+import Footer from "../components/Footer";
 
 const About = (props) => {
   const [login, setLogin] = useState(false);
-  const [register, setRegister] = useState(false);
 
   const handleClick = () => {
     sessionStorage.setItem("scrollToRef", "about");
@@ -353,6 +353,20 @@ const About = (props) => {
     }
   };
 
+  const scrollToSection = (ref) => {
+    if (window.location.pathname === "/") {
+      if (ref?.current) {
+        targetRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    } else {
+      sessionStorage.setItem("scrollToRef", "true");
+      window.location.href = "/";
+    }
+  };
+
   // Menu Section
   const [closedx, setClosedx] = useState(0);
   const mobileMenu = () => {
@@ -385,7 +399,6 @@ const About = (props) => {
       {login && (
         <Login CloseLogin={() => setLogin(false)} navigateS={navigateS} />
       )}
-      {register && <RegisterPopup onClose={() => setRegister(false)} />}
 
       <Helmet>
         <title>About - Crisp Cleaning</title>
@@ -494,9 +507,9 @@ const About = (props) => {
             </div>
             <span
               className="home-text011"
-              onClick={() => setRegister(true)}
               onMouseEnter={handleMouseEnterX}
               onMouseLeave={handleMouseLeaveX}
+              onClick={handleClick}
             >
               Get Started Now
             </span>
@@ -528,6 +541,13 @@ const About = (props) => {
             <Link to="/contact">
               <h2>Contact</h2>
             </Link>
+            <h2
+              onClick={() => {
+                setLogin(true);
+              }}
+            >
+              Login
+            </h2>
           </div>
           <div className="home1-container04">
             <div className="home1-container05">
@@ -806,7 +826,8 @@ const About = (props) => {
           </div>
         </div>
       </div>
-      <div className="home1-container35">
+
+      {/* <div className="home1-container35">
         <div className="home1-container36">
           <div className="home1-header">
             <div className="home1-container37">
@@ -1200,8 +1221,6 @@ const About = (props) => {
                 </div>
               </div>
             </div>
-            {/* <img alt="image" src={require("./img/teamW.png")} className="home1-image07" />
-            <img alt="image" src={require("./img/teamW.png")} className="home1-image08" /> */}
           </div>
           <div className="home1-container40">
             <div
@@ -1444,8 +1463,9 @@ const About = (props) => {
             </div>
           </div>
         </div>
-      </div>
-      <div className="home1-container41">
+      </div> */}
+
+      {/* <div className="home1-container41">
         <div className="home1-container42">
           <div className="home1-container43"></div>
           <div className="home1-container44"></div>
@@ -1453,7 +1473,7 @@ const About = (props) => {
           <div className="home1-container46"></div>
           <div className="home1-container47"></div>
         </div>
-      </div>
+      </div> */}
       <div className="home1-container48">
         <div className="home1-container49">
           <div className="home1-container50">
@@ -1501,65 +1521,7 @@ const About = (props) => {
         </div>
       </div>
 
-      <div className="home-container303">
-        <div className="home-container304">
-          <img
-            alt="image"
-            src={require("./img/crisp.png")}
-            className="home-image52"
-          />
-        </div>
-        <div className="home-container305">
-          <span className="home-text396">Sitemap</span>
-          <p className="home-text397">Home</p>
-          <p className="home-text398">Get Quote</p>
-          <p className="home-text399">About</p>
-          <p className="home-text400">Testimonials</p>
-          <p className="home-text401">FAQs</p>
-          <p className="home-text402">Contact</p>
-        </div>
-        <div className="home-container306">
-          <span className="home-text403">Help &amp; Support</span>
-          <p className="home-text404">support@crispcleaningcorp.com.au</p>
-        </div>
-        <div className="home-container307">
-          <span className="home-text405">Contact us</span>
-          <div className="home-container308">
-            <div className="home-container309">
-              <p className="home-text406">First Name</p>
-              <input type="text" className="home-textinput07 input" />
-            </div>
-            <div className="home-container310">
-              <p className="home-text407">Last Name</p>
-              <input type="text" className="home-textinput08 input" />
-            </div>
-          </div>
-          <div className="home-container311">
-            <div className="home-container312">
-              <p className="home-text408">Email</p>
-              <input type="email" className="home-textinput09 input" />
-            </div>
-            <div className="home-container313">
-              <p className="home-text409">Phone Number</p>
-              <input type="tel" className="home-textinput10 input" />
-            </div>
-          </div>
-          <div className="home-container314">
-            <div className="home-container315">
-              <p className="home-text410">Message</p>
-              <textarea
-                placeholder="placeholder"
-                className="home-textarea textarea"
-              ></textarea>
-              <button className="sendMButton">Send Message</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="CrispUnder">
-        <h3>CrispCleaningCorp @ 2024</h3>
-        <h3>Terms & Conditions</h3>
-      </div>
+      <Footer />
     </div>
   );
 };

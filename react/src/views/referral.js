@@ -428,7 +428,7 @@ const Referral = (props) => {
       <div className="referral-container25">
         <div className="referral-container26">
           <span className="referral-text22">Referrals</span>
-          <GlobalSearch />
+          {/* <GlobalSearch /> */}
           <Link to="/settings" className="referral-navlink16">
             <img
               alt="image"

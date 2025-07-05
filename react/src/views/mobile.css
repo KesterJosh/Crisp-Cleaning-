@@ -1,78 +1,75 @@
 .HeadxX {
-    display: none;
-    background-color: red;
+  display: none;
+  background-color: red;
 }
-.HeadxXx{
-    display:flex;
-    background-color: white;
-    width: 0%;
-    height: 0%;
-    z-index: 20;
-    opacity: 0;
-    justify-content: space-between;
-    /* padding-right: 15px; */
-    align-items:center;
-    /* padding-top: var(--dl-space-space-twounits); */
-    /* padding-bottom: var(--dl-space-space-twounits); */
+.HeadxXx {
+  display: flex;
+  background-color: white;
+  width: 0%;
+  height: 0%;
+  z-index: 20;
+  opacity: 0;
+  justify-content: space-between;
+  /* padding-right: 15px; */
+  align-items: center;
+  /* padding-top: var(--dl-space-space-twounits); */
+  /* padding-bottom: var(--dl-space-space-twounits); */
 }
-.Mobilegeneral{
-    position: fixed;
-    top: -110%;
-    height: 100vh;
-    left: 0;
-    right:0;
-    background-color: white;
-    z-index: 100;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    transition: 1s linear;
+.Mobilegeneral {
+  position: fixed;
+  top: -110%;
+  height: 100vh;
+  left: 0;
+  right: 0;
+  background-color: white;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  transition: 1s linear;
 }
 
-.MobilegeneralOff{
-    position: fixed;
-    top: 0%;
-    height: 100vh;
-    left: 0;
-    right:0;
-    background-color: white;
-    z-index: 100;
-    transition: 1s linear;
+.MobilegeneralOff {
+  position: fixed;
+  top: 0%;
+  height: 100vh;
+  left: 0;
+  right: 0;
+  background-color: white;
+  z-index: 100;
+  transition: 1s linear;
 }
-.Mobilegeneral h2{
-    padding-top: 20px;
-    padding-bottom: 20px;
-    color:#ff914d;
+.Mobilegeneral h2 {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  color: #ff914d;
 }
-.Mobilegeneral .appointed{
-    color:black;
+.Mobilegeneral .appointed {
+  color: black;
 }
-.closeXMenu{
-    position: absolute;
-    right:20px;
-    top:20px;
-    height: 30px;
+.closeXMenu {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  height: 30px;
 }
-  @media(max-width: 991px) {
-    
-    .HeadxXx{
-        display: flex;
-        width: 100%;
-        justify-content: space-between;
-        padding-right: 15px;
-        opacity: 1;
-        height: auto;
-        align-items:center;
-        padding-top: var(--dl-space-space-twounits);
-        padding-bottom: var(--dl-space-space-twounits);
-    }
+@media (max-width: 991px) {
+  .HeadxXx {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    padding-right: 15px;
+    opacity: 1;
+    height: 100px;
+    align-items: center;
+  }
 }
-.logox{
-    height:70px;
-    width: auto;
+.logox {
+  height: 70px;
+  width: auto;
 }
-.logoy{
-    height:40px;
-    width: auto;
+.logoy {
+  font-size: 50px;
+  font-weight: bolder;
 }

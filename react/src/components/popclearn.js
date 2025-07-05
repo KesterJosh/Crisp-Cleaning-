@@ -3,7 +3,7 @@ import gsap from "gsap";
 
 import "./popclearn.css";
 
-const Popclearn = ({ CloseCancelScreen, handleCancel }) => {
+const Popclearn = ({ CloseCancelScreen, handleCancel, message }) => {
   useEffect(() => {
     gsap.fromTo(
       ".popclearn-container2",
@@ -38,15 +38,9 @@ const Popclearn = ({ CloseCancelScreen, handleCancel }) => {
   return (
     <div className="popclearn-container1">
       <div className="popclearn-container2">
-        <span className="popclearn-text1">
-          <span>Are you sure?</span>
-          <br></br>
-        </span>
+        <span className="popclearn-text1">Are you sure?</span>
         <div className="popclearn-line"></div>
-        <span className="popclearn-text4">
-          All cleans scheduled in 48 hours or later will be cancelled. You will
-          also lose any unclaimed rewards, and full access to the rewards system
-        </span>
+        <span className="popclearn-text4">{message}</span>
         <div className="popclearn-container3">
           <button
             type="button"
@@ -55,7 +49,7 @@ const Popclearn = ({ CloseCancelScreen, handleCancel }) => {
             onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
             onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
           >
-            <span className="popclearn-text5">Go Back</span>
+            Go Back
           </button>
           <button
             type="button"
@@ -64,7 +58,7 @@ const Popclearn = ({ CloseCancelScreen, handleCancel }) => {
             onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
             onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
           >
-            <span className="popclearn-text6">Proceed to cancel</span>
+            Proceed to cancel
           </button>
         </div>
       </div>

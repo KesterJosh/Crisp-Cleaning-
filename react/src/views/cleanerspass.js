@@ -643,7 +643,7 @@ const Cleanerspass = (props) => {
       <div className="cleanerspass-container25">
         <div className="cleanerspass-container26">
           <span className="cleanerspass-text22">Cleaner&apos;s Pass</span>
-          <GlobalSearch />
+          {/* <GlobalSearch /> */}
           <div
             className="cleanerspass-container29"
             onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}

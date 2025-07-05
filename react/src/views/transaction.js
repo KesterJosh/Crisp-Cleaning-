@@ -571,7 +571,7 @@ const Transaction = (props) => {
       <div className="transaction-container25">
         <div className="transaction-container26">
           <span className="transaction-text22">Transactions</span>
-          <GlobalSearch />
+          {/* <GlobalSearch /> */}
           <div
             className="transaction-container29"
             onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}

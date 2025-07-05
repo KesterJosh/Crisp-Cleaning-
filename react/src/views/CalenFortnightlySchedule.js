@@ -207,37 +207,36 @@ const CalenFortnightlySchedule = ({
       dayMoment.month() === moment(currentStartDate).month();
     const isPastDate = dayMoment.isBefore(moment(), "day");
 
-const matchingCleans = cleans.filter((clean) => {
-  const cleanDate = moment(dayMoment).startOf("day");
+    const matchingCleans = cleans.filter((clean) => {
+      const cleanDate = moment(dayMoment).startOf("day");
 
-  if (clean.regularOronetime) {
-    // For recurring cleans, show on selected weekdays
-    const start = moment(parseInt(clean.deltatime)).startOf("day");
-    const end = moment().endOf("year");
+      if (clean.regularOronetime) {
+        // For recurring cleans, show on selected weekdays
+        const start = moment(parseInt(clean.deltatime)).startOf("day");
+        const end = moment().endOf("year");
 
-    // Skip if before the start date or after the year ends
-    if (cleanDate.isBefore(start) || cleanDate.isAfter(end)) return false;
+        // Skip if before the start date or after the year ends
+        if (cleanDate.isBefore(start) || cleanDate.isAfter(end)) return false;
 
-    // Get weekday (0=Sunday, 6=Saturday)
-    const weekday = cleanDate.day(); // 0 - 6
+        // Get weekday (0=Sunday, 6=Saturday)
+        const weekday = cleanDate.day(); // 0 - 6
 
-    const weekdayMap = {
-      0: clean.sun === "1",
-      1: clean.mon === "1",
-      2: clean.tue === "1",
-      3: clean.wed === "1",
-      4: clean.thu === "1",
-      5: clean.fri === "1",
-      6: clean.sat === "1",
-    };
+        const weekdayMap = {
+          0: clean.sun === "1",
+          1: clean.mon === "1",
+          2: clean.tue === "1",
+          3: clean.wed === "1",
+          4: clean.thu === "1",
+          5: clean.fri === "1",
+          6: clean.sat === "1",
+        };
 
-    return weekdayMap[weekday];
-  } else {
-    // For one-time cleans
-    return moment(clean.date).isSame(cleanDate, "day");
-  }
-});
-
+        return weekdayMap[weekday];
+      } else {
+        // For one-time cleans
+        return moment(clean.date).isSame(cleanDate, "day");
+      }
+    });
 
     const handleClick = () => {
       if (!isPastDate) {

@@ -3,14 +3,19 @@ import gsap from "gsap";
 import Popclearn from "./popclearn";
 import BookingPopup from "./BookingPopup";
 import UpdateClean from "./UpdateClean";
-import moment from "moment"
+import moment from "moment";
+import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 
 const CleanersPass = ({ cleanerPass, setcleanerPass }) => {
   const [sliderValue, setSliderValue] = useState(0);
+  const stripePromise = loadStripe(
+    "pk_test_51ROhYnH9E7pqq95xLp67muP87yzw3XmN9BdV5ZbF2ZoAQuFJPBDYN0HgbnPfaYiN0Z9scDimOVICuZ7iD5kvBaq900M6capXFd"
+  );
   const [showBooking, setShowBooking] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
   const [cleans, setCleans] = useState([]);
+  const [cancelMessage, setCancelMessage] = useState("");
   const [userId, setUserId] = useState(null);
   const [allCleans, setAllCleans] = useState([]);
   const [error, setError] = useState(null);
@@ -35,32 +40,29 @@ const CleanersPass = ({ cleanerPass, setcleanerPass }) => {
     fetchUserData();
   }, []);
 
-  const fetchCleans = useCallback(async () => {
-    if (!userId) return; // Skip if userId is not available
-    try {
-      const response = await axios({
-        method: "get",
-        url: `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+  const handleUpgrade = () => {
+    setShowBooking(true);
+    localStorage.setItem("upgraded", true);
+  };
 
-      // Check if the response data exists
+  const fetchCleans = useCallback(async () => {
+    if (!userId) return;
+    try {
+      const response = await axios.get(
+        `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`,
+        { headers: { "Content-Type": "application/json" } }
+      );
+
       if (response.data) {
-        console.log(response.data);
+        console.log("cleanzz", response.data);
         setCleans(response.data.cleanRecords);
         setError(null);
-        console.log("Cleans fetched successfully:", response.data); // Optional: Debug log
       } else {
         throw new Error("No data found in the response.");
       }
     } catch (error) {
-      // Extract error details
       let errorMessage = "An unexpected error occurred.";
-
       if (error.response) {
-        // The server responded with a status code outside the 2xx range
         console.error(
           "Server responded with an error:",
           error.response.status,
@@ -70,38 +72,39 @@ const CleanersPass = ({ cleanerPass, setcleanerPass }) => {
           error.response.data?.message ||
           `Server error: ${error.response.status}`;
       } else if (error.request) {
-        // The request was made but no response was received
         console.error("No response received from the server:", error.request);
         errorMessage =
           "No response received from the server. Please check your network.";
       } else {
-        // An error occurred during the setup of the request
         console.error("Error setting up the request:", error.message);
         errorMessage = error.message;
       }
-
-      // Update state
       setCleans([]);
       setError(errorMessage);
     }
   }, [userId]);
 
+  useEffect(() => {
+    const hasRegularOrOneTime = cleans.some(
+      (record) => record.regularOronetime
+    );
+    if (hasRegularOrOneTime && !showBooking) {
+      setShowBooking(true);
+      localStorage.setItem("upgraded", true);
+    }
+  }, [cleans, showBooking]);
+
   const fetchAllCleans = useCallback(async () => {
     try {
-      const response = await axios({
-        method: "get",
-        url: `https://api-crisp-cleaning.onrender.com/cleans`,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.get(
+        `https://api-crisp-cleaning.onrender.com/cleans`
+      );
 
       // Check if the response data exists
       if (response.data) {
         console.log(response.data);
         setAllCleans(response.data.cleanRecords);
         setError(null);
-        console.log("All Cleans fetched successfully:", response.data); // Optional: Debug log
       } else {
         throw new Error("No data found in the response.");
       }
@@ -138,11 +141,10 @@ const CleanersPass = ({ cleanerPass, setcleanerPass }) => {
 
   // Effect to fetch cleans when userId changes
   useEffect(() => {
-    if (userId) {
-      fetchCleans();
-      fetchAllCleans();
-    }
-  }, [userId, fetchCleans]);
+    if (!userId) return;
+    fetchCleans();
+    fetchAllCleans();
+  }, [userId, fetchCleans, fetchAllCleans]);
 
   const sortedCleans = [...cleans].sort((a, b) => {
     const dateA = moment(a.date, "DD/MM/YYYY").toDate();
@@ -211,11 +213,6 @@ const CleanersPass = ({ cleanerPass, setcleanerPass }) => {
     { left: "Fortnight", right: "10% OFF" },
     { left: "Month", right: "5% OFF" },
   ];
-
-  const handleUpgrade = () => {
-    setShowBooking(true);
-    localStorage.setItem("upgraded", true);
-  };
 
   const handleMouseEnterFade = (button) => {
     gsap.to(button, {
@@ -343,7 +340,18 @@ const CleanersPass = ({ cleanerPass, setcleanerPass }) => {
   };
 
   const [cancelScreen, setCancelScreen] = useState(false);
+
   const CancelScreen = () => {
+    const cleansCount = cleans.length;
+    if (cleansCount >= 2) {
+      setCancelMessage(
+        "Heads up! A processing fee equal to the discount you've used so far will be charged if the membership is cancelled."
+      );
+    } else {
+      setCancelMessage(
+        "All cleans scheduled in 48 hours or later will be cancelled. You will also lose any unclaimed rewards, and full access to the rewards system."
+      );
+    }
     setCancelScreen(true);
   };
 
@@ -453,29 +461,54 @@ const CleanersPass = ({ cleanerPass, setcleanerPass }) => {
   const [discountNew, setDiscountNew] = useState(discount);
 
   const handleCancel = async () => {
-    const userId = JSON.parse(localStorage.getItem("user"))?.userId;
     if (!userId) return;
 
     try {
-      const response = await fetch(
-        `https://api-crisp-cleaning.onrender.com/clean/user/${userId}`,
-        {
-          method: "DELETE",
-        }
+      await axios.delete(
+        `https://api-crisp-cleaning.onrender.com/clean/user/${userId}`
       );
 
-      const data = await response.json();
+      if (cancelMessage.startsWith("Heads up!")) {
+        const { data } = await axios.get(
+          `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`
+        );
+        const cleanRecords = data.cleanRecords;
 
-      if (data.success) {
-        alert("All your cleans have been cancelled.");
-        localStorage.removeItem("upgraded"); // Or any other cleanup
-        window.location.reload(); // Optional: refresh
+        const totalDiscount = cleanRecords.reduce(
+          (sum, clean) => sum + (clean.discount || 0),
+          0
+        );
+
+        if (totalDiscount === Total) {
+          console.log("Discount already equals total. No charge.");
+          window.location.reload();
+          return;
+        }
+
+        // 4. Create Stripe checkout session
+        const response = await axios.post(
+          "https://api-crisp-cleaning.onrender.com/create-checkout-session",
+          {
+            userId,
+            items: [
+              {
+                name: "Membership Cancellation Fee",
+                price: Math.round(totalDiscount * 100),
+              },
+            ],
+          }
+        );
+
+        const stripe = await stripePromise;
+        await stripe.redirectToCheckout({ sessionId: response.data.id });
       } else {
-        alert("Failed to cancel your cleans.");
+        alert("All your cleans have been cancelled.");
+        localStorage.removeItem("upgraded");
+        window.location.reload();
       }
     } catch (error) {
-      console.error("Error cancelling cleans:", error);
-      alert("An error occurred.");
+      console.error("Error during cancellation/payment:", error);
+      alert("An error occurred while processing your cancellation.");
     }
   };
 
@@ -599,14 +632,17 @@ const CleanersPass = ({ cleanerPass, setcleanerPass }) => {
     sliderValueO,
     sliderValueOX,
   ]);
+
   return (
     <>
-      {cancelScreen ? (
+      {cancelScreen && (
         <Popclearn
           CloseCancelScreen={CloseCancelScreen}
           handleCancel={handleCancel}
+          message={cancelMessage}
         />
-      ) : null}
+      )}
+
       {showBooking && <BookingPopup onClose={() => setShowBooking(false)} />}
       {showUpdate && upcomingClean && (
         <UpdateClean
@@ -730,7 +766,7 @@ const CleanersPass = ({ cleanerPass, setcleanerPass }) => {
                 </div> */}
         </div>
       ) : (
-        <div className="cleanerspass2-container51">
+        <div className="cleanerspass-container51">
           <div className="cleanerspass2-container52">
             <div className="cleanerspass2-container53">
               <div className="cleanerspass2-container54">
@@ -806,15 +842,6 @@ const CleanersPass = ({ cleanerPass, setcleanerPass }) => {
                 <option value="Sunday">Sunday</option>
               </select>
             </div>
-            <button
-              type="button"
-              className="cleanerspass2-button1 button"
-              onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
-              onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
-              onClick={() => setShowUpdate(true)}
-            >
-              Reschedule
-            </button>
             <button
               onClick={() => {
                 CancelScreen();

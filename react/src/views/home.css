@@ -13,7 +13,9 @@
   border: 1px solid red !important;
   outline: none;
 }
-
+.closeXMenu {
+  color: #ff914d;
+}
 .error-message {
   color: red;
   font-size: 12px;
@@ -4724,7 +4726,6 @@ input[type="checkbox"] {
   width: 100%;
   display: flex;
   position: relative;
-  align-self: center;
   align-items: center;
   flex-direction: column;
   justify-content: center;
@@ -5235,7 +5236,7 @@ input[type="checkbox"] {
 .home-container249xy {
   flex: 0 0 auto;
   width: 30%;
-  height: auto;
+  height: 100px;
   display: flex;
   align-items: flex-start;
   margin-left: 1.5%;

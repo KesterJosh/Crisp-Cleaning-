@@ -11,8 +11,13 @@ import "./home.css";
 import Mobilex from "./mobile";
 import Login from "./login";
 import RegisterPopup from "../components/RegisterPopup";
+import Footer from "../components/Footer";
 
 const Contact = (props) => {
+  const handleClick = () => {
+    sessionStorage.setItem("scrollToRef", "about");
+    window.location.href = "/";
+  };
   const handleMouseEnter = (event) => {
     const container = event.currentTarget;
 
@@ -71,7 +76,6 @@ const Contact = (props) => {
   };
 
   const [login, setLogin] = useState(false);
-  const [register, setRegister] = useState(false);
 
   const closemenu = () => {
     // MobileMenu.current.style.bottom='100%';
@@ -211,7 +215,6 @@ const Contact = (props) => {
       {login && (
         <Login CloseLogin={() => setLogin(false)} navigateS={navigateS} />
       )}
-      {register && <RegisterPopup onClose={() => setRegister(false)} />}
       <Helmet>
         <title>Contact - Crisp Cleaning</title>
         <meta property="og:title" content="Contact - Crisp Cleaning" />
@@ -340,7 +343,7 @@ const Contact = (props) => {
               className="home-text011"
               onMouseEnter={handleMouseEnterX}
               onMouseLeave={handleMouseLeaveX}
-              onClick={() => setRegister(true)}
+              onClick={handleClick}
             >
               Get Started Now
             </span>
@@ -371,6 +374,13 @@ const Contact = (props) => {
           <Link to="/contact">
             <h2 className="appointed">Contact</h2>
           </Link>
+          <h2
+            onClick={() => {
+              setLogin(true);
+            }}
+          >
+            Login
+          </h2>
         </div>
 
         <div className="contact-container05">
@@ -426,7 +436,6 @@ const Contact = (props) => {
       </div>
       <div className="contact-container17">
         <div className="contact-container18">
-
           <div className="contact-container19">
             <div className="contact-container20">
               <div className="contact-container21">
@@ -442,12 +451,12 @@ const Contact = (props) => {
                   Our friendly team is here to help.
                 </span>
                 <a
-                  href="mailto:support@crispcleaningcorp.com.au"
+                  href="mailto:crispcleaningmelbourne@outlook.com"
                   className="contact-text21"
                   onMouseOver={clickEmail}
                   onMouseLeave={unclickEmailx}
                 >
-                  support@crispcleaningcorp.com.au
+                  crispcleaningmelbourne@outlook.com
                 </a>
               </div>
               <div className="contact-container24">
@@ -459,7 +468,7 @@ const Contact = (props) => {
                   onMouseOver={clickEmail}
                   onMouseLeave={unclickEmailx}
                 >
-                  +61 243 124 112
+                  +61 451 433 786
                 </a>
               </div>
               <div className="contact-container25">
@@ -573,65 +582,7 @@ const Contact = (props) => {
         </div>
       </div>
 
-      <div className="home-container303">
-        <div className="home-container304">
-          <img
-            alt="image"
-            src={require("./img/crisp.png")}
-            className="home-image52"
-          />
-        </div>
-        <div className="home-container305">
-          <span className="home-text396">Sitemap</span>
-          <p className="home-text397">Home</p>
-          <p className="home-text398">Get Quote</p>
-          <p className="home-text399">About</p>
-          <p className="home-text400">Testimonials</p>
-          <p className="home-text401">FAQs</p>
-          <p className="home-text402">Contact</p>
-        </div>
-        <div className="home-container306">
-          <span className="home-text403">Help &amp; Support</span>
-          <p className="home-text404">support@crispcleaningcorp.com.au</p>
-        </div>
-        <div className="home-container307">
-          <span className="home-text405">Contact us</span>
-          <div className="home-container308">
-            <div className="home-container309">
-              <p className="home-text406">First Name</p>
-              <input type="text" className="home-textinput07 input" />
-            </div>
-            <div className="home-container310">
-              <p className="home-text407">Last Name</p>
-              <input type="text" className="home-textinput08 input" />
-            </div>
-          </div>
-          <div className="home-container311">
-            <div className="home-container312">
-              <p className="home-text408">Email</p>
-              <input type="email" className="home-textinput09 input" />
-            </div>
-            <div className="home-container313">
-              <p className="home-text409">Phone Number</p>
-              <input type="tel" className="home-textinput10 input" />
-            </div>
-          </div>
-          <div className="home-container314">
-            <div className="home-container315">
-              <p className="home-text410">Message</p>
-              <textarea
-                placeholder="placeholder"
-                className="home-textarea textarea"
-              ></textarea>
-              <button className="sendMButton">Send Message</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="CrispUnder">
-        <h3>CrispCleaningCorp @ 2024</h3>
-        <h3>Terms & Conditions</h3>
-      </div>
+      <Footer />
     </div>
   );
 };

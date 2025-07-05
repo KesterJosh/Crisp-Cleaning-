@@ -1021,38 +1021,6 @@ const HouseAnimation = ({ cleans }) => {
             }`}
           ></div>
 
-          <div className="bxnHouse">
-            <div className="box2x">
-              {/* Added className="house-display-area" here for CSS targeting */}
-              <div className="house-display-area">
-                {/* Rooms */}
-                {[...Array(sliderValueO)].map((_, index) => (
-                  <div key={`r-${index}`} className="visibX">
-                    <div className="is-active heart"></div>
-                  </div>
-                ))}
-                {/* Bathrooms */}
-                {[...Array(sliderValue)].map((_, index) => (
-                  <div key={`b-${index}`} className="visibX">
-                    <div className="is-activex heartx"></div>
-                  </div>
-                ))}
-                {/* Kitchens */}
-                {[...Array(sliderValueK)].map((_, index) => (
-                  <div key={`k-${index}`} className="visibX">
-                    <div className="is-activex2 heartx2"></div>
-                  </div>
-                ))}
-                {/* Others */}
-                {[...Array(sliderValueOX)].map((_, index) => (
-                  <div key={`o-${index}`} className="visibX">
-                    <div className="is-activex3 heartx3"></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
           <div className="counters-container">
             <div className="counter-group">
               <div className="counter-controls">

@@ -330,9 +330,21 @@ const Dashboard = (props) => {
   const [showCancelPopup, setShowCancelPopup] = useState(false);
   const [cancelCleanId, setCancelCleanId] = useState(null);
 
+  const cleanDate = moment(upcomingClean?.date, "dddd, MMMM D, YYYY"); // Parse your custom date format
+  const now = moment();
+  const hoursUntilClean = cleanDate.diff(now, "hours");
+  const isLessThan48Hours = hoursUntilClean < 48;
+
+  const cleanTypeImageMap = {
+    45: "/img/broom.png",
+    135: "/img/sponge.png",
+    280: "/img/window.png",
+    default: "/img/medal_x-200h.png",
+  };
+
   return (
     <div className="dashboard-container100">
-      {booking && <BookingPopup onClose={() => setBooking(false)}/>}
+      {booking && <BookingPopup onClose={() => setBooking(false)} />}
       {editClean && upcomingClean && (
         <UpdateClean
           cleanId={upcomingClean._id}
@@ -489,7 +501,7 @@ const Dashboard = (props) => {
         <div className="dashboard-container112">
           <span className="dashboard-text109">Dashboard</span>
 
-          <GlobalSearch />
+          {/* <GlobalSearch /> */}
           <div
             className="dashboard-container115"
             onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
@@ -511,19 +523,20 @@ const Dashboard = (props) => {
             <div className="dashboard-container118">
               <div className="dashboard-container119">
                 <span className="dashboard-text112">
-                  Upcoming: {Next ? Next.date : "No upcoming cleans"}
+                  Upcoming:{" "}
+                  {upcomingClean ? upcomingClean.date : "No upcoming cleans"}
                 </span>
                 <span className="dashboard-text113">
                   <br />
                   <span>
-                    {Next && (
+                    {upcomingClean && (
                       <span>
                         Scheduled for:{" "}
-                        {Next.typeOfClean == 280
+                        {upcomingClean.typeOfClean == 280
                           ? "Vacant"
-                          : Next.typeOfClean == 135
+                          : upcomingClean.typeOfClean == 135
                           ? "Deep"
-                          : Next.typeOfClean == 45
+                          : upcomingClean.typeOfClean == 45
                           ? "Regular"
                           : "Unknown"}{" "}
                         Clean
@@ -540,7 +553,7 @@ const Dashboard = (props) => {
                   onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
                   onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
                   onClick={() => {
-                    setCancelCleanId(Next?.id);
+                    setCancelCleanId(upcomingClean?.id);
                     setShowCancelPopup(true);
                   }}
                 >
@@ -549,11 +562,15 @@ const Dashboard = (props) => {
 
                 <button
                   type="button"
-                  className="dashboard-button2 button"
+                  className={`dashboard-button2 button ${
+                    isLessThan48Hours ? "disabled-button" : ""
+                  }`}
+                  disabled={isLessThan48Hours}
                   onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
                   onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
                   onClick={() => {
-                    setSelectedCleanId(Next?.id);
+                    if (isLessThan48Hours) return;
+                    setSelectedCleanId(upcomingClean?.id);
                     setEditClean(true);
                   }}
                 >
@@ -592,16 +609,20 @@ const Dashboard = (props) => {
                           <div className="dashboard-container125">
                             <div className="dashboard-container126">
                               <img
-                                alt="image"
-                                src={require("./img/medal_x-200h.png")}
+                                alt="clean type"
+                                src={
+                                  cleanTypeImageMap[clean.typeOfClean] ||
+                                  cleanTypeImageMap["default"]
+                                }
                                 className="dashboard-image21"
                               />
                               <div className="dashboard-container127">
                                 <div className="dashboard-container128"></div>
                               </div>
                             </div>
+
                             <span className="dashboard-text119">
-                              {clean.typeOfClean == 280 ? "Vacant" : null}
+                              {clean.typeOfClean == 280 ? "Vacate" : null}
                               {clean.typeOfClean == 135 ? "Deep" : null}
                               {clean.typeOfClean == 45 ? "Regular" : null} clean
                             </span>
@@ -614,7 +635,7 @@ const Dashboard = (props) => {
                             </span>
                             <span className="dashboard-text121">
                               <span>
-                                {clean.typeOfClean == 280 ? "Vacant" : null}
+                                {clean.typeOfClean == 280 ? "Vacate" : null}
                                 {clean.typeOfClean == 135 ? "Deep" : null}
                                 {clean.typeOfClean == 45
                                   ? "Regular"

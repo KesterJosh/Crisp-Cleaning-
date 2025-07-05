@@ -985,7 +985,7 @@ const Settings = (props) => {
       <div className="settings-container26">
         <div className="settings-container27">
           <span className="settings-text24">Settings</span>
-          <GlobalSearch />
+          {/* <GlobalSearch /> */}
           <Link to="/settings" className="settings-navlink4">
             <img
               alt="image"
