@@ -88,7 +88,6 @@ const CleanersPass = ({ cleanerPass, setcleanerPass }) => {
       (record) => record.regularOronetime
     );
     if (hasRegularOrOneTime && !showBooking) {
-      setShowBooking(true);
       localStorage.setItem("upgraded", true);
     }
   }, [cleans, showBooking]);
