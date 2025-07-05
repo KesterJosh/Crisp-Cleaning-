@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./bookingPopup.css";
 import { Link, useLocation } from "react-router-dom/cjs/react-router-dom.min";
@@ -11,7 +9,7 @@ const BookingPopup = ({ onClose }) => {
   const [notify, setNotify] = useState(false);
   const [total, setTotal] = useState(0);
   const [login, setLogin] = useState(false);
-  const [newPopup, setNewPopup] = useState(false);
+  const [newPopup, setNewPopup] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
   const [Quote, setQuote] = useState(0);
   const [type, setType] = useState(0);
@@ -1005,27 +1003,6 @@ const BookingPopup = ({ onClose }) => {
                 hygiene to your home
               </p>
             </div>
-            <div
-              className={`quote-option ${Quote === 2 ? "selected" : ""}`}
-              onClick={(e) => handleQuoteSelection(2, e)}
-            >
-              <div className="quote-icon">
-                <img
-                  src={
-                    require("../views/img/building_60159951-200w.png") ||
-                    "/placeholder.svg" ||
-                    "/placeholder.svg"
-                  }
-                  alt="Building"
-                />
-                {Quote === 2 && <div className="selection-indicator"></div>}
-              </div>
-              <h3>Commercial Cleaning</h3>
-              <p>
-                Our commercial cleaning services are tailored to meet the unique
-                demands of offices, restaurants, schools, gyms... you name it!
-              </p>
-            </div>
           </div>
           <div
             className={`validation-message ${
@@ -1726,468 +1703,8 @@ const BookingPopup = ({ onClose }) => {
     },
   ];
 
-  // Define commercial steps
-  const commercialSteps = [
-    {
-      id: "quote",
-      title: "Receive a FREE Quote",
-      subtitle: "What type of project? Please provide what type of cleaning.",
-      content: (
-        <div className="step-content">
-          <div
-            className={`quote-options ${
-              showValidationMessage ? "validation-active" : ""
-            }`}
-          >
-            <div
-              className={`quote-option ${Quote === 1 ? "selected" : ""}`}
-              onClick={(e) => handleQuoteSelection(1, e)}
-            >
-              <div className="quote-icon">
-                <img
-                  src={
-                    require("../views/img/house_60156731-200h.png") ||
-                    "/placeholder.svg"
-                  }
-                  alt="House"
-                />
-                {Quote === 1 && <div className="selection-indicator"></div>}
-              </div>
-              <h3>Residential Cleaning</h3>
-              <p>
-                Bring a breath of fresh air and elevate your living spaces with
-                our residential cleaning services, designed to bring comfort and
-                hygiene to your home
-              </p>
-            </div>
-            <div
-              className={`quote-option ${Quote === 2 ? "selected" : ""}`}
-              onClick={(e) => handleQuoteSelection(2, e)}
-            >
-              <div className="quote-icon">
-                <img
-                  src={
-                    require("../views/img/building_60159951-200w.png") ||
-                    "/placeholder.svg"
-                  }
-                  alt="Building"
-                />
-                {Quote === 2 && <div className="selection-indicator"></div>}
-              </div>
-              <h3>Commercial Cleaning</h3>
-              <p>
-                Our commercial cleaning services are tailored to meet the unique
-                demands of offices, restaurants, schools, gyms... you name it!
-              </p>
-            </div>
-          </div>
-          <div
-            className={`validation-message ${
-              showValidationMessage ? "visible" : ""
-            }`}
-          >
-            {getValidationMessage()}
-          </div>
-        </div>
-      ),
-    },
-
-    {
-      id: "business-info",
-      title: "Tell Us About Your Business",
-      subtitle: "Let's start with some basic information about your business.",
-      content: (
-        <div className="step-content">
-          <div className="form-group">
-            <label className="required-field">Business Name</label>
-            <input
-              type="text"
-              className="form-input"
-              value={businessName}
-              onChange={(e) => setBusinessName(e.target.value)}
-              placeholder="Enter your business name"
-            />
-          </div>
-          <div className="form-group">
-            <label className="required-field">Business Size</label>
-            <select
-              value={businessSize}
-              onChange={(e) => setBusinessSize(e.target.value)}
-              className="form-select"
-            >
-              <option value="">Select business size</option>
-              <option value="small">Small (Under 2,000 sq ft)</option>
-              <option value="medium">Medium (2,000 - 10,000 sq ft)</option>
-              <option value="large">Large (10,000 - 50,000 sq ft)</option>
-              <option value="enterprise">Enterprise (Over 50,000 sq ft)</option>
-            </select>
-          </div>
-          <div
-            className={`validation-message ${
-              showValidationMessage ? "visible" : ""
-            }`}
-          >
-            {getValidationMessage()}
-          </div>
-        </div>
-      ),
-    },
-
-    {
-      id: "cleaning-needs",
-      title: "What Needs Cleaning",
-      subtitle: "Tell us about your cleaning requirements.",
-      content: (
-        <div className="step-content">
-          <div className="form-group">
-            <label className="required-field">Type of Environment</label>
-            <div className="frequency-options">
-              {[
-                "Office Building",
-                "Retail Store",
-                "Restaurant/Food Service",
-                "Medical Facility",
-                "School/Educational",
-                "Gym/Fitness Center",
-                "Warehouse/Industrial",
-                "Hotel/Hospitality",
-                "Other",
-              ].map((env) => (
-                <button
-                  key={env}
-                  className={typeOfEnvironment === env ? "active" : ""}
-                  onClick={(e) => handleEnvironmentTypeChange(env, e)}
-                >
-                  {env}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="required-field">Type of Clean</label>
-            <div className="frequency-options">
-              {[
-                "Regular Maintenance",
-                "Deep Clean",
-                "Post-Construction",
-                "Move-in/Move-out",
-                "Event Cleanup",
-                "Specialized Cleaning",
-              ].map((clean) => (
-                <button
-                  key={clean}
-                  className={typeOfClean === clean ? "active" : ""}
-                  onClick={(e) => handleCleanTypeChange(clean, e)}
-                >
-                  {clean}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div
-            className={`validation-message ${
-              showValidationMessage ? "visible" : ""
-            }`}
-          >
-            {getValidationMessage()}
-          </div>
-        </div>
-      ),
-    },
-
-    {
-      id: "frequency-schedule",
-      title: "How Often",
-      subtitle: "When do you need cleaning services?",
-      content: (
-        <div className="step-content">
-          <div className="form-group">
-            <label className="required-field">Frequency</label>
-            <div className="frequency-options">
-              {[
-                "Daily",
-                "Weekly",
-                "Bi-weekly",
-                "Monthly",
-                "One-time",
-                "Custom",
-              ].map((freq) => (
-                <button
-                  key={freq}
-                  className={cleaningFrequency === freq ? "active" : ""}
-                  onClick={(e) => handleCleaningFrequencySelect(freq, e)}
-                >
-                  {freq}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="form-group">
-            <label>Availability (Days of Week)</label>
-            <div className="day-selector">
-              {[
-                "Monday",
-                "Tuesday",
-                "Wednesday",
-                "Thursday",
-                "Friday",
-                "Saturday",
-                "Sunday",
-              ].map((day) => (
-                <button
-                  key={day}
-                  className={`day-btn ${
-                    availabilityDays.includes(day) ? "selected" : ""
-                  }`}
-                  onClick={(e) => handleAvailabilityDayToggle(day, e)}
-                >
-                  {day.substring(0, 3)}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div
-            className={`validation-message ${
-              showValidationMessage ? "visible" : ""
-            }`}
-          >
-            {getValidationMessage()}
-          </div>
-        </div>
-      ),
-    },
-
-    {
-      id: "insurance-budget",
-      title: "Insurance & Budget",
-      subtitle: "Let's discuss insurance requirements and your budget.",
-      content: (
-        <div className="step-content">
-          <div className="form-group">
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={insuranceDocs}
-                onChange={(e) => setInsuranceDocs(e.target.checked)}
-              />
-              Insurance and bonding documentation required
-            </label>
-            <p className="form-help-text">
-              Check this if you require our team to provide insurance and
-              bonding documentation before service begins.
-            </p>
-          </div>
-          <div className="form-group">
-            <label className="required-field">Monthly Budget</label>
-            <div className="frequency-options">
-              {[
-                "$500-$1,000",
-                "$1,000-$2,500",
-                "$2,500-$5,000",
-                "$5,000-$10,000",
-                "$10,000+",
-                "Custom Quote",
-              ].map((budget) => (
-                <button
-                  key={budget}
-                  className={budgetRange === budget ? "active" : ""}
-                  onClick={(e) => handleBudgetRangeSelect(budget, e)}
-                >
-                  {budget}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div
-            className={`validation-message ${
-              showValidationMessage ? "visible" : ""
-            }`}
-          >
-            {getValidationMessage()}
-          </div>
-        </div>
-      ),
-    },
-
-    {
-      id: "signup",
-      title: "Sign Up",
-      subtitle:
-        "Provide your business contact information for the service agreement.",
-      content: (
-        <div className="step-content">
-          <div className="signup-form">
-            <div className="form-group">
-              <label className="required-field">Primary Contact</label>
-              <input
-                type="text"
-                className="form-input"
-                value={lastName}
-                onChange={(e) => {
-                  setLastName(e.target.value);
-                  updateSignupValidation();
-                }}
-                placeholder="Primary contact person name"
-              />
-            </div>
-            <div className="form-row">
-              <div className="form-group">
-                <label className="required-field">Business Email</label>
-                <input
-                  type="email"
-                  className="form-input"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    updateSignupValidation();
-                  }}
-                  placeholder="business@company.com"
-                />
-              </div>
-              <div className="form-group">
-                <label className="required-field">Business Phone</label>
-                <input
-                  type="tel"
-                  className="form-input"
-                  value={phone}
-                  onChange={(e) => {
-                    setPhone(e.target.value);
-                    updateSignupValidation();
-                  }}
-                  placeholder="(03) 1234 5678"
-                />
-              </div>
-            </div>
-            <div className="form-group">
-              <label className="required-field">Business Address</label>
-              <MelbourneAddressInput
-                value={address}
-                onChange={(newAddress) => {
-                  setAddress(newAddress);
-                  updateSignupValidation();
-                }}
-                onValidation={updateSignupValidation}
-                className="form-input"
-                placeholder="Full business address"
-              />
-            </div>
-            <div className="terms-section">
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={acceptTerms}
-                  onChange={(e) => {
-                    setAcceptTerms(e.target.checked);
-                    updateSignupValidation();
-                  }}
-                />
-                I accept the{" "}
-                <span className="link">Commercial Service Agreement</span>
-              </label>
-            </div>
-            {submitError && (
-              <div className="error-message visible">{submitError}</div>
-            )}
-          </div>
-          <div
-            className={`validation-message ${
-              showValidationMessage ? "visible" : ""
-            }`}
-          >
-            {getValidationMessage()}
-          </div>
-        </div>
-      ),
-    },
-
-    {
-      id: "commercial-summary",
-      title: "Service Agreement Summary",
-      subtitle: "Review your commercial cleaning service details",
-      content: (
-        <div className="step-content">
-          <div className="summary-content">
-            <div className="summary-section">
-              <h3>Business Information</h3>
-              <div className="summary-item">
-                <span>Business Name</span>
-                <span>{businessName}</span>
-              </div>
-              <div className="summary-item">
-                <span>Business Size</span>
-                <span>{businessSize}</span>
-              </div>
-            </div>
-            <div className="summary-section">
-              <h3>Cleaning Requirements</h3>
-              <div className="summary-item">
-                <span>Environment Type</span>
-                <span>{typeOfEnvironment}</span>
-              </div>
-              <div className="summary-item">
-                <span>Type of Clean</span>
-                <span>{typeOfClean}</span>
-              </div>
-            </div>
-            <div className="summary-section">
-              <h3>Schedule</h3>
-              <div className="summary-item">
-                <span>Frequency</span>
-                <span>{cleaningFrequency}</span>
-              </div>
-              <div className="summary-item">
-                <span>Available Days</span>
-                <span>{availabilityDays.join(", ") || "Not specified"}</span>
-              </div>
-            </div>
-            <div className="summary-section">
-              <h3>Requirements & Budget</h3>
-              <div className="summary-item">
-                <span>Insurance Required</span>
-                <span>{insuranceDocs ? "Yes" : "No"}</span>
-              </div>
-              <div className="summary-item">
-                <span>Monthly Budget</span>
-                <span>{budgetRange}</span>
-              </div>
-            </div>
-            <div className="summary-section">
-              <h3>Contact Information</h3>
-              <div className="summary-item">
-                <span>Primary Contact</span>
-                <span>{lastName}</span>
-              </div>
-              <div className="summary-item">
-                <span>Email</span>
-                <span>{email}</span>
-              </div>
-              <div className="summary-item">
-                <span>Phone</span>
-                <span>{phone}</span>
-              </div>
-              <div className="summary-item">
-                <span>Address</span>
-                <span>{address}</span>
-              </div>
-            </div>
-            <button
-              className={`book-now-btn2 ${isSubmitting ? "loading" : ""}`}
-              onClick={submitCommercialQuote}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Submitting..." : "Submit Quote Request"}
-            </button>
-            {submitError && (
-              <div className="error-message visible">{submitError}</div>
-            )}
-          </div>
-        </div>
-      ),
-    },
-  ];
-
   // Use conditional steps based on cleaning type
-  const steps = isCommercial ? commercialSteps : residentialSteps;
+  const steps = residentialSteps;
 
   // Update validations when commercial fields change
   useEffect(() => {
@@ -2220,27 +1737,27 @@ const BookingPopup = ({ onClose }) => {
 
   return (
     <>
-      {newPopup && (
-        <div className="popup-overlay">
-          <div className="popup-container">
-            <h3 className="popup-title">Heads up!</h3>
-            <p className="popup-message">
-              Your original booking will be cancelled and refunded within 72
-              hours. You'll need to pay upfront for the new booking.
-            </p>
+      <div className="overlay-main">
+        {newPopup && (
+          <div className="popup-overlay">
+            <div className="popup-container">
+              <h3 className="popup-title">Heads up!</h3>
+              <p className="popup-message">
+                Your original booking will be cancelled and refunded within 72
+                hours. You'll need to pay upfront for the new booking.
+              </p>
 
-            <div className="popup-actions">
-              <button
-                className="popup-button"
-                onClick={() => setNewPopup(false)}
-              >
-                OK
-              </button>
+              <div className="popup-actions">
+                <button
+                  className="popup-button"
+                  onClick={() => setNewPopup(false)}
+                >
+                  OK
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}{" "}
-      <div className="overlay-main">
+        )}
         <div className="swiper-container2">
           <button className="close-button" onClick={onClose}>
             &times;
