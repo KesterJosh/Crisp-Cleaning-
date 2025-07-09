@@ -17,10 +17,14 @@
   display: flex;
   align-items: center;
   padding: 20px;
+  gap: 20px;
   justify-content: space-between;
   border-bottom: 1px solid #b9b9b9;
 }
 .reward-in-ref button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: #ff914d;
   color: white;
   font-size: 12px;
@@ -31,6 +35,19 @@
 .reward-in-ref h5 {
   font-weight: 500;
   font-size: 15px;
+}
+
+@media (max-width: 600px) {
+  .reward-in-ref {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .reward-in-ref button {
+    align-self: flex-end;
+    width: 100%;
+  }
 }
 .ref-rewards-container {
   padding: 20px;
