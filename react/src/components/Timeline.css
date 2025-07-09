@@ -9,8 +9,10 @@
 
 .timeline {
   position: relative;
-  height: 220px; /* More height for text bubbles */
+  height: 220px;
   margin: 40px 0;
+  min-width: 900px; /* ensure it's wider than .timeline-wrapper */
+  width: max-content; /* allows content width to define the width */
 }
 
 /* Main timeline line background */
@@ -155,4 +157,9 @@
 .timeline-stop.little-win {
   top: 47%;
   margin-top: 20px; /* Lower a bit for little wins */
+}
+@media (max-width: 768px) {
+  .timeline-wrapper {
+    overflow-x: scroll;
+  }
 }
