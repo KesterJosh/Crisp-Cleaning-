@@ -242,10 +242,13 @@ const Transaction = (props) => {
     }
 
     try {
-      const res = await fetch("https://api-crisp-cleaning.onrender.com/api/reviews", {
-        method: "POST",
-        body: formData,
-      });
+      const res = await fetch(
+        "https://api-crisp-cleaning.onrender.com/api/reviews",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const data = await res.json();
 
@@ -607,12 +610,8 @@ const Transaction = (props) => {
               <tbody>
                 <tr>
                   <td>Cleaners Pass</td>
-                  <td>
-                    {lastPayment ? lastPayment : "N/A"}
-                  </td>
-                  <td>
-                    {nextPayment ? nextPayment : "N/A"}
-                  </td>
+                  <td>{lastPayment ? lastPayment : "N/A"}</td>
+                  <td>{nextPayment ? nextPayment : "N/A"}</td>
                   <td className="card-info-cell">
                     {cardInfo && cardInfo.brand && cardInfo.last4 ? (
                       <>
@@ -862,7 +861,6 @@ const Transaction = (props) => {
           </div>
         </Link>
       </div>
-      <div className="transaction-container103"></div>
     </div>
   );
 };

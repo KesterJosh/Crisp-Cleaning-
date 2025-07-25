@@ -119,24 +119,89 @@
   width: 100%;
   gap: 10px;
 }
-@media (max-width: 768px) {
-  .calendar-grid {
-    width: 80%;
-    margin-left: -20%;
-  }
-}
+
 .calendar-week {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
 }
-.calendar-day {
-  width: 14.28%;
-  background-color: #fff;
-  padding: 20px;
-  min-height: 100px;
-  position: relative;
-  border-radius: 8px;
+.calendar-day-wrapper {
+  flex: 1 1 calc(14.28% - 10px);
+  max-width: 14.28%;
 }
+
+@media (max-width: 768px) {
+  .calendar-day-wrapper {
+    flex: 1 1 calc(50% - 10px);
+    max-width: 48%;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-day-wrapper {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+}
+@media (max-width: 768px) {
+  .schedule-container127 {
+    display: none;
+  }
+
+  .weekday-label-mobile {
+    display: block;
+  }
+}
+.schedule-container135 {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* ensures space between day cells */
+  margin-top: var(--dl-space-space-unit);
+  align-items: flex-start;
+  border-radius: 10px;
+}
+
+.calendar-day {
+  flex: 1 1 calc(14.28% - 10px); /* for 7 columns with spacing */
+  min-width: 100px;
+  max-width: 14.28%;
+  background-color: #fff;
+  padding: 12px;
+  min-height: 100px;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .calendar-day {
+    flex: 1 1 calc(50% - 10px); /* Show 2 columns per row */
+    max-width: 48%;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-day {
+    flex: 1 1 100%; /* Stack days vertically on very small screens */
+    max-width: 100%;
+  }
+}
+.schedule-container121,
+.schedule-container122,
+.schedule-container123 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (min-width: 600px) {
+  .schedule-container121 {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
 .schedule-container427x .day-number {
   color: white;
   background-color: red;
@@ -168,7 +233,7 @@
 }
 
 .scheduled-clean.vacant {
-  background-color: #FFC9C9;
+  background-color: #ffc9c9;
   color: #333;
   padding: 2px 4px;
   border-radius: 4px;
@@ -188,7 +253,7 @@
 }
 
 .scheduled-clean.vacant .clean-circle {
-  background-color: #FF5050;
+  background-color: #ff5050;
 }
 
 .scheduled-clean.deep .clean-circle {
@@ -207,7 +272,16 @@
   font-size: 12px;
   margin-top: 2px;
 }
-
+.schedule-container127 {
+  flex: 0 0 auto;
+  width: 100%;
+  display: flex;
+  margin-top: var(--dl-space-space-unit);
+  align-items: flex-start;
+  border-radius: 10px;
+  flex-direction: row;
+  justify-content: space-between;
+}
 .scheduled-clean.regular {
   background-color: #fcbb93;
   color: white;
@@ -217,15 +291,50 @@
   margin-top: 2px;
 }
 
-.book-now-btn {
+.scheduled-clean {
+  width: 100%; /* Full width */
   margin-top: 4px;
-  background-color: orange;
+  font-size: 0.75rem;
+  background: #ff914d;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   color: white;
-  padding: 4px 8px;
-  border: none;
   border-radius: 4px;
-  cursor: pointer;
-  width: 100%;
+  padding: 4px 6px;
+  box-sizing: border-box;
+}
+
+.book-now-btn {
+  width: 100%; /* Full width */
+  background-color: #ff914d;
+  color: white;
+  border-radius: 50px;
+  font-size: 14px;
+  padding: 6px 10px;
+  box-sizing: border-box;
+  margin-top: 6px;
+}
+
+@media (max-width: 480px) {
+  .book-now-btn {
+    font-size: 12px;
+    padding: 5px 8px;
+  }
+}
+
+.weekday-label-mobile {
+  display: none;
+  font-size: 12px;
+  color: gray;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+@media (max-width: 768px) {
+  .weekday-label-mobile {
+    display: block;
+  }
 }
 
 .book-now-btn:hover {

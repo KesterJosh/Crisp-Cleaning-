@@ -893,7 +893,9 @@ const Dashboard = (props) => {
                 </div> */}
               </div>
               <div className="dashboard-container158">
-                <span className="dashboard-text149">View all</span>
+                <Link to="/transaction">
+                  <span className="dashboard-text149">View all</span>
+                </Link>
               </div>
             </div>
             <div className="dashboard-container159">

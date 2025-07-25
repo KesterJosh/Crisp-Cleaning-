@@ -40,6 +40,7 @@
   margin-top: 2rem;
   background: #fff;
   padding: 1.5rem;
+  overflow: scroll;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
@@ -1604,7 +1605,7 @@
     padding-right: 0px;
     flex-direction: row;
     padding-bottom: var(--dl-space-space-twounits);
-    justify-content: center;
+    justify-content: space-evenly;
     background-color: #f0f0f0;
     border-top-width: 1px;
     border-left-width: 0px;
@@ -1612,7 +1613,7 @@
     border-bottom-width: 0px;
   }
   .transaction-container98 {
-    width: 20%;
+    width: auto;
     justify-content: center;
   }
   .transaction-image26 {
@@ -1622,7 +1623,7 @@
     font-size: 14px;
   }
   .transaction-container99 {
-    width: 20%;
+    width: auto;
     justify-content: center;
   }
   .transaction-image27 {
@@ -1632,7 +1633,7 @@
     font-size: 14px;
   }
   .transaction-container100 {
-    width: 20%;
+    width: auto;
     justify-content: center;
   }
   .transaction-image28 {
@@ -1642,7 +1643,7 @@
     font-size: 14px;
   }
   .transaction-container101 {
-    width: 20%;
+    width: auto;
     justify-content: center;
   }
   .transaction-image29 {
@@ -1652,7 +1653,7 @@
     font-size: 14px;
   }
   .transaction-container102 {
-    width: 20%;
+    width: auto;
     justify-content: center;
   }
   .transaction-image30 {

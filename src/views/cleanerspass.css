@@ -583,11 +583,12 @@
   justify-content: space-between;
 }
 .cleanerspass-container39 {
-  width: 49%;
+  width: 45%;
   display: flex;
   align-items: flex-start;
   flex-direction: column;
   justify-content: flex-start;
+  margin-right: 10px;
 }
 .cleanerspass-text48 {
   font-weight: 700;

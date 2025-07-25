@@ -503,6 +503,16 @@ const Settings = (props) => {
   };
 
   const [sum, setSum] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [Quote, setQuote] = useState(0);
+  const [type, setType] = useState(null);
+  const [GetInside, setGetInside] = useState("I will be home");
+  const [Park, setPark] = useState("I will provide parking on site");
+  const [Animal, setAnimal] = useState("Dog/Cat");
+  const [spComments, setspComments] = useState("");
+  const [supports, setSupports] = useState(false);
+  const [showValidationMessage, setShowValidationMessage] = useState(false);
+  const [isCommercial, setIsCommercial] = useState(false);
 
   const sumUp = (value) => {
     setTotalSwitch(value);
@@ -624,51 +634,6 @@ const Settings = (props) => {
       });
   };
 
-  const fetchCleans = async () => {
-    const userId = JSON.parse(localStorage.getItem("user"))?.userId;
-
-    if (!userId) return;
-    try {
-      const response = await axios.get(
-        `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`
-      );
-      if (response.data && response.data.cleanRecords) {
-        const cleanList = response.data.cleanRecords;
-        const firstClean = cleanList[0];
-        setCleans(firstClean);
-
-        if (firstClean) {
-          // Ensured numerical conversion from fetched data
-          setSliderValue(Number(firstClean.bathroom) || 0);
-          setSliderValueK(Number(firstClean.kitchen) || 0);
-          setSliderValueO(Number(firstClean.others) || 0);
-          setSliderValueOX(Number(firstClean.rooms) || 0);
-
-          const total =
-            (Number(firstClean.bathroom) || 0) +
-            (Number(firstClean.kitchen) || 0) +
-            (Number(firstClean.others) || 0) +
-            (Number(firstClean.rooms) || 0);
-
-          setTotalSliders(total);
-          sumUp(total);
-
-          if (firstClean.clean_date) {
-            setMyDate(firstClean.clean_date);
-          }
-          if (firstClean.time_frame) {
-            settimeFrame(firstClean.time_frame);
-          }
-        }
-      } else {
-        throw new Error("No clean records found.");
-      }
-    } catch (error) {
-      console.error("Error fetching cleans:", error);
-      setCleans([]);
-    }
-  };
-
   // Button handlers for room counts
   const incrementRooms = () => {
     if (sliderValueO < 8) {
@@ -726,7 +691,6 @@ const Settings = (props) => {
 
   useEffect(() => {
     fetchUserData();
-    fetchCleans();
   }, []);
 
   useEffect(() => {
@@ -1056,6 +1020,7 @@ const Settings = (props) => {
                 </div>
               </div>
             </div>
+            <h1 className="set-header">House Details</h1>
             <div className="settings-container40">
               <div className="settings-container41">
                 <span className="settings-text33">Address</span>

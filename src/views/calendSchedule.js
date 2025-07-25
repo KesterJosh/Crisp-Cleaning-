@@ -268,6 +268,11 @@ const CalenSchedule = ({
         }`}
         onClick={handleClick}
       >
+        {/* Weekday label for mobile only */}
+        <span className="weekday-label-mobile">
+          {moment(fullDate).format("ddd").toUpperCase()}
+        </span>
+
         <span className="day-number">{day}</span>
 
         {dayCleans.length > 0 &&
@@ -400,7 +405,7 @@ const CalenSchedule = ({
         {generateMonthCalendar(currentMonth).map((week, weekIdx) => (
           <div className="schedule-container135" key={weekIdx}>
             {week.map((dayInfo, index) => (
-              <div style={{ width: "12%" }} key={index}>
+              <div className="calendar-day-wrapper" key={index}>
                 {renderDay(dayInfo)}
               </div>
             ))}
