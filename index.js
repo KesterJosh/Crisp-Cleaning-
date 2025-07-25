@@ -787,8 +787,8 @@ app.post("/create-checkout-session", async (req, res) => {
       quantity: 1,
     })),
     mode: "payment",
-    success_url: "https://crisp-frontend.onrender.com/success",
-    cancel_url: "https://crisp-frontend.onrender.com/cancel",
+    success_url: "https://crisp-frontend.onrender.com/#/success",
+    cancel_url: "https://crisp-frontend.onrender.com/#/cancel",
     customer_email: req.body.email,
     // setup_future_usage: "off_session",
   });
