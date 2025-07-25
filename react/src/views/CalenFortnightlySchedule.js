@@ -253,6 +253,11 @@ const CalenFortnightlySchedule = ({
         } ${!isCurrentMonth ? "other-month" : ""}`}
         onClick={handleClick}
       >
+        {/* Show weekday label on mobile */}
+        <span className="weekday-label-mobile">
+          {dayMoment.format("ddd").toUpperCase()}
+        </span>
+
         <span className="day-number">{dayMoment.date()}</span>
 
         {matchingCleans.map((clean, i) => {
@@ -262,14 +267,12 @@ const CalenFortnightlySchedule = ({
           else if (clean.typeOfClean == 45) typeClass = "regular";
 
           return (
-            <>
-              <div key={i} className={`scheduled-clean ${typeClass}`}>
-                {clean.typeOfClean == 280 && "Vacate"}
-                {clean.typeOfClean == 135 && "Deep"}
-                {clean.typeOfClean == 45 && "Regular"} Clean
-                <span className="clean-circle"></span>
-              </div>
-            </>
+            <div key={i} className={`scheduled-clean ${typeClass}`}>
+              {clean.typeOfClean == 280 && "Vacate"}
+              {clean.typeOfClean == 135 && "Deep"}
+              {clean.typeOfClean == 45 && "Regular"} Clean
+              <span className="clean-circle"></span>
+            </div>
           );
         })}
 
@@ -350,15 +353,11 @@ const CalenFortnightlySchedule = ({
         </div>
         {renderTableHeader()}
         <div className="calendar-grid">
-          <div className="calendar-grid">
-            {generateFortnightCalendar(currentStartDate).map(
-              (week, weekIdx) => (
-                <div key={weekIdx} className="calendar-week">
-                  {week.map((day) => renderDay(day))}
-                </div>
-              )
-            )}
-          </div>
+          {generateFortnightCalendar(currentStartDate).map((week, weekIdx) => (
+            <div key={weekIdx} className="calendar-week">
+              {week.map((day) => renderDay(day))}
+            </div>
+          ))}
         </div>
       </div>
     </>

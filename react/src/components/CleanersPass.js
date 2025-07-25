@@ -6,6 +6,8 @@ import UpdateClean from "./UpdateClean";
 import moment from "moment";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
+import UpdatePass from "./UpdatePassFrequency";
+import "./cleanerspass.css";
 
 const CleanersPass = ({ cleanerPass, setcleanerPass }) => {
   const [sliderValue, setSliderValue] = useState(0);
@@ -19,6 +21,9 @@ const CleanersPass = ({ cleanerPass, setcleanerPass }) => {
   const [userId, setUserId] = useState(null);
   const [allCleans, setAllCleans] = useState([]);
   const [error, setError] = useState(null);
+  const [showFrequencyChangePopup, setShowFrequencyChangePopup] =
+    useState(false);
+  const [selectedFrequencyOption, setSelectedFrequencyOption] = useState(null);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -201,8 +206,23 @@ const CleanersPass = ({ cleanerPass, setcleanerPass }) => {
   };
 
   const selectOption = (option) => {
-    setSelectedOption(option);
+    const allowed = localStorage.getItem("upgraded");
+    if (option.left !== selectedOption.left && allowed === "true") {
+      setSelectedFrequencyOption(option);
+      setCancelMessage(
+        "All cleans will be cancelled and rebooked under the new schedule."
+      );
+      setShowFrequencyChangePopup(true);
+    } else {
+      setSelectedOption(option);
+      setIsOpen(false);
+    }
+  };
+
+  const confirmFrequencyChange = () => {
+    setSelectedOption(selectedFrequencyOption);
     setIsOpen(false);
+    setShowFrequencyChangePopup(false);
   };
 
   const options = [
@@ -471,12 +491,17 @@ const CleanersPass = ({ cleanerPass, setcleanerPass }) => {
         );
         const cleanRecords = data.cleanRecords;
 
-        const totalDiscount = cleanRecords.reduce(
-          (sum, clean) => sum + (clean.discount || 0),
-          0
-        );
+        const grossAmounts = cleanRecords.map((clean) => {
+          const discount = clean.discount || 0;
+          const amountPaid = clean.total || 0;
+          const gross = amountPaid / (1 - discount);
+          const fee = gross - amountPaid;
+          return fee;
+        });
 
-        if (totalDiscount === Total) {
+        const totalFee = grossAmounts.reduce((sum, fee) => sum + fee, 0);
+
+        if (totalFee === Total) {
           window.location.reload();
           return;
         }
@@ -489,7 +514,7 @@ const CleanersPass = ({ cleanerPass, setcleanerPass }) => {
             items: [
               {
                 name: "Membership Cancellation Fee",
-                price: Math.round(totalDiscount * 100),
+                price: Math.round(totalFee * 100), // Convert to cents
               },
             ],
           }
@@ -627,12 +652,76 @@ const CleanersPass = ({ cleanerPass, setcleanerPass }) => {
     sliderValueOX,
   ]);
 
+  const handleUpdateCleanersPass = async () => {
+    if (!userId || !cleans.length) return;
+
+    const nextWeek = moment().add(7, "days").startOf("day");
+
+    try {
+      const futureCleans = cleans.filter((clean) =>
+        moment(clean.date, "dddd, MMMM D, YYYY").isSameOrAfter(nextWeek)
+      );
+
+      await Promise.all(
+        futureCleans.map((clean) =>
+          axios.delete(
+            `https://api-crisp-cleaning.onrender.com/clean/${clean._id}`
+          )
+        )
+      );
+
+      await fetchCleans();
+      setShowBooking(true);
+    } catch (err) {
+      console.error("Failed to update cleans:", err);
+      alert("An error occurred while updating your cleaning schedule.");
+    } finally {
+      alert("All bookings from next week was cancelled.");
+    }
+  };
+
+  const [news, setNews] = useState(false);
+  const handleScheduleNow = () => {
+    setNews(true);
+    setShowBooking(true);
+  };
+
   return (
     <>
       {cancelScreen && (
         <Popclearn
           CloseCancelScreen={CloseCancelScreen}
           handleCancel={handleCancel}
+          message={cancelMessage}
+        />
+      )}
+
+      {news && (
+        <div className="schedule-popup-wrapper">
+          <div className="schedule-popup-box">
+            <h3 className="schedule-popup-title">Schedule Confirmation</h3>
+            <p className="schedule-popup-message">
+              <strong>{selectedOption.left}</strong> cleans will be
+              automatically scheduled as per your preferences. This can be
+              amended in your account settings. Please ensure your cleaning
+              preferences and home details are correct before proceeding.
+            </p>
+            <div className="schedule-popup-actions">
+              <button
+                className="schedule-popup-button"
+                onClick={() => setNews(false)}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showFrequencyChangePopup && (
+        <UpdatePass
+          CloseCancelScreen={() => setShowFrequencyChangePopup(false)}
+          handleCancel={handleUpdateCleanersPass}
           message={cancelMessage}
         />
       )}
@@ -721,13 +810,13 @@ const CleanersPass = ({ cleanerPass, setcleanerPass }) => {
               </select>
             </div>
             <button
-              onClick={() => setShowBooking(true)}
+              onClick={handleScheduleNow}
               type="button"
               className="cleanerspass-button button"
               onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
               onMouseLeave={(e) => handleMouseLeave(e.currentTarget)}
             >
-              Schedule
+              Schedule now
             </button>
           </div>
           {/* <div className="cleanerspass-container58">

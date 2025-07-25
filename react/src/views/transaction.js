@@ -861,7 +861,6 @@ const Transaction = (props) => {
           </div>
         </Link>
       </div>
-      <div className="transaction-container103"></div>
     </div>
   );
 };

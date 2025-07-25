@@ -166,8 +166,7 @@ const FAQs = (props) => {
         });
 
         // Optionally, you can listen for animation complete event
-        lottieInstance.addEventListener("complete", () => {
-        });
+        lottieInstance.addEventListener("complete", () => {});
       }
     }
   };
@@ -821,12 +820,12 @@ const FAQs = (props) => {
                       lineHeight: "25px",
                     }}
                   >
-                    We understand if you ever need to cancel or reschedule,
-                    that’s why If you cancel within 72 hours of your booking,
-                    you will receive a 100% refund! Unfortunately, if you cancel
-                    within 24-48 hours of your booking, we can only offer a 50%
-                    refund, as our cleaners have already been assigned to your
-                    home.
+                    We understand if you ever need to reschedule, that’s why if
+                    you cancel within 72 hours of your booking, you will receive
+                    a 100% refund! If you cancel within 48 hours, there will be
+                    a 50% refund. Unfortunately, if you cancel within 24 hours
+                    no refund will be applicable as our cleaners have already
+                    been assigned to your home.
                   </p>
                 </div>
               </div>

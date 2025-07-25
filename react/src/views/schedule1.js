@@ -110,6 +110,7 @@ const Schedule1 = (props) => {
 
   const [cancelScreenX, setCancelScreenX] = useState(false);
   const [cancelScreenY, setCancelScreenY] = useState(false);
+  const [tooltipCleanId, setTooltipCleanId] = useState(null);
 
   const CancelScreen = () => {
     setCancelScreenX(true);
@@ -498,41 +499,62 @@ const Schedule1 = (props) => {
                             <div className="schedule1-container316"></div>
                           </div>
                         </div>
-                        <div className="schedule1-container317">
+                        <div
+                          className="schedule1-container317"
+                          style={{ position: "relative" }}
+                        >
                           {(() => {
                             const cleanDate = moment(
                               clean.date,
                               "dddd, MMMM D, YYYY"
-                            ); // parse your formatted date
-                            const now = moment(); // current time
-
+                            );
+                            const now = moment();
                             const hoursUntilClean = cleanDate.diff(
                               now,
                               "hours"
-                            ); // get difference in hours
+                            );
                             const isLessThan48Hours = hoursUntilClean < 48;
 
                             return (
                               <div
+                                className={`schedule1-container318`}
                                 onClick={() => {
                                   if (!isLessThan48Hours) {
                                     setEditClean(true);
                                     setEditId(clean._id);
+                                  } else {
+                                    setTooltipCleanId(clean._id);
+                                    setTimeout(
+                                      () => setTooltipCleanId(null),
+                                      4000
+                                    ); // auto-hide
                                   }
                                 }}
-                                className={`schedule1-container318 ${
-                                  isLessThan48Hours ? "disabled-button" : ""
-                                }`}
                                 onMouseEnter={(e) => {
-                                  if (!isLessThan48Hours)
+                                  if (isLessThan48Hours) {
+                                    setTooltipCleanId(clean._id);
+                                  } else {
                                     handleMouseEnter(e.currentTarget);
+                                  }
                                 }}
                                 onMouseLeave={(e) => {
-                                  if (!isLessThan48Hours)
+                                  if (isLessThan48Hours) {
+                                    setTooltipCleanId(null);
+                                  } else {
                                     handleMouseLeave(e.currentTarget);
+                                  }
                                 }}
                               >
                                 <span className="schedule1-text242">Amend</span>
+                                {isLessThan48Hours &&
+                                  tooltipCleanId === clean._id && (
+                                    <div className="tooltip-message">
+                                      Unfortunately, as there are less than 48
+                                      hours before your clean, amendments are
+                                      not accepted. Please see FAQ’s for more
+                                      details.
+                                    </div>
+                                  )}
                               </div>
                             );
                           })()}
@@ -695,34 +717,59 @@ const Schedule1 = (props) => {
                           <div className="schedule1-container316"></div>
                         </div>
                       </div>
-                      <div className="schedule1-container317">
+                      <div
+                        className="schedule1-container317"
+                        style={{ position: "relative" }}
+                      >
                         {(() => {
-                          const cleanDate = new Date(clean.date);
-                          const hoursUntilClean =
-                            (cleanDate - new Date()) / (1000 * 60 * 60);
+                          const cleanDate = moment(
+                            clean.date,
+                            "dddd, MMMM D, YYYY"
+                          );
+                          const now = moment();
+                          const hoursUntilClean = cleanDate.diff(now, "hours");
                           const isLessThan48Hours = hoursUntilClean < 48;
 
                           return (
                             <div
+                              className={`schedule1-container318`}
                               onClick={() => {
                                 if (!isLessThan48Hours) {
                                   setEditClean(true);
                                   setEditId(clean._id);
+                                } else {
+                                  setTooltipCleanId(clean._id);
+                                  setTimeout(
+                                    () => setTooltipCleanId(null),
+                                    4000
+                                  ); // auto-hide
                                 }
                               }}
-                              className={`schedule1-container318 ${
-                                isLessThan48Hours ? "disabled-button" : ""
-                              }`}
                               onMouseEnter={(e) => {
-                                if (!isLessThan48Hours)
+                                if (isLessThan48Hours) {
+                                  setTooltipCleanId(clean._id);
+                                } else {
                                   handleMouseEnter(e.currentTarget);
+                                }
                               }}
                               onMouseLeave={(e) => {
-                                if (!isLessThan48Hours)
+                                if (isLessThan48Hours) {
+                                  setTooltipCleanId(null);
+                                } else {
                                   handleMouseLeave(e.currentTarget);
+                                }
                               }}
                             >
                               <span className="schedule1-text242">Amend</span>
+
+                              {isLessThan48Hours &&
+                                tooltipCleanId === clean._id && (
+                                  <div className="tooltip-message">
+                                    Unfortunately, as there are less than 48
+                                    hours before your clean, amendments are not
+                                    accepted. Please see FAQ’s for more details.
+                                  </div>
+                                )}
                             </div>
                           );
                         })()}

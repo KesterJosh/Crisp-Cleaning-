@@ -1,8 +1,16 @@
-import { forwardRef, useEffect, useState, useCallback } from "react";
+import React, { forwardRef, useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import "./swiper-styles.css";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import Login from "../views/login";
+import {
+  addDays,
+  format,
+  parseISO,
+  startOfDay,
+  isBefore,
+  isSameDay,
+} from "date-fns";
 import { Eye, EyeSlashIcon } from "@phosphor-icons/react";
 import MelbourneAddressInput from "./MelbourneInput";
 
@@ -14,7 +22,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [Quote, setQuote] = useState(0);
   const [type, setType] = useState(0);
-  const [sliderValueO, setSliderValueO] = useState(1);
+  const [sliderValueO, setSliderValueO] = useState(0);
   const [sliderValue, setSliderValue] = useState(0);
   const [sliderValueK, setSliderValueK] = useState(0);
   const [sliderValueOX, setSliderValueOX] = useState(0);
@@ -30,7 +38,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
   const [microwave, setmicrowave] = useState(0);
   const [Laundry, setLaundry] = useState(0);
   const [tiles, settiles] = useState(0);
-  const [CleanType, setCleanType] = useState(true);
+  const [CleanType, setCleanType] = useState(false);
   const [intervalValue, setIntervalValue] = useState(15);
   const [GetInside, setGetInside] = useState("I will be home");
   const [Park, setPark] = useState("I will provide parking on site");
@@ -39,7 +47,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
   const [supports, setSupports] = useState(false);
   const [showValidationMessage, setShowValidationMessage] = useState(false);
   const [isCommercial, setIsCommercial] = useState(false);
-  const [selectedReg, setSelectedReg] = useState(true);
+  const [selectedReg, setSelectedReg] = useState(null);
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
@@ -213,6 +221,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
       sliderValueO * 20 +
       sliderValue * 30 +
       sliderValueK * 45 +
+      sliderValueOX * 20 +
       windows +
       walls +
       Cabinets +
@@ -232,10 +241,11 @@ const CleaningSwiper = forwardRef((props, ref) => {
 
   const calculateEstimatedTime = () => {
     let totalMinutes = 0;
-    totalMinutes += sliderValueO * 20; // 20 mins per bedroom
-    totalMinutes += sliderValue * 30; // 30 mins per bathroom
-    totalMinutes += sliderValueK * 25; // 25 mins per kitchen
-    totalMinutes += sliderValueOX * 15; // 15 mins per 'other' room
+
+    totalMinutes += sliderValueO * 15;
+    totalMinutes += sliderValue * 25;
+    totalMinutes += sliderValueK * 30;
+    totalMinutes += sliderValueOX * 15;
 
     const extras = [
       windows,
@@ -252,10 +262,14 @@ const CleaningSwiper = forwardRef((props, ref) => {
       tiles,
     ];
 
-    // Add 10 minutes for each extra selected
     extras.forEach((extra) => {
       if (extra > 0) totalMinutes += 10;
     });
+
+    // Add based on selected clean type
+    if (type === 45) totalMinutes += 20; // Regular
+    else if (type === 135) totalMinutes += 30; // Deep
+    else if (type === 280) totalMinutes += 60; // Vacate
 
     return totalMinutes;
   };
@@ -266,39 +280,41 @@ const CleaningSwiper = forwardRef((props, ref) => {
   const generateMonthlyCalendar = () => {
     const months = [];
     const today = new Date();
-    const currentYear = today.getFullYear();
     const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
 
-    for (let month = currentMonth; month <= 11; month++) {
-      const firstDay = new Date(currentYear, month, 1);
-      const lastDay = new Date(currentYear, month + 1, 0);
+    for (let offset = 0; offset < 3; offset++) {
+      const baseDate = new Date(currentYear, currentMonth + offset, 1);
+      const year = baseDate.getFullYear();
+      const month = baseDate.getMonth();
+
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
       const daysInMonth = lastDay.getDate();
       const startingDayOfWeek = firstDay.getDay();
 
       const monthData = {
-        name: firstDay.toLocaleDateString("en-US", {
-          month: "long",
-          year: "numeric",
-        }),
-        month: month,
-        year: currentYear,
+        name: format(firstDay, "MMMM yyyy"),
+        month,
+        year,
         days: [],
       };
 
-      // Add empty cells for days before the first day of the month
+      // Fill empty slots for alignment
       for (let i = 0; i < startingDayOfWeek; i++) {
         monthData.days.push(null);
       }
 
-      // Add all days of the month
+      // Fill in actual days
       for (let day = 1; day <= daysInMonth; day++) {
-        const date = new Date(currentYear, month, day);
+        const date = new Date(year, month, day);
         const isToday = date.toDateString() === today.toDateString();
         const isPast = date < today && !isToday;
 
         monthData.days.push({
           day,
-          date: date.toISOString().split("T")[0],
+          date: format(date, "EEEE, MMMM d, yyyy"), // display format
+          isoDate: format(date, "yyyy-MM-dd"), // ISO format for comparison
           isToday,
           isPast,
           isSelectable: !isPast,
@@ -325,12 +341,18 @@ const CleaningSwiper = forwardRef((props, ref) => {
     const isToday = date.toDateString() === new Date().toDateString();
 
     let availableSlots = [
-      { value: 8, label: "8:00 AM - 10:00 AM" },
-      { value: 10, label: "10:00 AM - 12:00 PM" },
-      { value: 12, label: "12:00 PM - 2:00 PM" },
-      { value: 14, label: "2:00 PM - 4:00 PM" },
-      { value: 16, label: "4:00 PM - 6:00 PM" },
-      { value: 18, label: "6:00 PM - 8:00 PM" },
+      { value: 8, label: "8:00 AM - 9:00 AM" },
+      { value: 9, label: "09:00 AM - 10:00 AM" },
+      { value: 10, label: "10:00 AM - 11:00 AM" },
+      { value: 11, label: "11:00 AM - 12:00 PM" },
+      { value: 12, label: "12:00 PM - 01:00 PM" },
+      { value: 13, label: "01:00 PM - 02:00 PM" },
+      { value: 14, label: "02:00 PM - 03:00 PM" },
+      { value: 15, label: "03:00 PM - 04:00 PM" },
+      { value: 16, label: "04:00 PM - 05:00 PM" },
+      { value: 17, label: "05:00 PM - 06:00 PM" },
+      { value: 18, label: "06:00 PM - 07:00 PM" },
+      { value: 19, label: "07:00 PM - 08:00 PM" },
     ];
 
     // Filter out past time slots if it's today
@@ -395,9 +417,6 @@ const CleaningSwiper = forwardRef((props, ref) => {
     const errors = [];
     if (type === 0) {
       errors.push("Please select a cleaning service type");
-    }
-    if (sliderValueO === 0) {
-      errors.push("Please select at least one room");
     }
     if (errors.length > 0) {
       setSubmitError(errors.join(". "));
@@ -724,57 +743,97 @@ const CleaningSwiper = forwardRef((props, ref) => {
       setSliderValueO(newValue);
       setValidations((prev) => ({
         ...prev,
-        details: newValue > 0 && type > 0,
+        details:
+          newValue + sliderValue + sliderValueK + sliderValueOX > 0 && type > 0,
       }));
     }
-  }, [sliderValueO, type]);
+  }, [sliderValueO, sliderValue, sliderValueK, sliderValueOX, type]);
 
   const decrementRooms = useCallback(() => {
-    if (sliderValueO > 1) {
+    if (sliderValueO > 0) {
       const newValue = sliderValueO - 1;
       setSliderValueO(newValue);
       setValidations((prev) => ({
         ...prev,
-        details: newValue > 0 && type > 0,
+        details:
+          newValue + sliderValue + sliderValueK + sliderValueOX > 0 && type > 0,
       }));
     }
-  }, [sliderValueO, type]);
+  }, [sliderValueO, sliderValue, sliderValueK, sliderValueOX, type]);
 
   const incrementBathrooms = useCallback(() => {
     if (sliderValue < 8) {
-      setSliderValue(sliderValue + 1);
+      const newValue = sliderValue + 1;
+      setSliderValue(newValue);
+      setValidations((prev) => ({
+        ...prev,
+        details:
+          sliderValueO + newValue + sliderValueK + sliderValueOX > 0 &&
+          type > 0,
+      }));
     }
-  }, [sliderValue]);
+  }, [sliderValue, sliderValueO, sliderValueK, sliderValueOX, type]);
 
   const decrementBathrooms = useCallback(() => {
     if (sliderValue > 0) {
-      setSliderValue(sliderValue - 1);
+      const newValue = sliderValue - 1;
+      setSliderValue(newValue);
+      setValidations((prev) => ({
+        ...prev,
+        details:
+          sliderValueO + newValue + sliderValueK + sliderValueOX > 0 &&
+          type > 0,
+      }));
     }
-  }, [sliderValue]);
+  }, [sliderValue, sliderValueO, sliderValueK, sliderValueOX, type]);
 
   const incrementKitchens = useCallback(() => {
     if (sliderValueK < 8) {
-      setSliderValueK(sliderValueK + 1);
+      const newValue = sliderValueK + 1;
+      setSliderValueK(newValue);
+      setValidations((prev) => ({
+        ...prev,
+        details:
+          sliderValueO + sliderValue + newValue + sliderValueOX > 0 && type > 0,
+      }));
     }
-  }, [sliderValueK]);
+  }, [sliderValueK, sliderValueO, sliderValue, sliderValueOX, type]);
 
   const decrementKitchens = useCallback(() => {
     if (sliderValueK > 0) {
-      setSliderValueK(sliderValueK - 1);
+      const newValue = sliderValueK - 1;
+      setSliderValueK(newValue);
+      setValidations((prev) => ({
+        ...prev,
+        details:
+          sliderValueO + sliderValue + newValue + sliderValueOX > 0 && type > 0,
+      }));
     }
-  }, [sliderValueK]);
+  }, [sliderValueK, sliderValueO, sliderValue, sliderValueOX, type]);
 
   const incrementOther = useCallback(() => {
     if (sliderValueOX < 8) {
-      setSliderValueOX(sliderValueOX + 1);
+      const newValue = sliderValueOX + 1;
+      setSliderValueOX(newValue);
+      setValidations((prev) => ({
+        ...prev,
+        details:
+          sliderValueO + sliderValue + sliderValueK + newValue > 0 && type > 0,
+      }));
     }
-  }, [sliderValueOX]);
+  }, [sliderValueOX, sliderValueO, sliderValue, sliderValueK, type]);
 
   const decrementOther = useCallback(() => {
     if (sliderValueOX > 0) {
-      setSliderValueOX(sliderValueOX - 1);
+      const newValue = sliderValueOX - 1;
+      setSliderValueOX(newValue);
+      setValidations((prev) => ({
+        ...prev,
+        details:
+          sliderValueO + sliderValue + sliderValueK + newValue > 0 && type > 0,
+      }));
     }
-  }, [sliderValueOX]);
+  }, [sliderValueOX, sliderValueO, sliderValue, sliderValueK, type]);
 
   // MEMOIZED EXTRA ITEM HANDLER
   const handleExtraItemClick = useCallback(
@@ -798,6 +857,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
       setCleanType(true);
       setSelectedReg(true);
       setIntervalValue(15);
+      setIsDiscountApplied(true);
       updateScheduleValidation(selectedDate, selectedTime);
     },
     [selectedDate, selectedTime, updateScheduleValidation]
@@ -811,6 +871,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
       }
       setCleanType(false);
       setIntervalValue(0);
+      setIsDiscountApplied(false); // Add this line to remove the discount
       updateScheduleValidation(selectedDate, selectedTime);
     },
     [selectedDate, selectedTime, updateScheduleValidation]
@@ -1250,6 +1311,56 @@ const CleaningSwiper = forwardRef((props, ref) => {
     }
   };
 
+  const disabledDates = React.useMemo(() => {
+    const todayStart = startOfDay(new Date());
+    const tomorrowStart = addDays(todayStart, 1);
+
+    return [
+      format(todayStart, "yyyy-MM-dd"), // ISO format
+      format(tomorrowStart, "yyyy-MM-dd"),
+    ];
+  }, []);
+  // Empty dependency array means this only runs once on mount
+
+  // This memo recalculates properties for each day based on disabledDates and current date
+  const updatedMonthlyCalendar = React.useMemo(() => {
+    if (!monthlyCalendar || monthlyCalendar.length === 0) {
+      return [];
+    }
+
+    const todayStart = startOfDay(new Date()); // Get today's start for consistent comparison
+
+    return monthlyCalendar.map((month) => ({
+      ...month,
+      days: month.days.map((dayData) => {
+        if (!dayData || !dayData.date) {
+          return dayData;
+        }
+
+        const currentDayDate = parseISO(dayData.isoDate);
+
+        // Determine if this day is explicitly disabled (today or tomorrow) from our `disabledDates` set
+        const isDisabledByExplicitRule = disabledDates.includes(
+          dayData.isoDate
+        );
+
+        // Determine if this day is strictly in the past (before today's start)
+        const isActualPastDay = isBefore(currentDayDate, todayStart);
+
+        return {
+          ...dayData,
+          // A day is selectable if it was initially selectable, NOT explicitly disabled (today/tomorrow), AND NOT in the past.
+          isSelectable:
+            dayData.isSelectable &&
+            !isDisabledByExplicitRule &&
+            !isActualPastDay,
+          // A day is marked 'isDisabled' for styling if it's explicitly disabled or in the past.
+          isDisabled: isDisabledByExplicitRule || isActualPastDay,
+        };
+      }),
+    }));
+  }, [monthlyCalendar, disabledDates]);
+
   // Define steps array
   const residentialSteps = [
     {
@@ -1371,7 +1482,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
                 <button
                   className="counter-btn"
                   onClick={decrementRooms}
-                  disabled={sliderValueO <= 1}
+                  disabled={sliderValueO <= 0}
                 >
                   -
                 </button>
@@ -1475,14 +1586,14 @@ const CleaningSwiper = forwardRef((props, ref) => {
                   name: "Stovetop/oven",
                   value: stovetop,
                   setter: setstovetop,
-                  price: 35,
+                  price: 30,
                 },
                 { name: "Fridge", value: fridge, setter: setfridge, price: 35 },
                 {
                   name: "Dishwasher",
                   value: Dishwasher,
                   setter: setDishwasher,
-                  price: 25,
+                  price: 30,
                 },
                 { name: "Garage", value: garage, setter: setgarage, price: 40 },
                 {
@@ -1497,7 +1608,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
                   setter: setLaundry,
                   price: 35,
                 },
-                { name: "Tiles", value: tiles, setter: settiles, price: 20 },
+                { name: "Tiles", value: tiles, setter: settiles, price: 30 },
               ].map((extra, index) => (
                 <div
                   key={index}
@@ -1570,7 +1681,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
               ))}
             </div>
             <div className="monthly-calendar-grid2">
-              {monthlyCalendar[currentMonthIndex]?.days.map(
+              {updatedMonthlyCalendar[currentMonthIndex]?.days.map(
                 (dayData, index) => (
                   <div
                     key={index}
@@ -1578,11 +1689,14 @@ const CleaningSwiper = forwardRef((props, ref) => {
                       dayData?.isPast ? "past" : ""
                     } ${dayData?.isToday ? "today" : ""} ${
                       selectedDate === dayData?.date ? "selected" : ""
-                    } ${dayData?.isSelectable ? "selectable" : ""}`}
+                    } ${dayData?.isSelectable ? "selectable" : ""} ${
+                      dayData?.isDisabled ? "disabled-date" : "" // Apply the disabled-date class
+                    }`}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      if (dayData?.isSelectable) {
+                      // Allow selection ONLY if the day is marked as selectable AND NOT disabled
+                      if (dayData?.isSelectable && !dayData?.isDisabled) {
                         handleDateSelect(dayData.date);
                       }
                     }}
@@ -1654,16 +1768,16 @@ const CleaningSwiper = forwardRef((props, ref) => {
                 </div>
               )}
               <div className="button-with-exclamation">
-                <span
-                  onClick={() => setNotify(!notify)}
-                  className={`exclamation ${CleanType ? "highlighted" : ""}`}
-                >
-                  !
-                </span>
                 <button
                   className={`toggle-btn-one ${CleanType ? "active" : ""}`}
                   onClick={handleRegularCleanToggle}
                 >
+                  <span
+                    onClick={() => setNotify(!notify)}
+                    className={`exclamation ${CleanType ? "highlighted" : ""}`}
+                  >
+                    !
+                  </span>
                   Regular Cleans
                   <span className="off">
                     <small>Up to 25% OFF</small>
@@ -1904,12 +2018,10 @@ const CleaningSwiper = forwardRef((props, ref) => {
               <label className="required-field">Address</label>
               <MelbourneAddressInput
                 value={address}
-                onChange={(newAddress) => {
-                  setAddress(newAddress);
-                  updateSignupValidation();
-                }}
+                onChange={setAddress}
                 onValidation={updateSignupValidation}
                 className="form-input"
+                placeholder="House Address"
               />
             </div>
             <div className="form-group">
@@ -2084,38 +2196,6 @@ const CleaningSwiper = forwardRef((props, ref) => {
                 </div>
               )}
             </div>
-            {selectedReg && (
-              <div className="discount-field" style={{ marginTop: "1rem" }}>
-                <label
-                  htmlFor="discount"
-                  style={{
-                    display: "block",
-                    marginBottom: "0.25rem",
-                    fontWeight: 500,
-                  }}
-                >
-                  Have a discount code?
-                </label>
-                <input
-                  id="discount"
-                  type="text"
-                  placeholder="Enter code"
-                  value={discountCode}
-                  onChange={(e) => {
-                    const code = e.target.value.toUpperCase();
-                    setDiscountCode(code);
-                    setIsDiscountApplied(code === "DIS");
-                  }}
-                  style={{
-                    padding: "0.5rem",
-                    width: "100%",
-                    border: "1px solid #ccc",
-                    borderRadius: "6px",
-                    fontSize: "14px",
-                  }}
-                />
-              </div>
-            )}
             <div className="summary-total">
               <div className="total-line">
                 <span>Total</span>
@@ -2481,10 +2561,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
               <label className="required-field">Business Address</label>
               <MelbourneAddressInput
                 value={address}
-                onChange={(newAddress) => {
-                  setAddress(newAddress);
-                  updateSignupValidation();
-                }}
+                onChange={setAddress}
                 onValidation={updateSignupValidation}
                 className="form-input"
                 placeholder="Full business address"

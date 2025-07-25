@@ -491,12 +491,13 @@ const Contact = (props) => {
                   <span className="contact-text34">
                     <span>You can reach out to us anytime at </span>
                     <a
-                      href="mailto:support@crispcleaningcorp.com.au"
+                      href="mailto:crispcleaningmelbourne@outlook.com
+"
                       className="contact-text36"
                       onMouseOver={clickEmail}
                       onMouseLeave={unclickEmail}
                     >
-                      support@crispcleaningcorp.com.au
+                      crispcleaningmelbourne@outlook.com
                     </a>
                   </span>
                 </div>
