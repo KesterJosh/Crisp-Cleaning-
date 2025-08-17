@@ -154,16 +154,27 @@ const Schedule1 = (props) => {
     if (!userId) return;
     try {
       const response = await axios.get(
-        `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`
+        `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`,
+        { headers: { "Content-Type": "application/json" } }
       );
-      if (response.data && response.data.cleanRecords) {
-        setCleans(response.data.cleanRecords);
+
+      if (response.data) {
+        const today = new Date();
+
+        // Filter cleans so only future or same-day cleans show
+        const filtered = response.data.cleanRecords.filter((clean) => {
+          const cleanDate = new Date(clean.date);
+          return cleanDate >= today;
+        });
+
+        setCleans(filtered);
       } else {
-        throw new Error("No clean records found.");
+        throw new Error("No data found in the response.");
       }
     } catch (error) {
-      console.error("Error fetching cleans:", error);
+      console.error(error);
       setCleans([]);
+      setError(error.message || "An unexpected error occurred.");
     }
   }, [userId]);
 
@@ -359,8 +370,6 @@ const Schedule1 = (props) => {
       <div className="schedule1-container115">
         <div className="schedule1-container116">
           <span className="schedule1-text112">Schedule</span>
-
-          {/* <GlobalSearch /> */}
           <div
             className="schedule1-container118"
             onMouseEnter={(e) => handleMouseEnter(e.currentTarget)}
@@ -416,7 +425,8 @@ const Schedule1 = (props) => {
                                   Clean
                                 </span>
                                 <span className="schedule1-text237">
-                                  {clean.completed
+                                  {clean.completed ||
+                                  new Date(clean.date) < new Date()
                                     ? `Completed ${clean.date}`
                                     : "Pending"}
                                 </span>
@@ -504,57 +514,21 @@ const Schedule1 = (props) => {
                           style={{ position: "relative" }}
                         >
                           {(() => {
-                            const cleanDate = moment(
-                              clean.date,
-                              "dddd, MMMM D, YYYY"
-                            );
-                            const now = moment();
-                            const hoursUntilClean = cleanDate.diff(
-                              now,
-                              "hours"
-                            );
-                            const isLessThan48Hours = hoursUntilClean < 48;
-
                             return (
                               <div
-                                className={`schedule1-container318`}
+                                className="schedule1-container318"
                                 onClick={() => {
-                                  if (!isLessThan48Hours) {
-                                    setEditClean(true);
-                                    setEditId(clean._id);
-                                  } else {
-                                    setTooltipCleanId(clean._id);
-                                    setTimeout(
-                                      () => setTooltipCleanId(null),
-                                      4000
-                                    ); // auto-hide
-                                  }
+                                  setEditClean(true);
+                                  setEditId(clean._id);
                                 }}
-                                onMouseEnter={(e) => {
-                                  if (isLessThan48Hours) {
-                                    setTooltipCleanId(clean._id);
-                                  } else {
-                                    handleMouseEnter(e.currentTarget);
-                                  }
-                                }}
-                                onMouseLeave={(e) => {
-                                  if (isLessThan48Hours) {
-                                    setTooltipCleanId(null);
-                                  } else {
-                                    handleMouseLeave(e.currentTarget);
-                                  }
-                                }}
+                                onMouseEnter={(e) =>
+                                  handleMouseEnter(e.currentTarget)
+                                }
+                                onMouseLeave={(e) =>
+                                  handleMouseLeave(e.currentTarget)
+                                }
                               >
                                 <span className="schedule1-text242">Amend</span>
-                                {isLessThan48Hours &&
-                                  tooltipCleanId === clean._id && (
-                                    <div className="tooltip-message">
-                                      Unfortunately, as there are less than 48
-                                      hours before your clean, amendments are
-                                      not accepted. Please see FAQ’s for more
-                                      details.
-                                    </div>
-                                  )}
                               </div>
                             );
                           })()}
@@ -634,7 +608,8 @@ const Schedule1 = (props) => {
                                 Clean{" "}
                               </span>
                               <span className="schedule1-text237">
-                                {clean.completed
+                                {clean.completed ||
+                                new Date(clean.date) < new Date()
                                   ? `Completed ${clean.date}`
                                   : "Pending"}
                               </span>
@@ -722,54 +697,21 @@ const Schedule1 = (props) => {
                         style={{ position: "relative" }}
                       >
                         {(() => {
-                          const cleanDate = moment(
-                            clean.date,
-                            "dddd, MMMM D, YYYY"
-                          );
-                          const now = moment();
-                          const hoursUntilClean = cleanDate.diff(now, "hours");
-                          const isLessThan48Hours = hoursUntilClean < 48;
-
                           return (
                             <div
-                              className={`schedule1-container318`}
+                              className="schedule1-container318"
                               onClick={() => {
-                                if (!isLessThan48Hours) {
-                                  setEditClean(true);
-                                  setEditId(clean._id);
-                                } else {
-                                  setTooltipCleanId(clean._id);
-                                  setTimeout(
-                                    () => setTooltipCleanId(null),
-                                    4000
-                                  ); // auto-hide
-                                }
+                                setEditClean(true);
+                                setEditId(clean._id);
                               }}
-                              onMouseEnter={(e) => {
-                                if (isLessThan48Hours) {
-                                  setTooltipCleanId(clean._id);
-                                } else {
-                                  handleMouseEnter(e.currentTarget);
-                                }
-                              }}
-                              onMouseLeave={(e) => {
-                                if (isLessThan48Hours) {
-                                  setTooltipCleanId(null);
-                                } else {
-                                  handleMouseLeave(e.currentTarget);
-                                }
-                              }}
+                              onMouseEnter={(e) =>
+                                handleMouseEnter(e.currentTarget)
+                              }
+                              onMouseLeave={(e) =>
+                                handleMouseLeave(e.currentTarget)
+                              }
                             >
                               <span className="schedule1-text242">Amend</span>
-
-                              {isLessThan48Hours &&
-                                tooltipCleanId === clean._id && (
-                                  <div className="tooltip-message">
-                                    Unfortunately, as there are less than 48
-                                    hours before your clean, amendments are not
-                                    accepted. Please see FAQ’s for more details.
-                                  </div>
-                                )}
                             </div>
                           );
                         })()}

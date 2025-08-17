@@ -58,51 +58,31 @@ const Dashboard = (props) => {
 
   // Fetch cleans based on userId
   const fetchCleans = useCallback(async () => {
-    if (!userId) return; // Skip if userId is not available
+    if (!userId) return;
     try {
-      const response = await axios({
-        method: "get",
-        url: `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.get(
+        `https://api-crisp-cleaning.onrender.com/user-clean/${userId}`,
+        { headers: { "Content-Type": "application/json" } }
+      );
 
-      // Check if the response data exists
       if (response.data) {
-        setCleans(response.data.cleanRecords);
+        const today = new Date();
+
+        // Filter cleans so only future or same-day cleans show
+        const filtered = response.data.cleanRecords.filter((clean) => {
+          const cleanDate = new Date(clean.date);
+          return cleanDate >= today;
+        });
+
+        setCleans(filtered);
         setError(null);
       } else {
         throw new Error("No data found in the response.");
       }
     } catch (error) {
-      // Extract error details
-      let errorMessage = "An unexpected error occurred.";
-
-      if (error.response) {
-        // The server responded with a status code outside the 2xx range
-        console.error(
-          "Server responded with an error:",
-          error.response.status,
-          error.response.data
-        );
-        errorMessage =
-          error.response.data?.message ||
-          `Server error: ${error.response.status}`;
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.error("No response received from the server:", error.request);
-        errorMessage =
-          "No response received from the server. Please check your network.";
-      } else {
-        // An error occurred during the setup of the request
-        console.error("Error setting up the request:", error.message);
-        errorMessage = error.message;
-      }
-
-      // Update state
+      console.error(error);
       setCleans([]);
-      setError(errorMessage);
+      setError(error.message || "An unexpected error occurred.");
     }
   }, [userId]);
 
@@ -625,10 +605,12 @@ const Dashboard = (props) => {
                           </div>
                           <div className="dashboard-container129">
                             <span className="dashboard-text120">
-                              {clean.completed
+                              {clean.completed ||
+                              new Date(clean.date) < new Date()
                                 ? "Completed!"
                                 : "In Progress..."}
                             </span>
+
                             <span className="dashboard-text121">
                               <span>
                                 {clean.typeOfClean == 280 ? "Vacate" : null}
@@ -904,35 +886,11 @@ const Dashboard = (props) => {
                 <br></br>
               </span>
             </div>
-            <div className="text-lg uc-text text-gray-500 font-semibold mb-1">
-              Upcoming
-            </div>
-            <div className="dashboard-container160">
-              {upcomingClean ? (
-                <div className="google-style-clean-card">
-                  <div className="font-medium text-slate-600 text-md mb-1">
-                    {upcomingClean.date}
-                  </div>
-                  <div className="uc">
-                    <div className="uc-border"></div>
-                    {cleanType(upcomingClean.typeOfClean)}
-                  </div>
-                  <small className="uc-date">
-                    {upcomingClean.date.split("/")[2]}
-                  </small>
-                </div>
-              ) : (
-                <div className="google-style-clean-card">
-                  <div className="font-medium text-slate-600 text-md mb-1">
-                    No upcoming clean
-                  </div>
-                  <div className="uc">
-                    <div className="uc-border"></div>
-                    No clean type
-                  </div>
-                  <small className="uc-date">No year</small>
-                </div>
-              )}
+
+            <div
+              className="dashboard-container160"
+              style={{ marginTop: "10px" }}
+            >
               <Link
                 to="/schedule"
                 className="dashboard-container161"

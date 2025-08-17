@@ -1,6 +1,6 @@
 /* Main swiper container - CONSTRAINED TO 100VH */
 .swiper-container {
-  margin-top: -140px;
+  margin-top: -155px;
   margin-bottom: -100px;
   position: relative;
   width: 100%;
@@ -10,6 +10,20 @@
   flex-direction: column;
   align-items: center;
   background: white;
+  font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont,
+    sans-serif;
+}
+
+.swiper-container2 {
+  margin-top: -155px;
+  margin-bottom: -100px;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont,
     sans-serif;
 }
@@ -120,14 +134,15 @@
 .overlay-main {
   position: fixed;
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   top: 0;
   right: 0;
   height: 100vh;
   overflow-y: scroll;
   background: rgba(0, 0, 0, 0.725);
   z-index: 9999;
-  font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont,
-    sans-serif;
 }
 
 /* Swiper wrapper */
@@ -179,6 +194,7 @@
 /* Slide header - REDUCED SPACING */
 .slide-header {
   text-align: center;
+  margin-top: 60px;
   margin-bottom: 20px; /* Reduced from 40px */
   flex-shrink: 0; /* Prevent shrinking */
 }
@@ -761,6 +777,14 @@
   border: 2px solid #ff914d;
 }
 
+.close-notify {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  color: red;
+  cursor: pointer;
+}
+
 .day-btn.selected {
   background: linear-gradient(135deg, #ff914d, #e8823d);
   color: white;
@@ -920,6 +944,63 @@
   justify-content: space-between;
   margin-bottom: 20px; /* Reduced from 28px */
   flex-wrap: wrap;
+}
+.environment-type-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.environment-type-button {
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+}
+
+.environment-type-button:hover {
+  background-color: #e0e0e0;
+}
+
+.environment-type-active {
+  background-color: #ff914d;
+  color: white;
+  border-color: #ff914d;
+}
+
+.environment-type-active:hover {
+  background-color: #fd8840;
+}
+
+.cleaning-type-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.cleaning-type-button {
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+}
+
+.cleaning-type-button:hover {
+  background-color: #e0e0e0;
+}
+
+.cleaning-type-active {
+  background-color: #ff914d;
+  color: white;
+  border-color: #ff914d;
+}
+
+.cleaning-type-active:hover {
+  background-color: #fd8840;
 }
 
 .frequency-options button {
@@ -1630,7 +1711,7 @@
   }
 
   .frequency-options {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     gap: 6px; /* Reduced from 8px */
   }
@@ -1865,6 +1946,10 @@
   .glassmorphism-notification {
     padding: 20px;
     border-radius: 16px;
+    width: 90%;
+    height: 400px;
+    overflow: scroll;
+    left: 0;
   }
 
   .glassmorphism-notification h5 {

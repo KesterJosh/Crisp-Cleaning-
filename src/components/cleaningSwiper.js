@@ -16,6 +16,8 @@ import MelbourneAddressInput from "./MelbourneInput";
 
 const CleaningSwiper = forwardRef((props, ref) => {
   const [notify, setNotify] = useState(false);
+  const [TandC, setTandC] = useState(false);
+  const [CSA, setCSA] = useState(false);
   const [login, setLogin] = useState(false);
   const [activeStepSet, setActiveStepSet] = useState("residential"); // or "commercial"
   const [showPassword, setShowPassword] = useState(false);
@@ -40,9 +42,9 @@ const CleaningSwiper = forwardRef((props, ref) => {
   const [tiles, settiles] = useState(0);
   const [CleanType, setCleanType] = useState(false);
   const [intervalValue, setIntervalValue] = useState(15);
-  const [GetInside, setGetInside] = useState("I will be home");
-  const [Park, setPark] = useState("I will provide parking on site");
-  const [Animal, setAnimal] = useState("Dog/Cat");
+  const [GetInside, setGetInside] = useState("");
+  const [Park, setPark] = useState("");
+  const [Animal, setAnimal] = useState("");
   const [spComments, setspComments] = useState("");
   const [supports, setSupports] = useState(false);
   const [showValidationMessage, setShowValidationMessage] = useState(false);
@@ -204,7 +206,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
   const [Heart5, setHeart5] = useState(false);
   const [Heart6, setHeart6] = useState(false);
 
-  const totalSteps = 6;
+  const totalSteps = 7;
   const stepIds = [
     "quote",
     "details",
@@ -236,8 +238,6 @@ const CleaningSwiper = forwardRef((props, ref) => {
       tiles
     );
   };
-
-  const Total = calculateTotal();
 
   const calculateEstimatedTime = () => {
     let totalMinutes = 0;
@@ -329,7 +329,53 @@ const CleaningSwiper = forwardRef((props, ref) => {
 
   const [discountCode, setDiscountCode] = useState("");
   const [isDiscountApplied, setIsDiscountApplied] = useState(false);
-  const discountedTotal = isDiscountApplied ? Total * 0.75 : Total;
+  const discountedTotal = isDiscountApplied ? total * 0.75 : total;
+
+  useEffect(() => {
+    const calculatedTotal =
+      type +
+      sliderValueO * 20 +
+      sliderValue * 30 +
+      sliderValueK * 45 +
+      sliderValueOX * 20 +
+      windows +
+      walls +
+      Cabinets +
+      organization +
+      blind +
+      stovetop +
+      fridge +
+      Dishwasher +
+      garage +
+      microwave +
+      Laundry +
+      tiles;
+
+    // If a discount is applied, recalculate with the discount
+    const newTotal = isDiscountApplied
+      ? calculatedTotal * 0.75
+      : calculatedTotal;
+    setTotal(newTotal);
+  }, [
+    type,
+    sliderValueO,
+    sliderValue,
+    sliderValueK,
+    sliderValueOX,
+    windows,
+    walls,
+    Cabinets,
+    organization,
+    blind,
+    stovetop,
+    fridge,
+    Dishwasher,
+    garage,
+    microwave,
+    Laundry,
+    tiles,
+    isDiscountApplied,
+  ]);
 
   // Get available time slots for a specific date
   const getAvailableTimeSlots = (selectedDate) => {
@@ -443,66 +489,91 @@ const CleaningSwiper = forwardRef((props, ref) => {
   }, [selectedDate, selectedTime]);
 
   const validateInstructionsStep = useCallback(() => {
-    // Instructions step is always valid since all fields have default values
-    setSubmitError("");
-    return true;
-  }, []);
-
-  const validateSignupStep = useCallback(() => {
-    const errors = [];
-    if (!firstName || firstName.trim() === "") {
-      if (isCommercial) {
-        errors.push("Business name is required");
-      } else {
-        errors.push("First name is required");
-      }
+    if (!GetInside) {
+      setSubmitError("Please select how we can get inside.");
+      return false;
     }
-    if (!lastName || lastName.trim() === "") {
-      if (isCommercial) {
-        errors.push("Contact person is required");
-      } else {
-        errors.push("Last name is required");
-      }
+    if (!Park) {
+      setSubmitError("Please select where we would park.");
+      return false;
     }
-    if (!email || email.trim() === "") {
-      errors.push("Email is required");
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      errors.push("Please enter a valid email address");
-    }
-    if (!phone || phone.trim() === "") {
-      errors.push("Phone number is required");
-    } else if (!/^\d{10,}$/.test(phone.replace(/\D/g, ""))) {
-      errors.push("Please enter a valid phone number");
-    }
-    if (!address || address.trim() === "") {
-      errors.push("Address is required");
-    }
-    if (!acceptTerms) {
-      if (isCommercial) {
-        errors.push("Please accept the Commercial Service Agreement");
-      } else {
-        errors.push("Please accept the Terms & Conditions");
-      }
-    }
-    // Only require password for residential flow
-    if (!isCommercial && (!password || password.length < 6)) {
-      errors.push("Password must be at least 6 characters long");
-    }
-    if (errors.length > 0) {
-      setSubmitError(errors.join(". "));
+    if (!Animal) {
+      setSubmitError("Please tell us what kind of pet you own.");
       return false;
     }
     setSubmitError("");
     return true;
+  }, [GetInside, Park, Animal]);
+
+  const validateSignupStep = useCallback(() => {
+    const errors = [];
+
+    if (isCommercial) {
+      if (!lastName || lastName.trim() === "") {
+        errors.push("Contact person is required");
+      }
+      if (!email || email.trim() === "") {
+        errors.push("Email is required");
+      } else if (!/\S+@\S+\.\S+/.test(email)) {
+        errors.push("Please enter a valid email address");
+      }
+      if (!phone || phone.trim() === "") {
+        errors.push("Phone number is required");
+      } else if (!/^\d{10,}$/.test(phone.replace(/\D/g, ""))) {
+        errors.push("Please enter a valid phone number");
+      }
+      if (!address || address.trim() === "") {
+        errors.push("Address is required");
+      }
+      if (!acceptTerms) {
+        errors.push("Please accept the Commercial Service Agreement");
+      }
+    } else {
+      // Residential
+      if (!firstName || firstName.trim() === "") {
+        errors.push("First name is required");
+      }
+      if (!lastName || lastName.trim() === "") {
+        errors.push("Last name is required");
+      }
+      if (!email || email.trim() === "") {
+        errors.push("Email is required");
+      } else if (!/\S+@\S+\.\S+/.test(email)) {
+        errors.push("Please enter a valid email address");
+      }
+      if (!phone || phone.trim() === "") {
+        errors.push("Phone number is required");
+      } else if (!/^\d{10,}$/.test(phone.replace(/\D/g, ""))) {
+        errors.push("Please enter a valid phone number");
+      }
+      if (!address || address.trim() === "") {
+        errors.push("Address is required");
+      }
+      if (!acceptTerms) {
+        errors.push("Please accept the Terms & Conditions");
+      }
+      if (!password || password.length < 6) {
+        errors.push("Password must be at least 6 characters long");
+      }
+    }
+
+    if (errors.length > 0) {
+      setSubmitError(errors.join(". "));
+      setShowValidationMessage(true);
+      return false;
+    }
+    setSubmitError("");
+    setShowValidationMessage(false);
+    return true;
   }, [
-    firstName,
     lastName,
     email,
     phone,
     address,
     acceptTerms,
-    password,
     isCommercial,
+    firstName,
+    password,
   ]);
 
   const validateCommercialDetailsStep = useCallback(() => {
@@ -577,14 +648,12 @@ const CleaningSwiper = forwardRef((props, ref) => {
     [CleanType]
   );
 
-  const updateSignupValidation = useCallback(() => {
+  // NEW useEffect for reliable signup validation
+  useEffect(() => {
     let isValid;
     if (isCommercial) {
-      // For commercial flow, don't require password
-      isValid =
-        firstName && lastName && email && phone && address && acceptTerms;
+      isValid = lastName && email && phone && address && acceptTerms;
     } else {
-      // For residential flow, require password
       isValid =
         firstName &&
         lastName &&
@@ -594,18 +663,36 @@ const CleaningSwiper = forwardRef((props, ref) => {
         address &&
         acceptTerms;
     }
-    setValidations((prev) => ({ ...prev, signup: isValid }));
+    setValidations((prev) => ({ ...prev, signup: Boolean(isValid) }));
     if (isValid) setShowValidationMessage(false);
   }, [
-    firstName,
     lastName,
     email,
     phone,
-    password,
     address,
     acceptTerms,
     isCommercial,
+    firstName,
+    password,
   ]);
+
+  const updateSignupValidation = useCallback(() => {
+    let isValid;
+    if (isCommercial) {
+      isValid = lastName && email && phone && address && acceptTerms;
+    } else {
+      isValid =
+        firstName &&
+        lastName &&
+        email &&
+        phone &&
+        password &&
+        address &&
+        acceptTerms;
+    }
+    setValidations((prev) => ({ ...prev, signup: Boolean(isValid) }));
+    if (isValid) setShowValidationMessage(false);
+  }, [lastName, email, phone, address, acceptTerms, isCommercial]);
 
   const updateCommercialValidation = useCallback(() => {
     const isValid = businessType && businessSize && cleaningFrequency;
@@ -1030,7 +1117,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
   const handleSubmitClean = async () => {
     try {
       const requestData = {
-        Total,
+        total,
         type,
         sliderValueO,
         sliderValueK,
@@ -1099,7 +1186,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
         items: [
           {
             name: "Crisp Cleaning Service",
-            price: Math.round(Total * 100), // In cents
+            price: Math.round(total * 100), // In cents
           },
         ],
       };
@@ -1163,7 +1250,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
       );
       if (response.status === 200 || response.status === 201) {
         alert(
-          "Commercial quote request submitted successfully! We'll contact you within 24 hours."
+          "Enquiry sent. We’ll be in touch shortly to discuss your commercial cleaning needs"
         );
       } else {
         throw new Error("Unexpected response");
@@ -1588,7 +1675,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
                   setter: setstovetop,
                   price: 30,
                 },
-                { name: "Fridge", value: fridge, setter: setfridge, price: 35 },
+                { name: "Fridge", value: fridge, setter: setfridge, price: 30 },
                 {
                   name: "Dishwasher",
                   value: Dishwasher,
@@ -1738,6 +1825,12 @@ const CleaningSwiper = forwardRef((props, ref) => {
             <div className="clean-type-toggle">
               {notify && (
                 <div className="glassmorphism-notification">
+                  <span
+                    className="close-notify"
+                    onClick={() => setNotify(false)}
+                  >
+                    X
+                  </span>
                   <div>
                     <div>
                       <h5>Cleaners Pass</h5>
@@ -1773,7 +1866,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
                   onClick={handleRegularCleanToggle}
                 >
                   <span
-                    onClick={() => setNotify(!notify)}
+                    onClick={() => setNotify(true)}
                     className={`exclamation ${CleanType ? "highlighted" : ""}`}
                   >
                     !
@@ -1873,6 +1966,9 @@ const CleaningSwiper = forwardRef((props, ref) => {
               }}
               className="form-select"
             >
+              <option value="" disabled>
+                Select an option
+              </option>
               <option>I will be home</option>
               <option>I will leave a key</option>
               <option>I will provide a lockbox/access code</option>
@@ -1888,6 +1984,9 @@ const CleaningSwiper = forwardRef((props, ref) => {
               }}
               className="form-select"
             >
+              <option value="" disabled>
+                Select an option
+              </option>
               <option>I will provide parking on site</option>
               <option>There is free parking nearby/on the street</option>
               <option>I will provide a lockbox/access code</option>
@@ -1903,6 +2002,9 @@ const CleaningSwiper = forwardRef((props, ref) => {
               }}
               className="form-select"
             >
+              <option value="" disabled>
+                Select an option
+              </option>
               <option>Dog/Cat</option>
               <option>No pets</option>
               <option>Other</option>
@@ -2033,6 +2135,38 @@ const CleaningSwiper = forwardRef((props, ref) => {
                 onChange={(e) => setReferral(e.target.value)}
               />
             </div>
+            {TandC && (
+              <div className="glassmorphism-notification">
+                <span className="close-notify" onClick={() => setTandC(false)}>
+                  X
+                </span>
+                <div>
+                  <div>
+                    <h5>Terms and Conditions</h5>
+                    <p>
+                      Schedule regular cleans with us and instantly save up to
+                      15% off per clean! Also gain access to our loyalty and
+                      rewards systems to earn up to 25% off per clean, for life!
+                    </p>
+                    <p>
+                      Note: Weekly cleans earn the highest discount. The higher
+                      the frequency the higher the discount! Regardless of the
+                      frequency, our rewards system will increase your discount
+                    </p>
+                  </div>
+                  <div>
+                    <h5>Cancellations</h5>
+                    <p>
+                      Please note, cancellation fees may apply if you opt out of
+                      your cleaner's pass within the first 3 cleans.{" "}
+                      <Link to="/faqs" target="_blank">
+                        <span className="link">Learn more on our FAQs.</span>
+                      </Link>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="terms-section">
               <label className="checkbox-label">
                 <input
@@ -2043,7 +2177,10 @@ const CleaningSwiper = forwardRef((props, ref) => {
                     updateSignupValidation();
                   }}
                 />
-                I accept the <span className="link">Terms & Conditions</span>
+                I accept the{" "}
+                <span className="link" onClick={() => setTandC(true)}>
+                  Terms & Conditions
+                </span>
               </label>
               <p>
                 Already have an account?{" "}
@@ -2340,7 +2477,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
         <div className="step-content">
           <div className="form-group">
             <label className="required-field">Type of Environment</label>
-            <div className="frequency-options">
+            <div className="environment-type-container">
               {[
                 "Office Building",
                 "Retail Store",
@@ -2354,7 +2491,9 @@ const CleaningSwiper = forwardRef((props, ref) => {
               ].map((env) => (
                 <button
                   key={env}
-                  className={typeOfEnvironment === env ? "active" : ""}
+                  className={`environment-type-button ${
+                    typeOfEnvironment === env ? "environment-type-active" : ""
+                  }`}
                   onClick={(e) => handleEnvironmentTypeChange(env, e)}
                 >
                   {env}
@@ -2364,18 +2503,20 @@ const CleaningSwiper = forwardRef((props, ref) => {
           </div>
           <div className="form-group">
             <label className="required-field">Type of Clean</label>
-            <div className="frequency-options">
+            <div className="cleaning-type-container">
               {[
                 "Regular Maintenance",
                 "Deep Clean",
                 "Post-Construction",
                 "Move-in/Move-out",
                 "Event Cleanup",
-                "Specialized Cleaning",
+                "Other",
               ].map((clean) => (
                 <button
                   key={clean}
-                  className={typeOfClean === clean ? "active" : ""}
+                  className={`cleaning-type-button ${
+                    typeOfClean === clean ? "cleaning-type-active" : ""
+                  }`}
                   onClick={(e) => handleCleanTypeChange(clean, e)}
                 >
                   {clean}
@@ -2567,6 +2708,38 @@ const CleaningSwiper = forwardRef((props, ref) => {
                 placeholder="Full business address"
               />
             </div>
+            {CSA && (
+              <div className="glassmorphism-notification">
+                <span className="close-notify" onClick={() => setCSA(false)}>
+                  X
+                </span>
+                <div>
+                  <div>
+                    <h5>Commercial Service Agreement</h5>
+                    <p>
+                      Schedule regular cleans with us and instantly save up to
+                      15% off per clean! Also gain access to our loyalty and
+                      rewards systems to earn up to 25% off per clean, for life!
+                    </p>
+                    <p>
+                      Note: Weekly cleans earn the highest discount. The higher
+                      the frequency the higher the discount! Regardless of the
+                      frequency, our rewards system will increase your discount
+                    </p>
+                  </div>
+                  <div>
+                    <h5>Cancellations</h5>
+                    <p>
+                      Please note, cancellation fees may apply if you opt out of
+                      your cleaner's pass within the first 3 cleans.{" "}
+                      <Link to="/faqs" target="_blank">
+                        <span className="link">Learn more on our FAQs.</span>
+                      </Link>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="terms-section">
               <label className="checkbox-label">
                 <input
@@ -2578,7 +2751,9 @@ const CleaningSwiper = forwardRef((props, ref) => {
                   }}
                 />
                 I accept the{" "}
-                <span className="link">Commercial Service Agreement</span>
+                <span className="link" onClick={() => setCSA(true)}>
+                  Commercial Service Agreement
+                </span>
               </label>
             </div>
             {submitError && (
@@ -2785,7 +2960,7 @@ const CleaningSwiper = forwardRef((props, ref) => {
                 <div>
                   <h5 className="total-text">
                     Total{" "}
-                    <span className="total-number">${Total.toFixed(2)}</span>
+                    <span className="total-number">${total.toFixed(2)}</span>
                   </h5>
                   <small>
                     We estimate your cleaning to take:{" "}

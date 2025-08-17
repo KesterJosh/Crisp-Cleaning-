@@ -62,15 +62,27 @@ const CancelBooking = ({ onClose, cleanId }) => {
 
   const handleCancelBooking = async () => {
     try {
-      await axios.delete(
+      const res = await axios.delete(
         `https://api-crisp-cleaning.onrender.com/clean/${cleanId}`
       );
-      alert("Booking cancelled successfully.");
-      CloseCancelScreen();
-      window.location.reload();
+
+      if (res.status === 200 || res.status === 204) {
+        alert("Booking cancelled successfully.");
+        onClose();
+        window.location.reload();
+      } else {
+        console.warn("Unexpected status:", res.status, res.data);
+        alert("Something unexpected happened while cancelling.");
+      }
     } catch (error) {
-      console.error("Error cancelling booking:", error);
-      alert("Failed to cancel the booking. Please try again.");
+      if (error.response && error.response.status === 404) {
+        console.warn("Booking already cancelled or not found.");
+        onClose();
+        window.location.reload();
+      } else {
+        console.error("Error cancelling booking:", error);
+        alert("Failed to cancel the booking. Please try again.");
+      }
     }
   };
 

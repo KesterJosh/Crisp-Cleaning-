@@ -2,6 +2,35 @@
   text-decoration: line-through;
   color: gray; /* Optional: to visually distinguish past dates */
 }
+.amend-cancel-buttons, .amend-cancel-btns {
+  display: flex;
+  margin-top: 4px;
+  gap: 6px;
+}
+
+.amend-btn {
+  background: #ffc107;
+  color: #000;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background: #dc3545;
+  color: white;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.amend-btn:hover,
+.cancel-btn:hover {
+  opacity: 0.85;
+}
+
 .home-text055X {
   color: var(--dl-color-gray-black);
   font-size: 18px;
@@ -164,8 +193,7 @@
 
 .calendar-day {
   flex: 1 1 calc(14.28% - 10px); /* for 7 columns with spacing */
-  min-width: 100px;
-  max-width: 14.28%;
+  max-width: 100%;
   background-color: #fff;
   padding: 12px;
   min-height: 100px;
