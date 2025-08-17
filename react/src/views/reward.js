@@ -86,10 +86,13 @@ const Reward = (props) => {
     }
 
     try {
-      const res = await fetch("https://api-crisp-cleaning.onrender.com/reviews", {
-        method: "POST",
-        body: formData,
-      });
+      const res = await fetch(
+        "https://api-crisp-cleaning.onrender.com/reviews",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const data = await res.json();
 
@@ -263,7 +266,7 @@ const Reward = (props) => {
 
     const totalCompleted = filtered.reduce((acc, r) => acc + r.required, 0); // only count fully completed ones
 
-    return `${totalCompleted} of ${totalRequired} ${type}`;
+    return `${totalCompleted} of 3 ${type}`;
   };
 
   const getRewardPercentage = (type) => {
@@ -326,10 +329,13 @@ const Reward = (props) => {
   }, []);
 
   const claimReward = (rewardId) => {
-    fetch(`https://api-crisp-cleaning.onrender.com/api/rewards/claim/${rewardId}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    })
+    fetch(
+      `https://api-crisp-cleaning.onrender.com/api/rewards/claim/${rewardId}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      }
+    )
       .then((res) => res.json())
       .then((data) => {
         alert(data.message || "Reward claimed!");

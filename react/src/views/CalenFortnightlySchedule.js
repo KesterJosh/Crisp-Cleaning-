@@ -279,14 +279,41 @@ const CalenFortnightlySchedule = ({
         {(() => {
           const hoursUntilDay = dayMoment.diff(moment(), "hours");
           const isMoreThan48HoursAway = hoursUntilDay >= 48;
+          const hasClean = matchingCleans.length > 0;
+
+          const handleAmend = () => {
+            console.log("Amend clean:", matchingCleans[0]);
+            // TODO: open amend popup or navigate to edit booking page
+          };
+
+          const handleCancel = () => {
+            console.log("Cancel clean:", matchingCleans[0]);
+            // TODO: call API to cancel booking, then refresh cleans
+          };
 
           return (
             !isPastDate &&
             isSelected &&
             isMoreThan48HoursAway && (
-              <button onClick={() => setBooking(true)} className="book-now-btn">
-                Book Now
-              </button>
+              <>
+                {hasClean ? (
+                  <div className="amend-cancel-buttons">
+                    <button onClick={handleAmend} className="amend-btn">
+                      Amend
+                    </button>
+                    <button onClick={handleCancel} className="cancel-btn">
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setBooking(true)}
+                    className="book-now-btn"
+                  >
+                    Book Now
+                  </button>
+                )}
+              </>
             )
           );
         })()}

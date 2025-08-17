@@ -302,16 +302,43 @@ const CalenSchedule = ({
         {(() => {
           const hoursUntilDay = moment(fullDate).diff(moment(), "hours");
           const isMoreThan48HoursAway = hoursUntilDay >= 48;
+          const hasClean = dayCleans.length > 0;
 
           return (
-            dayCleans.length === 0 &&
             !isPast &&
             isCurrentMonth &&
             isSelected &&
             isMoreThan48HoursAway && (
-              <button className="book-now-btn" onClick={() => setBooking(true)}>
-                Book Now
-              </button>
+              <>
+                {hasClean ? (
+                  <div className="amend-cancel-btns">
+                    <button
+                      className="amend-btn"
+                      onClick={() => {
+                        console.log("Amend booking for", dateKey);
+                      }}
+                    >
+                      Amend
+                    </button>
+                    <button
+                      className="cancel-btn"
+                      onClick={() => {
+                        // Call your cancel function here
+                        console.log("Cancel booking for", dateKey);
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    className="book-now-btn"
+                    onClick={() => setBooking(true)}
+                  >
+                    Book Now
+                  </button>
+                )}
+              </>
             )
           );
         })()}

@@ -94,6 +94,8 @@ const CleanersPass = ({ cleanerPass, setcleanerPass }) => {
     );
     if (hasRegularOrOneTime && !showBooking) {
       localStorage.setItem("upgraded", true);
+    } else {
+      localStorage.removeItem("upgraded");
     }
   }, [cleans, showBooking]);
 
